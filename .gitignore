@@ -1,0 +1,8 @@
+# depedencies
+node_modules/
+
+# build
+dist/
+
+# package manager
+yarn.lock
