@@ -1,0 +1,15 @@
+{
+  "name": "@rafikidota/iroh",
+  "version": "0.0.0",
+  "description": "My own nestjs utils library with blackjacks and hookers",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rafikidota/iroh.git"
+  },
+  "author": "rafiki <71207415+rafikidota@users.noreply.github.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}
