@@ -1,0 +1,16 @@
+node_modules/
+.husky/
+src/
+
+.git/
+.gitignore
+
+tsconfig.json
+tsup.config.ts
+
+.eslintrc.json
+.lintstagedrc.json
+.prettierignore
+prettier.config
+
+yarn.lock
