@@ -1,58 +1,13 @@
 {
-  "env": {
-    "commonjs": false,
-    "es2022": true,
-    "node": true,
-    "jest": true,
-    "amd": true
-  },
-  "extends": ["airbnb-base", "prettier", "plugin:node/recommended"],
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
-  "parserOptions": {
-    "ecmaVersion": 2021,
-    "sourceType": "commonjs"
-  },
-  "plugins": ["prettier"],
+  "ignorePatterns": ["node_modules/","dist/"],
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
-    "prettier/prettier": "error",
-    "no-unused-vars": "warn",
-    "no-console": "off",
-    "func-names": "off",
-    "no-plusplus": "off",
-    "no-process-exit": "off",
-    "class-methods-use-this": "off",
-    "no-await-in-loop": "off",
-    "global-require": "off",
-    "no-param-reassign": "off",
-    "no-unreachable-loop": "off",
-    "eqeqeq": "off",
-    "consistent-return": "off",
-    "node/no-unsupported-features/es-syntax": "off",
-    "no-underscore-dangle": "off",
-    "node/no-missing-require": "off",
-    "max-len": ["warn", { "code": 110 }],
-    "import/no-unresolved": [
-      "error",
-      {
-        "ignore": ["^@app/", "^@common/*", "^@config/*", "^@modules/*"]
-      }
-    ]
-  },
-  "settings": {
-    "import/resolver": {
-      "alias": {
-        "map": [
-          ["@app", "app.js"],
-          ["@common", "./common"],
-          ["@config", "./config"],
-          ["@modules", "./modules"]
-        ],
-        "extensions": [".js"]
-      }
-    }
-  },
-  "ignorePatterns": ["node_modules/"]
+    "prettier/prettier": "error"
+  }
 }
