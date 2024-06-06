@@ -17,7 +17,7 @@
     "prepare": "husky",
     "build": "tsup",
     "prebuild": "rimraf dist",
-    "lint": "eslint . --ext .ts --fix",
+    "lint": "eslint . --fix",
     "format": "prettier --write \"**/*.ts\"",
     "prepublishOnly": "rimraf dist && npm run lint && npm run build"
   },
