@@ -1,7 +1,7 @@
 import { DeepPartial, Repository } from 'typeorm';
 import { SearchPaginateDto } from '../dto/search.paginate.dto';
 import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
-import { HttpCode, Logger, NotFoundException } from '@nestjs/common';
+import { Logger, NotFoundException } from '@nestjs/common';
 import { DefaultDto } from '../dto/default.dto';
 
 export class GenericService<
@@ -46,7 +46,6 @@ export class GenericService<
     return this.findOne(id);
   }
 
-  @HttpCode(204)
   async remove(id: string) {
     const entity = await this.findOne(id);
     if (entity) {

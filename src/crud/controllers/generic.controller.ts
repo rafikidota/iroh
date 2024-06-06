@@ -1,4 +1,13 @@
-import { Post, Body, Get, Query, Param, Patch, Delete } from '@nestjs/common';
+import {
+  Post,
+  Body,
+  Get,
+  Query,
+  Param,
+  Patch,
+  Delete,
+  HttpCode,
+} from '@nestjs/common';
 import { SearchPaginateDto } from '../dto/search.paginate.dto';
 import { UpdateDto } from '../dto';
 import { GenericService } from '../services/generic.service';
@@ -33,6 +42,7 @@ export class GenericController<
   }
 
   @Delete(':id')
+  @HttpCode(204)
   remove(@Param('id') id: string) {
     return this.service.remove(id);
   }
