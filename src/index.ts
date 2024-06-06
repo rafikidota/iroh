@@ -1,2 +1,1 @@
-import * as crud from './crud';
-export { crud };
+export * from './crud';
