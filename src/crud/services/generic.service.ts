@@ -1,7 +1,7 @@
 import { DeepPartial, Repository } from 'typeorm';
 import { SearchPaginateDto } from '../dto/search.paginate.dto';
 import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
-import { Logger, NotFoundException } from '@nestjs/common';
+import { HttpCode, Logger, NotFoundException } from '@nestjs/common';
 import { DefaultDto } from '../dto/default.dto';
 
 export class GenericService<
@@ -30,9 +30,10 @@ export class GenericService<
   }
 
   async findOne(id: string) {
+    const { name } = this.repository.metadata;
     const entity = await this.repository.findOne({ where: { id } });
     if (!entity) {
-      throw new NotFoundException(`${this.repository.metadata.name} not found`);
+      throw new NotFoundException(`${name} not found`);
     }
     return entity;
   }
@@ -45,7 +46,11 @@ export class GenericService<
     return this.findOne(id);
   }
 
-  remove(id: string) {
-    return this.repository.softDelete(id);
+  @HttpCode(204)
+  async remove(id: string) {
+    const entity = await this.findOne(id);
+    if (entity) {
+      await this.repository.softDelete(id);
+    }
   }
 }
