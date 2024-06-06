@@ -9,8 +9,10 @@ tsconfig.json
 tsup.config.ts
 
 .eslintrc.json
+eslint.config.js
 .lintstagedrc.json
 .prettierignore
 prettier.config
+.prettierrc.json
 
 yarn.lock
