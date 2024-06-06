@@ -1,9 +1,11 @@
-node_modules/
 .husky/
+node_modules/
 src/
 
 .git/
 .gitignore
+
+.nvmrc
 
 tsconfig.json
 tsup.config.ts
