@@ -1,18 +1,28 @@
-import { DeepPartial, ObjectLiteral, Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { SearchPaginateDto } from '../dto/search.paginate.dto';
+import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
+import { Logger } from '@nestjs/common';
+import { DefaultDto } from '../dto/default.dto';
 
-export class GenericService<T extends ObjectLiteral> {
-  constructor(private readonly repository: Repository<T>) {}
+export class GenericService<
+  Entity extends GenericPersistentEntity,
+  GenericDto extends DefaultDto = DefaultDto,
+> {
+  protected logger: Logger;
 
-  create(createDto: DeepPartial<T>) {
+  constructor(
+    protected readonly repository: Repository<Entity> &
+      Repository<GenericPersistentEntity>,
+  ) {
+    this.logger = new Logger();
+  }
+  create(createDto: DeepPartial<GenericDto>) {
     return this.repository.save(createDto);
   }
 
   paginate(query: SearchPaginateDto) {
-    return this.repository.find({
-      take: query.limit,
-      skip: (query.page - 1) * query.limit,
-    });
+    console.log(query);
+    return this.repository.find();
   }
 
   findAll() {
@@ -24,7 +34,7 @@ export class GenericService<T extends ObjectLiteral> {
     return this.repository.findOne({ where: {} });
   }
 
-  update(id: string, updateDto: Partial<T>) {
+  update(id: string, updateDto: Partial<GenericDto>) {
     return this.repository.update(id, updateDto);
   }
 
