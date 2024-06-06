@@ -1,6 +1,6 @@
 {
   "name": "@rafikidota/iroh",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "My own nestjs utils library with blackjacks and hookers",
   "main": "index.js",
   "repository": {
@@ -38,5 +38,5 @@
     "tsup": "^8.1.0",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.11.0"
-  } 
+  }
 }
