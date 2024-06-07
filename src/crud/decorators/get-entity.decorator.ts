@@ -2,7 +2,8 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export const GetEntity = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
-    return request.entity;
+    const { entity } = ctx.switchToHttp().getRequest();
+    console.log({ entity });
+    return entity;
   },
 );

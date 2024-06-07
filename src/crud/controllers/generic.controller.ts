@@ -34,7 +34,7 @@ export class GenericController<
 
   @Get(':id')
   findOne(@Param('id') id: string, @GetEntity() entity: T) {
-    console.log(entity);
+    console.log({ entity });
     return this.service.findOne(id);
   }
 
@@ -44,14 +44,14 @@ export class GenericController<
     @GetEntity() entity: T,
     @Body() body: UpdateDto,
   ) {
-    console.log(entity);
+    console.log({ entity });
     return this.service.update(id, body);
   }
 
   @Delete(':id')
   @HttpCode(204)
   remove(@Param('id') id: string, @GetEntity() entity: T) {
-    console.log(entity);
+    console.log({ entity });
     return this.service.remove(id);
   }
 }
