@@ -1,3 +1,1 @@
-import { GetEntity } from './get-entity.decorator';
-
-export { GetEntity };
+export { GetEntity } from './get-entity.decorator';

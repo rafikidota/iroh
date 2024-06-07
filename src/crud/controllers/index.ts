@@ -1,3 +1,1 @@
-import { GenericController } from './generic.controller';
-
-export { GenericController };
+export { GenericController } from './generic.controller';

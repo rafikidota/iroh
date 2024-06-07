@@ -1,3 +1,1 @@
-import { GenericPersistentEntity } from './generic.persistent.entity';
-
-export { GenericPersistentEntity };
+export { GenericPersistentEntity } from './generic.persistent.entity';

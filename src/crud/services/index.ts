@@ -1,3 +1,1 @@
-import { GenericService } from './generic.service';
-
-export { GenericService };
+export { GenericService } from './generic.service';
