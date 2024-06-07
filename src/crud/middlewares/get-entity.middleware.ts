@@ -1,16 +1,17 @@
 import { Injectable, NestMiddleware, NotFoundException } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { DefaultDto } from '../dto';
-import { GenericPersistentEntity } from '../entity';
-import { GenericService } from '../services';
+import { DefaultDto } from '../dto/default.dto';
+import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
+import { GenericService } from '../services/generic.service';
 
 @Injectable()
 export class GetEntityMiddleware<
-  T extends GenericPersistentEntity,
-  D extends DefaultDto,
+  Entity extends GenericPersistentEntity,
+  GenericDto extends DefaultDto,
 > implements NestMiddleware
 {
-  constructor(private readonly service: GenericService<T, D>) {}
+  constructor(private readonly service: GenericService<Entity, GenericDto>) {}
+
   async use(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const entity = await this.service.findOne(id);
