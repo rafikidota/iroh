@@ -11,7 +11,7 @@ import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
 import { GenericService } from '../services/generic.service';
 
 @Injectable()
-export class GetEntityMiddleware<
+export class EntityMiddleware<
   Entity extends GenericPersistentEntity,
   GenericDto extends DefaultDto,
 > implements NestMiddleware
