@@ -1,14 +1,14 @@
+import { Request, Response, NextFunction } from 'express';
 import {
   Injectable,
   NestMiddleware,
   NotFoundException,
-  Inject,
   BadRequestException,
 } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import { DefaultDto } from '../dto/default.dto';
-import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
-import { GenericService } from '../services/generic.service';
+import { ModuleRef } from '@nestjs/core';
+import { DefaultDto } from '../dto';
+import { GenericPersistentEntity } from '../entity';
+import { GenericService } from '../services';
 
 @Injectable()
 export class EntityMiddleware<
@@ -16,12 +16,19 @@ export class EntityMiddleware<
   GenericDto extends DefaultDto,
 > implements NestMiddleware
 {
-  constructor(
-    @Inject('ENTITY_SERVICE')
-    private readonly service: GenericService<Entity, GenericDto>,
-  ) {}
+  private service: GenericService<Entity, GenericDto>;
+
+  constructor(private moduleRef: ModuleRef) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
+    if (!this.service) {
+      const entityService =
+        await this.moduleRef.resolve<GenericService<Entity, GenericDto>>(
+          'ENTITY_SERVICE',
+        );
+      this.service = entityService;
+    }
+
     const { id } = req.params;
     if (!id) {
       throw new BadRequestException('id is required');
