@@ -1,7 +1,4 @@
 import {
-  BeforeInsert,
-  BeforeSoftRemove,
-  BeforeUpdate,
   CreateDateColumn,
   DeleteDateColumn,
   PrimaryGeneratedColumn,
@@ -24,21 +21,4 @@ export class GenericPersistentEntity {
     default: null,
   })
   deletedAt?: Date;
-
-  @BeforeInsert()
-  updateTimestamps() {
-    const now = new Date();
-    this.createdAt = now;
-    this.updatedAt = now;
-  }
-
-  @BeforeUpdate()
-  updateTimestamp() {
-    this.updatedAt = new Date();
-  }
-
-  @BeforeSoftRemove()
-  softDelete() {
-    this.deletedAt = new Date();
-  }
 }
