@@ -1,1 +1,1 @@
-export { GetEntityMiddleware } from './get-entity.middleware';
+export { EntityMiddleware } from './entity.middleware';
