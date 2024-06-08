@@ -17,7 +17,7 @@ export class EntityMiddleware<
 > implements NestMiddleware
 {
   constructor(
-    @Inject('ENTITY_SERVICE')
+    @Inject('ENTITY_MIDDLEWARE')
     private readonly service: GenericService<Entity, GenericDto>,
   ) {}
 

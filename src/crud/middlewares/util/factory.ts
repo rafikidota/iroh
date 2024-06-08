@@ -8,7 +8,7 @@ export function EntityMiddlewareFactory<
   D extends DefaultDto,
 >(service: Type<GenericService<T, D>>): Provider {
   return {
-    provide: 'ENTITY_SERVICE',
+    provide: 'ENTITY_MIDDLEWARE',
     useClass: service,
   };
 }
