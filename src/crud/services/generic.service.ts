@@ -14,7 +14,8 @@ export class GenericService<
     protected readonly repository: Repository<Entity> &
       Repository<GenericPersistentEntity>,
   ) {
-    this.logger = new Logger(`${repository.metadata.name}Logger`);
+    const { name } = repository.metadata;
+    this.logger = new Logger(`${name}Logger`, { timestamp: true });
   }
   async create(createDto: DeepPartial<GenericDto>) {
     const entity = await this.repository.save(createDto);
