@@ -44,19 +44,13 @@ export class GenericService<
   }
 
   async update(id: string, updateDto: Partial<GenericDto>) {
-    const entity = await this.findOne(id);
-    if (entity) {
-      await this.repository.update(id, updateDto);
-    }
-    this.logger.log(`[${entity.id}] UPDATED`);
+    await this.repository.update(id, updateDto);
+    this.logger.log(`[${id}] UPDATED`);
     return this.findOne(id);
   }
 
   async remove(id: string) {
-    const entity = await this.findOne(id);
-    if (entity) {
-      await this.repository.softDelete(id);
-      this.logger.log(`[${entity.id}] REMOVED`);
-    }
+    await this.repository.softDelete(id);
+    this.logger.log(`[${id}] REMOVED`);
   }
 }

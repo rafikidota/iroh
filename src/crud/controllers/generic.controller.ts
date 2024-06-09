@@ -33,25 +33,18 @@ export class GenericController<
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Entity() entity: T) {
-    console.log({ entity });
+  findOne(@Param('id') id: string) {
     return this.service.findOne(id);
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Entity() entity: T,
-    @Body() body: UpdateDto,
-  ) {
-    console.log({ entity });
-    return this.service.update(id, body);
+  update(@Entity() entity: T, @Body() body: UpdateDto) {
+    return this.service.update(entity.id, body);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string, @Entity() entity: T) {
-    console.log({ entity });
-    return this.service.remove(id);
+  remove(@Entity() entity: T) {
+    return this.service.remove(entity.id);
   }
 }

@@ -1,7 +1,6 @@
 import {
   Injectable,
   NestMiddleware,
-  NotFoundException,
   Inject,
   BadRequestException,
 } from '@nestjs/common';
@@ -27,9 +26,6 @@ export class EntityMiddleware<
       throw new BadRequestException('id is required');
     }
     const entity = await this.service.findOne(id);
-    if (!entity) {
-      throw new NotFoundException(`${entity.constructor.name} not found`);
-    }
     Object.assign(req, { entity });
     next();
   }
