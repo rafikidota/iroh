@@ -14,11 +14,11 @@ export class GenericService<
     protected readonly repository: Repository<Entity> &
       Repository<GenericPersistentEntity>,
   ) {
-    this.logger = new Logger(`${repository.metadata.name}Service`);
+    this.logger = new Logger(`${repository.metadata.name}Logger`);
   }
   async create(createDto: DeepPartial<GenericDto>) {
     const entity = await this.repository.save(createDto);
-    this.logger.log(`[${entity.id}] CREATED`);
+    this.logger.debug(`[${entity.id}] CREATED`);
     return entity;
   }
 
@@ -45,12 +45,12 @@ export class GenericService<
 
   async update(id: string, updateDto: Partial<GenericDto>) {
     await this.repository.update(id, updateDto);
-    this.logger.log(`[${id}] UPDATED`);
+    this.logger.debug(`[${id}] UPDATED`);
     return this.findOne(id);
   }
 
   async remove(id: string) {
     await this.repository.softDelete(id);
-    this.logger.log(`[${id}] REMOVED`);
+    this.logger.debug(`[${id}] REMOVED`);
   }
 }
