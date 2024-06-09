@@ -1,61 +1,67 @@
 import { DeepPartial, Repository } from 'typeorm';
 import { SearchPaginateDto } from '../dto/search.paginate.dto';
 import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
-import { Logger, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { DefaultDto } from '../dto/default.dto';
+import { GenericLogger } from '../logger/generic.logger';
 
 export class GenericService<
   Entity extends GenericPersistentEntity,
   GenericDto extends DefaultDto = DefaultDto,
 > {
-  protected logger: Logger;
+  protected logger: GenericLogger;
   private context: string;
   constructor(
     protected readonly repository: Repository<Entity> &
       Repository<GenericPersistentEntity>,
   ) {
     this.context = `${repository.metadata.name}Logger`;
+    this.logger = new GenericLogger(this.context);
   }
   async create(createDto: DeepPartial<GenericDto>) {
-    this.logger = new Logger(this.context, { timestamp: true });
+    this.logger.restart();
     const entity = await this.repository.save(createDto);
-    this.logger.debug(`[${entity.id}] CREATED`);
+    this.logger.post(`[${entity.id}]`);
     return entity;
   }
 
-  paginate(query: SearchPaginateDto) {
-    this.logger = new Logger(this.context, { timestamp: true });
+  async paginate(query: SearchPaginateDto) {
+    this.logger.restart();
     const { limit, page } = query;
-    this.logger.log(`FIND ${limit} ELEMENTS FROM PAGE ${page}`);
-    return this.repository.find();
+    const entities = await this.repository.find();
+    this.logger.get(`${JSON.stringify({ limit, page })}`);
+    return entities;
   }
 
-  findAll() {
-    this.logger.log(`find all`);
-    return this.repository.find();
+  async findAll() {
+    this.logger.restart();
+    const entities = await this.repository.find();
+    this.logger.get(`find all`);
+    return entities;
   }
 
   async findOne(id: string) {
-    this.logger = new Logger(this.context, { timestamp: true });
+    this.logger.restart();
     const { name } = this.repository.metadata;
     const entity = await this.repository.findOne({ where: { id } });
     if (!entity) {
-      throw new NotFoundException(`${name} not found with id [${id}]`);
+      this.logger.warn(`[${id}] NOT FOUND`);
+      throw new NotFoundException(`${name} with id [${id}] not found`);
     }
-    this.logger.log(`[${entity.id}] FOUND`);
+    this.logger.get(`[${entity.id}]`);
     return entity;
   }
 
   async update(id: string, updateDto: Partial<GenericDto>) {
-    this.logger = new Logger(this.context, { timestamp: true });
+    this.logger.restart();
     await this.repository.update(id, updateDto);
-    this.logger.debug(`[${id}] UPDATED`);
+    this.logger.patch(`[${id}]`);
     return this.findOne(id);
   }
 
   async remove(id: string) {
-    this.logger = new Logger(this.context, { timestamp: true });
+    this.logger.restart();
     await this.repository.softDelete(id);
-    this.logger.debug(`[${id}] REMOVED`);
+    this.logger.delete(`[${id}]`);
   }
 }
