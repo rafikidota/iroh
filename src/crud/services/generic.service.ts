@@ -14,17 +14,17 @@ export class GenericService<
     protected readonly repository: Repository<Entity> &
       Repository<GenericPersistentEntity>,
   ) {
-    this.logger = new Logger(repository.metadata.name);
+    this.logger = new Logger(`${repository.metadata.name}Service`);
   }
   async create(createDto: DeepPartial<GenericDto>) {
     const entity = await this.repository.save(createDto);
-    this.logger.log(`[${entity.id}] created`);
+    this.logger.log(`[${entity.id}] CREATED`);
     return entity;
   }
 
   paginate(query: SearchPaginateDto) {
     const { limit, page } = query;
-    this.logger.log(`paginating ${limit} elements from page ${page}`);
+    this.logger.log(`FIND ${limit} ELEMENTS FROM PAGE ${page}`);
     return this.repository.find();
   }
 
@@ -36,10 +36,10 @@ export class GenericService<
   async findOne(id: string) {
     const { name } = this.repository.metadata;
     const entity = await this.repository.findOne({ where: { id } });
-    this.logger.log(`[${entity.id}] found`);
     if (!entity) {
-      throw new NotFoundException(`${name} not found with id ${id}`);
+      throw new NotFoundException(`${name} not found with id [${id}]`);
     }
+    this.logger.log(`[${entity.id}] FOUND`);
     return entity;
   }
 
@@ -48,7 +48,7 @@ export class GenericService<
     if (entity) {
       await this.repository.update(id, updateDto);
     }
-    this.logger.log(`[${entity.id}] updated`);
+    this.logger.log(`[${entity.id}] UPDATED`);
     return this.findOne(id);
   }
 
@@ -56,7 +56,7 @@ export class GenericService<
     const entity = await this.findOne(id);
     if (entity) {
       await this.repository.softDelete(id);
-      this.logger.log(`[${entity.id}] removed`);
+      this.logger.log(`[${entity.id}] REMOVED`);
     }
   }
 }
