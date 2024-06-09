@@ -9,21 +9,22 @@ export class GenericService<
   GenericDto extends DefaultDto = DefaultDto,
 > {
   protected logger: Logger;
-
+  private context: string;
   constructor(
     protected readonly repository: Repository<Entity> &
       Repository<GenericPersistentEntity>,
   ) {
-    const { name } = repository.metadata;
-    this.logger = new Logger(`${name}Logger`, { timestamp: true });
+    this.context = `${repository.metadata.name}Logger`;
   }
   async create(createDto: DeepPartial<GenericDto>) {
+    this.logger = new Logger(this.context, { timestamp: true });
     const entity = await this.repository.save(createDto);
     this.logger.debug(`[${entity.id}] CREATED`);
     return entity;
   }
 
   paginate(query: SearchPaginateDto) {
+    this.logger = new Logger(this.context, { timestamp: true });
     const { limit, page } = query;
     this.logger.log(`FIND ${limit} ELEMENTS FROM PAGE ${page}`);
     return this.repository.find();
@@ -35,6 +36,7 @@ export class GenericService<
   }
 
   async findOne(id: string) {
+    this.logger = new Logger(this.context, { timestamp: true });
     const { name } = this.repository.metadata;
     const entity = await this.repository.findOne({ where: { id } });
     if (!entity) {
@@ -45,12 +47,14 @@ export class GenericService<
   }
 
   async update(id: string, updateDto: Partial<GenericDto>) {
+    this.logger = new Logger(this.context, { timestamp: true });
     await this.repository.update(id, updateDto);
     this.logger.debug(`[${id}] UPDATED`);
     return this.findOne(id);
   }
 
   async remove(id: string) {
+    this.logger = new Logger(this.context, { timestamp: true });
     await this.repository.softDelete(id);
     this.logger.debug(`[${id}] REMOVED`);
   }
