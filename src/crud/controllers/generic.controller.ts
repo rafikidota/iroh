@@ -9,7 +9,6 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { SearchPaginateDto } from '../dto/search.paginate.dto';
-import { UpdateDto } from '../dto';
 import { GenericService } from '../services/generic.service';
 import { DeepPartial } from 'typeorm';
 import { DefaultDto } from '../dto/default.dto';
@@ -38,7 +37,7 @@ export class GenericController<
   }
 
   @Patch(':id')
-  update(@Entity() entity: T, @Body() body: UpdateDto) {
+  update(@Entity() entity: T, @Body() body: Partial<D>) {
     return this.service.update(entity.id, body);
   }
 
