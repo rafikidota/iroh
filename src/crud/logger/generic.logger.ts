@@ -4,7 +4,7 @@ import * as chalk from 'chalk';
 export class GenericLogger extends Logger {
   startTime: number = Date.now();
   constructor(context: string) {
-    super(context);
+    super(context, { timestamp: true });
   }
 
   restart() {
@@ -40,5 +40,4 @@ export class GenericLogger extends Logger {
     const timestamp = this.getTimestamp();
     super.log(`${log} ${timestamp}`);
   }
-
 }
