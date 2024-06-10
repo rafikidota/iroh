@@ -4,6 +4,7 @@ import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
 import { NotFoundException } from '@nestjs/common';
 import { DefaultDto } from '../dto/default.dto';
 import { GenericLogger } from '../logger/generic.logger';
+import { FindOneOptions } from './util/find-one.options';
 
 export class GenericService<
   Entity extends GenericPersistentEntity,
@@ -40,7 +41,7 @@ export class GenericService<
     return entities;
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, options?: FindOneOptions) {
     this.logger.restart();
     const { name } = this.repository.metadata;
     const entity = await this.repository.findOne({ where: { id } });
@@ -48,7 +49,9 @@ export class GenericService<
       this.logger.warn(`[${id}] NOT FOUND`);
       throw new NotFoundException(`${name} with id [${id}] not found`);
     }
-    this.logger.get(`[${entity.id}]`);
+    if (options.logging) {
+      this.logger.get(`[${entity.id}]`);
+    }
     return entity;
   }
 

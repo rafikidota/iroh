@@ -14,6 +14,7 @@ import { DeepPartial } from 'typeorm';
 import { DefaultDto } from '../dto/default.dto';
 import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
 import { Entity } from '../decorators/entity.decorator';
+import { FindOneOptions } from '../services';
 
 export class GenericController<
   T extends GenericPersistentEntity,
@@ -33,7 +34,8 @@ export class GenericController<
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+    const options: FindOneOptions = { logging: true };
+    return this.service.findOne(id, options);
   }
 
   @Patch(':id')

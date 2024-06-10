@@ -8,6 +8,7 @@ import { Request, Response, NextFunction } from 'express';
 import { DefaultDto } from '../dto/default.dto';
 import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
 import { GenericService } from '../services/generic.service';
+import { FindOneOptions } from '../services';
 
 @Injectable()
 export class EntityMiddleware<
@@ -25,7 +26,8 @@ export class EntityMiddleware<
     if (!id) {
       throw new BadRequestException('id is required');
     }
-    const entity = await this.service.findOne(id);
+    const options: FindOneOptions = { logging: false };
+    const entity = await this.service.findOne(id, options);
     Object.assign(req, { entity });
     next();
   }
