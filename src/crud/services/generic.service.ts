@@ -52,11 +52,12 @@ export class GenericService<
     return entity;
   }
 
-  async update(id: string, updateDto: Partial<GenericDto>) {
+  async update(entity: Entity, updateDto: Partial<GenericDto>) {
     this.logger.restart();
-    await this.repository.update(id, updateDto);
-    this.logger.patch(`[${id}]`);
-    return this.findOne(id);
+    Object.assign(entity, updateDto);
+    const updatedEntity = await this.repository.save(entity);
+    this.logger.patch(`[${updatedEntity.id}]`);
+    return updatedEntity;
   }
 
   async remove(id: string) {

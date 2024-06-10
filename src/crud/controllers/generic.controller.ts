@@ -38,7 +38,7 @@ export class GenericController<
 
   @Patch(':id')
   update(@Entity() entity: T, @Body() body: Partial<D>) {
-    return this.service.update(entity.id, body);
+    return this.service.update(entity, body);
   }
 
   @Delete(':id')
