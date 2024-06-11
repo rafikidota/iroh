@@ -2,6 +2,8 @@
 node_modules/
 src/
 
+assets/
+
 .git/
 .gitignore
 
