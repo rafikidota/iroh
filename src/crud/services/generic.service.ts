@@ -41,13 +41,13 @@ export class GenericService<
     return entities;
   }
 
-  async findOne(id: string, options?: FindOneOptions) {
+  async findOne(id: string, options: FindOneOptions) {
     this.logger.restart();
     const { name } = this.repository.metadata;
     const entity = await this.repository.findOne({ where: { id } });
     if (!entity) {
       this.logger.warn(`[${id}] NOT FOUND`);
-      throw new NotFoundException(`${name} with id [${id}] not found`);
+      throw new NotFoundException(`${name} with id ${id} not found`);
     }
     if (options.logging) {
       this.logger.get(`[${entity.id}]`);
