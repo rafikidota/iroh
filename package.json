@@ -1,6 +1,6 @@
 {
   "name": "@rafikidota/iroh",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "description": "My own nestjs utils library with blackjacks and hookers",
   "repository": {
     "type": "git",
@@ -48,5 +48,12 @@
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.11.0"
   },
-  "keywords": ["backend","nestjs","typeorm","generic","crud","auth"]
+  "keywords": [
+    "backend",
+    "nestjs",
+    "typeorm",
+    "generic",
+    "crud",
+    "auth"
+  ]
 }
