@@ -1,3 +1,4 @@
+import { LogLevel } from './level.interface';
 import { Injectable, Logger } from '@nestjs/common';
 import * as chalk from 'chalk';
 @Injectable()
@@ -18,25 +19,25 @@ export class GenericLogger extends Logger {
   }
 
   post(message: string) {
-    const log = chalk.green(`[POST] ${message}`);
+    const log = chalk.green(`[${LogLevel.POST}] ${message}`);
     const timestamp = this.getTimestamp();
     super.log(`${log} ${timestamp}`);
   }
 
   get(message: string) {
-    const log = chalk.magenta(`[GET] ${message}`);
+    const log = chalk.magenta(`[${LogLevel.GET}] ${message}`);
     const timestamp = this.getTimestamp();
     super.log(`${log} ${timestamp}`);
   }
 
   patch(message: string) {
-    const log = chalk.cyan(`[PATCH] ${message}`);
+    const log = chalk.cyan(`[${LogLevel.PATCH}] ${message}`);
     const timestamp = this.getTimestamp();
     super.log(`${log} ${timestamp}`);
   }
 
   delete(message: string) {
-    const log = chalk.red(`[DELETE] ${message}`);
+    const log = chalk.red(`[${LogLevel.DELETE}] ${message}`);
     const timestamp = this.getTimestamp();
     super.log(`${log} ${timestamp}`);
   }
