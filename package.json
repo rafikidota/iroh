@@ -47,5 +47,6 @@
     "tsup": "^8.1.0",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.11.0"
-  }
+  },
+  "keywords": ["backend","nestjs","typeorm","generic","crud","auth"]
 }
