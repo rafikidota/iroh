@@ -3,7 +3,7 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { AppError } from '../error/app.error';
+import { AppError } from '../error';
 
 export function handleDatabaseError(error: AppError) {
   if (error.getStatus() < 500) {
