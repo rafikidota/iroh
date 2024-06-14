@@ -5,6 +5,8 @@ import { NotFoundException } from '@nestjs/common';
 import { DefaultDto } from '../dto/default.dto';
 import { GenericLogger } from '../logger/generic.logger';
 import { FindOneOptions } from './util/find-one.options';
+import { handleDatabaseError } from '../../common/util/error-handler';
+import { AppError } from '../../common/error/app.error';
 
 export class GenericService<
   Entity extends GenericPersistentEntity,
@@ -20,52 +22,76 @@ export class GenericService<
     this.logger = new GenericLogger(this.context);
   }
   async create(createDto: DeepPartial<GenericDto>) {
-    this.logger.restart();
-    const entity = await this.repository.save(createDto);
-    this.logger.post(`[${entity.id}]`);
-    return entity;
+    try {
+      this.logger.restart();
+      const entity = await this.repository.save(createDto);
+      this.logger.post(`[${entity.id}]`);
+      return entity;
+    } catch (error) {
+      handleDatabaseError(error as AppError);
+    }
   }
 
   async paginate(query: SearchPaginateDto) {
-    this.logger.restart();
-    const { limit, page } = query;
-    const entities = await this.repository.find();
-    this.logger.get(`${JSON.stringify({ limit, page })}`);
-    return entities;
+    try {
+      this.logger.restart();
+      const { limit, page } = query;
+      const entities = await this.repository.find();
+      this.logger.get(`${JSON.stringify({ limit, page })}`);
+      return entities;
+    } catch (error) {
+      handleDatabaseError(error as AppError);
+    }
   }
 
   async findAll() {
-    this.logger.restart();
-    const entities = await this.repository.find();
-    this.logger.get(`find all`);
-    return entities;
+    try {
+      this.logger.restart();
+      const entities = await this.repository.find();
+      this.logger.get(`find all`);
+      return entities;
+    } catch (error) {
+      handleDatabaseError(error as AppError);
+    }
   }
 
   async findOne(id: string, options: FindOneOptions) {
-    this.logger.restart();
-    const { name } = this.repository.metadata;
-    const entity = await this.repository.findOne({ where: { id } });
-    if (!entity) {
-      this.logger.warn(`[${id}] NOT FOUND`);
-      throw new NotFoundException(`${name} with id ${id} not found`);
+    try {
+      this.logger.restart();
+      const { name } = this.repository.metadata;
+      const entity = await this.repository.findOne({ where: { id } });
+      if (!entity) {
+        this.logger.warn(`[${id}] NOT FOUND`);
+        throw new NotFoundException(`${name} with id ${id} not found`);
+      }
+      if (options.logging) {
+        this.logger.get(`[${entity.id}]`);
+      }
+      return entity;
+    } catch (error) {
+      handleDatabaseError(error as AppError);
     }
-    if (options.logging) {
-      this.logger.get(`[${entity.id}]`);
-    }
-    return entity;
   }
 
   async update(entity: Entity, updateDto: Partial<GenericDto>) {
-    this.logger.restart();
-    Object.assign(entity, updateDto);
-    const updatedEntity = await this.repository.save(entity);
-    this.logger.patch(`[${updatedEntity.id}]`);
-    return updatedEntity;
+    try {
+      this.logger.restart();
+      Object.assign(entity, updateDto);
+      const updatedEntity = await this.repository.save(entity);
+      this.logger.patch(`[${updatedEntity.id}]`);
+      return updatedEntity;
+    } catch (error) {
+      handleDatabaseError(error as AppError);
+    }
   }
 
   async remove(id: string) {
-    this.logger.restart();
-    await this.repository.softDelete(id);
-    this.logger.delete(`[${id}]`);
+    try {
+      this.logger.restart();
+      await this.repository.softDelete(id);
+      this.logger.delete(`[${id}]`);
+    } catch (error) {
+      handleDatabaseError(error as AppError);
+    }
   }
 }
