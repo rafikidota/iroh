@@ -1,2 +1,2 @@
 export * from './entity.middleware';
-export * from './util/factory';
+export * from './util/entity.middleware.factory';
