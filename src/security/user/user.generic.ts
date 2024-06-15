@@ -1,4 +1,4 @@
-import { GenericPersistentEntity } from 'src/crud';
+import { GenericPersistentEntity } from '../../crud';
 import { SoftUnique } from '../../crud/decorators';
 import { Column } from 'typeorm';
 
