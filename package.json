@@ -1,6 +1,6 @@
 {
   "name": "@rafikidota/iroh",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "My own nestjs utils library with blackjacks and hookers",
   "repository": {
     "type": "git",
