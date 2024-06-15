@@ -9,14 +9,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
-import {
-  DefaultDto,
-  Entity,
-  FindOneOptions,
-  SearchPaginateDto,
-} from '../../crud';
+import { DefaultDto, FindOneOptions, SearchPaginateDto } from '../../crud';
 import { GenericUser } from './user.generic';
 import { GenericUserService } from './user.service';
+import { User } from './decorators';
 
 export class GenericUserController<
   User extends GenericUser,
@@ -41,13 +37,13 @@ export class GenericUserController<
   }
 
   @Patch(':id')
-  update(@Entity() user: User, @Body() body: Partial<CreateUserDto>) {
+  update(@User() user: User, @Body() body: Partial<CreateUserDto>) {
     return this.service.update(user, body);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Entity() user: User) {
+  remove(@User() user: User) {
     return this.service.remove(user.id);
   }
 }
