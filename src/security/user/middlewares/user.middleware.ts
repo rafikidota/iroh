@@ -5,19 +5,20 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { FindOneOptions, GenericService } from '../../../crud';
+import { FindOneOptions } from '../../../crud';
 import { CreateGenericUserDto } from '../dto';
 import { GenericUser } from '../user.generic';
+import { GenericUserService } from '../user.service';
 
 @Injectable()
-export class EntityMiddleware<
+export class UserMiddleware<
   User extends GenericUser,
-  GenericDto extends CreateGenericUserDto,
+  CreateUserDto extends CreateGenericUserDto,
 > implements NestMiddleware
 {
   constructor(
     @Inject('USER_MIDDLEWARE')
-    private readonly service: GenericService<User, GenericDto>,
+    private readonly service: GenericUserService<User, CreateUserDto>,
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
