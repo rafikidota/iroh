@@ -41,13 +41,13 @@ export class GenericUserController<
   }
 
   @Patch(':id')
-  update(@Entity() entity: User, @Body() body: Partial<CreateUserDto>) {
-    return this.service.update(entity, body);
+  update(@Entity() user: User, @Body() body: Partial<CreateUserDto>) {
+    return this.service.update(user, body);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Entity() entity: User) {
-    return this.service.remove(entity.id);
+  remove(@Entity() user: User) {
+    return this.service.remove(user.id);
   }
 }
