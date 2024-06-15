@@ -9,6 +9,8 @@ assets/
 
 .nvmrc
 
+.huskyrc
+
 tsconfig.json
 tsup.config.ts
 
