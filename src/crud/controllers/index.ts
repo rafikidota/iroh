@@ -1,1 +1,1 @@
-export { GenericController } from './generic.controller';
+export * from './generic.controller';

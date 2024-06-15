@@ -1,2 +1,2 @@
-export { GenericAuthController } from './auth.controller';
-export { GenericAuthService } from './auth.service';
+export * from './auth.controller';
+export * from './auth.service';

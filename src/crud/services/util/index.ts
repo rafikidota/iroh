@@ -1,1 +1,1 @@
-export { FindOneOptions } from './find-one.options';
+export * from './find-one.options';

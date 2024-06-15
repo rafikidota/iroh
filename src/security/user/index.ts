@@ -1,4 +1,4 @@
-export { GenericUser } from './user.generic';
-export { GenericUserController } from './user.controller';
-export { GenericUserService } from './user.service';
+export * from './user.generic';
+export * from './user.controller';
+export * from './user.service';
 export * from './dto';

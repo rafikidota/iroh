@@ -1,4 +1,2 @@
-import { DefaultDto } from './default.dto';
-import { SearchPaginateDto } from './search.paginate.dto';
-
-export { DefaultDto, SearchPaginateDto };
+export * from './default.dto';
+export * from './search.paginate.dto';

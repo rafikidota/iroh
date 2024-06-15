@@ -1,2 +1,2 @@
-export { Entity } from './entity.decorator';
-export { SoftUnique } from './soft-unique.decorator';
+export * from './entity.decorator';
+export * from './soft-unique.decorator';

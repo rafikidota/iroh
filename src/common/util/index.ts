@@ -1,1 +1,1 @@
-export { handleDatabaseError } from './error-handler';
+export * from './error-handler';

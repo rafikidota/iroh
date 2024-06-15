@@ -1,2 +1,2 @@
-export { AppError } from './app.error';
-export { PostgresError } from './postgresql.error';
+export * from './app.error';
+export * from './postgresql.error';
