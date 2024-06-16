@@ -1,9 +1,5 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, BadRequestException, Inject } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { GenericService } from '../services/generic.service';
 import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
 import { DefaultDto } from '../dto/default.dto';
@@ -13,8 +9,12 @@ export class EntityGuard<
   Entity extends GenericPersistentEntity,
   GenericDto extends DefaultDto,
 > implements CanActivate
-{
-  constructor(private readonly service: GenericService<Entity, GenericDto>) {}
+ {
+  constructor(
+    private readonly reflector: Reflector,
+    @Inject('GENERIC_SERVICE')
+    private readonly service: GenericService<Entity, GenericDto>,
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
