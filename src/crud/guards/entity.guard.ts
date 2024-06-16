@@ -31,6 +31,8 @@ export class EntityGuard<
     }
     const options: FindOneOptions = { logging: false };
     const entity = await this.service.findOne(id, options);
+    console.log({ location: 'EntityGuard', entity });
+
     Object.assign(req, { entity });
     return true;
   }
