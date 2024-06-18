@@ -11,17 +11,17 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 export function BuildEntityGuard<T>(
-  entity: new (...args: any[]) => T,
+  TEntity: new (...args: any[]) => T,
 ): Type<CanActivate> {
   @Injectable()
   class EntityGuard implements CanActivate {
     constructor(
-      @InjectRepository(entity) private readonly repository: Repository<T>,
+      @InjectRepository(TEntity) private readonly repository: Repository<T>,
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-      const request = context.switchToHttp().getRequest();
-      const { id } = request.params;
+      const req = context.switchToHttp().getRequest();
+      const { id } = req.params;
 
       try {
         const { name } = this.repository.metadata;
@@ -29,7 +29,7 @@ export function BuildEntityGuard<T>(
         if (!entity) {
           throw new NotFoundException(`${name} with id ${id} not found`);
         }
-        request.entity = entity; // Añadir la entidad al request para el decorador @Entity
+        Object.assign(req, { entity });
         return true;
       } catch (error) {
         throw new InternalServerErrorException();
