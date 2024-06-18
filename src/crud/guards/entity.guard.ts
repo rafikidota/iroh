@@ -1,39 +1,39 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
-  BadRequestException,
-  Inject,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { GenericService } from '../services/generic.service';
-import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
-import { DefaultDto } from '../dto/default.dto';
-import { FindOneOptions } from '../services';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
-@Injectable()
-export class EntityGuard<
-  Entity extends GenericPersistentEntity,
-  GenericDto extends DefaultDto,
-> implements CanActivate
-{
-  constructor(
-    private readonly reflector: Reflector,
-    @Inject('GENERIC_SERVICE')
-    private readonly service: GenericService<Entity, GenericDto>,
-  ) {}
+export function BuildEntityGuard<T>(
+  entity: new (...args: any[]) => T,
+): new () => CanActivate {
+  @Injectable()
+  class EntityGuard implements CanActivate {
+    constructor(
+      @InjectRepository(entity) private readonly repository: Repository<T>,
+    ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
-    const { id } = req.params;
-    if (!id) {
-      throw new BadRequestException('id is required');
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+      const request = context.switchToHttp().getRequest();
+      const { id } = request.params;
+
+      try {
+        const { name } = this.repository.metadata;
+        const entity = await this.repository.findOne(id);
+        if (!entity) {
+          throw new NotFoundException(`${name} with id ${id} not found`);
+        }
+        return true;
+      } catch (error) {
+        throw new InternalServerErrorException();
+      }
     }
-    const options: FindOneOptions = { logging: false };
-    const entity = await this.service.findOne(id, options);
-    console.log({ location: 'EntityGuard', entity });
-
-    Object.assign(req, { entity });
-    return true;
   }
+
+  return EntityGuard as unknown as new () => CanActivate;
 }
