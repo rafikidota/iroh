@@ -39,14 +39,14 @@ export class GenericController<
   }
 
   @Patch(':id')
-  @UseEntityGuard(GenericService)
+  @UseEntityGuard()
   update(@Entity() entity: T, @Body() body: Partial<D>) {
     return this.service.update(entity, body);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  @UseEntityGuard(GenericService)
+  @UseEntityGuard()
   remove(@Entity() entity: T) {
     return this.service.remove(entity.id);
   }
