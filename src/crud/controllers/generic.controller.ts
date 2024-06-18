@@ -13,8 +13,8 @@ import { GenericService } from '../services/generic.service';
 import { DeepPartial } from 'typeorm';
 import { DefaultDto } from '../dto/default.dto';
 import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
-import { Entity } from '../decorators/entity.decorator';
 import { FindOneOptions } from '../services';
+import { Entity, UseEntityGuard } from '../decorators';
 
 export class GenericController<
   T extends GenericPersistentEntity,
@@ -39,12 +39,14 @@ export class GenericController<
   }
 
   @Patch(':id')
+  @UseEntityGuard()
   update(@Entity() entity: T, @Body() body: Partial<D>) {
     return this.service.update(entity, body);
   }
 
   @Delete(':id')
   @HttpCode(204)
+  @UseEntityGuard()
   remove(@Entity() entity: T) {
     return this.service.remove(entity.id);
   }

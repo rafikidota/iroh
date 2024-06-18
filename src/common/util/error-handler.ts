@@ -6,6 +6,8 @@ import {
 import { AppError } from '../error';
 
 export function handleDatabaseError(error: AppError) {
+  console.log(error);
+
   if (error.getStatus() < 500) {
     throw error;
   }
