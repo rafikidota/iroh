@@ -5,7 +5,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { FindOneOptions } from '../../../crud';
+import { LoggerOptions } from '../../../crud';
 import { CreateGenericUserDto } from '../dto';
 import { GenericUser } from '../user.generic';
 import { GenericUserService } from '../user.service';
@@ -26,7 +26,7 @@ export class UserMiddleware<
     if (!id) {
       throw new BadRequestException('id is required');
     }
-    const options: FindOneOptions = { logging: false };
+    const options: LoggerOptions = { logging: false };
     const user = await this.service.findOne(id, options);
     Object.assign(req, { user });
     next();

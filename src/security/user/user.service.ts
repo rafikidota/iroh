@@ -1,6 +1,6 @@
 import {
   DefaultDto,
-  FindOneOptions,
+  LoggerOptions,
   GenericLogger,
   SearchPaginateDto,
 } from '../../crud';
@@ -29,7 +29,7 @@ export class GenericUserService<
 
   async findAll() {}
 
-  async findOne(id: string, options: FindOneOptions) {
+  async findOne(id: string, options: LoggerOptions) {
     console.log(id, options);
   }
 

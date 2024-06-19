@@ -9,7 +9,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
-import { DefaultDto, FindOneOptions, SearchPaginateDto } from '../../crud';
+import { DefaultDto, LoggerOptions, SearchPaginateDto } from '../../crud';
 import { GenericUser } from './user.generic';
 import { GenericUserService } from './user.service';
 import { User } from './decorators';
@@ -32,7 +32,7 @@ export class GenericUserController<
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    const options: FindOneOptions = { logging: true };
+    const options: LoggerOptions = { logging: true };
     return this.service.findOne(id, options);
   }
 
