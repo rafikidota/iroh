@@ -7,7 +7,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 
 export function BuildEntityGuard<T>(E: new (...arg: any) => T) {
   @Injectable()
@@ -19,19 +19,17 @@ export function BuildEntityGuard<T>(E: new (...arg: any) => T) {
     }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-      const req = context.switchToHttp().getRequest();
-      const { id } = req.params;
-
       try {
-        const entity = await this.repository.findOne(id);
+        const req = context.switchToHttp().getRequest();
+        const { id } = req.params;
+        const where = { where: { id } } as unknown as FindOneOptions<T>;
+        const entity = await this.repository.findOne(where);
 
         if (!entity) {
-          throw new NotFoundException(
-            `${this.repository.metadata.name} with id ${id} not found`,
-          );
+          const { name } = this.repository.metadata;
+          throw new NotFoundException(`${name} with id ${id} not found`);
         }
-
-        req.entity = entity;
+        Object.assign(req, { entity });
         return true;
       } catch (error) {
         throw new InternalServerErrorException('Error while loading entity');
