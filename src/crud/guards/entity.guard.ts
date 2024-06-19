@@ -1,40 +1,33 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import {
+  Injectable,
   CanActivate,
   ExecutionContext,
-  Injectable,
-  InternalServerErrorException,
   NotFoundException,
-  Type,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-export function BuildEntityGuard<T>(
-  TEntity: new (...args: any[]) => T,
-): Type<CanActivate> {
-  @Injectable()
-  class EntityGuard implements CanActivate {
-    constructor(protected readonly repository: Repository<T>) {}
+@Injectable()
+export class BuildEntityGuard<Entity> implements CanActivate {
+  constructor(private readonly repository: Repository<Entity>) {}
 
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-      const req = context.switchToHttp().getRequest();
-      const { id } = req.params;
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const req = context.switchToHttp().getRequest();
+    const { id } = req.params;
 
-      try {
-        const { name } = this.repository.metadata;
-        const entity = await this.repository.findOne(id);
-        if (!entity) {
-          throw new NotFoundException(`${name} with id ${id} not found`);
-        }
-        Object.assign(req, { entity });
-        return true;
-      } catch (error) {
-        throw new InternalServerErrorException();
+    try {
+      const entity = await this.repository.findOne(id);
+
+      if (!entity) {
+        throw new NotFoundException(
+          `${this.repository.metadata.name} with id ${id} not found`,
+        );
       }
+
+      req.entity = entity;
+      return true;
+    } catch (error) {
+      throw new InternalServerErrorException('Error while loading entity');
     }
   }
-
-  return EntityGuard;
 }

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Post,
@@ -10,13 +9,12 @@ import {
   Delete,
   HttpCode,
 } from '@nestjs/common';
-// import { Entity, UseEntityGuard } from "../decorators";
+import { Entity, UseEntityGuard } from '../decorators';
 import { GenericPersistentEntity } from '../entity';
 import { GenericService, LoggerOptions } from '../services';
 import { DeepPartial } from 'typeorm';
 import { IGenericController } from 'src/intefaces/ICRUD.controller';
 import { SearchPaginateDto } from '../dto';
-import { Entity } from '../decorators';
 
 export function BuildCRUDController<
   T extends GenericPersistentEntity,
@@ -42,14 +40,14 @@ export function BuildCRUDController<
     }
 
     @Patch(':id')
-    // @UseEntityGuard()
+    @UseEntityGuard(E)
     update(@Entity() entity: T, @Body() body: Partial<D>) {
       return this.service.update(entity, body);
     }
 
     @Delete(':id')
     @HttpCode(204)
-    // @UseEntityGuard()
+    @UseEntityGuard(E)
     remove(@Entity() entity: T) {
       return this.service.remove(entity.id);
     }
