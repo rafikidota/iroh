@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, applyDecorators } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Type } from '@nestjs/common/interfaces/type.interface';
 import { BuildEntityGuard } from '../guards/entity.guard';
-import { Repository } from 'typeorm';
 
-export const UseEntityGuard = (Entity: any) => {
-  const repository = {} as Repository<typeof Entity>;
-  return UseGuards(new BuildEntityGuard(repository));
+export const UseEntityGuard = <T>(Entity: Type<T>) => {
+  return applyDecorators(UseGuards(BuildEntityGuard), InjectRepository(Entity));
 };
