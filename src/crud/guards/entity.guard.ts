@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Injectable,
   CanActivate,
@@ -9,9 +8,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AppError, handleDatabaseError } from '../../common';
 import { FindOneOptions, Repository } from 'typeorm';
 
-export function BuildEntityGuard<T>(E: new (...arg: any) => T) {
+export function BuildEntityGuard<T>(E: new () => T) {
   @Injectable()
-  class DynamicEntityGuard implements CanActivate {
+  class EntityGuard implements CanActivate {
     repository: Repository<T>;
 
     constructor(@InjectRepository(E) repository: Repository<T>) {
@@ -36,5 +35,5 @@ export function BuildEntityGuard<T>(E: new (...arg: any) => T) {
     }
   }
 
-  return DynamicEntityGuard;
+  return EntityGuard;
 }
