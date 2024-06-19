@@ -11,9 +11,9 @@ style="width:250px"/>
 npm install @rafikidota/iroh
 ```
 
-## Using iroh with Nestjs
+## Using Iroh with Nestjs
 
-The following TypeScript code snippet illustrates an example of using the iroh library within the Nestjs framework. This code establishes a basic Nestjs CRUD and highlights how to implement iroh in your Nestjs project.
+The following TypeScript code snippet illustrates an example of using the Iroh library within the Nestjs framework. This code establishes a basic Nestjs CRUD and highlights how to implement Iroh in your Nestjs project.
 
 ## Entity
 
@@ -32,13 +32,12 @@ export class Hero extends GenericPersistentEntity {
 
 ```js
 import { Controller } from '@nestjs/common';
-import { GenericController } from '@rafikidota/iroh';
-import { Hero } from './entities/hero.entity';
+import { BuildCRUDController } from '@rafikidota/iroh';
 import { HeroService } from './hero.service';
-import { CreateHeroDto } from './dto/create-hero.dto';
+import { Hero } from './entities/hero.entity';
 
 @Controller('hero')
-export class HeroController extends GenericController<Hero, CreateHeroDto> {
+export class HeroController extends BuildCRUDController(Hero) {
   constructor(private readonly hero: HeroService) {
     super(hero);
   }
@@ -49,8 +48,8 @@ export class HeroController extends GenericController<Hero, CreateHeroDto> {
 
 ```ts
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { GenericService } from '@rafikidota/iroh';
 import { Hero } from './entities/hero.entity';
 import { CreateHeroDto } from './dto/create-hero.dto';
@@ -69,33 +68,19 @@ export class HeroService extends GenericService<Hero, CreateHeroDto> {
 ## Module
 
 ```ts
-import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
-import { EntityMiddleware, EntityMiddlewareFactory } from '@rafikidota/iroh';
+import { Module } from '@nestjs/common';
+import { HeroController } from './hero.controller';
+import { HeroService } from './hero.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Hero } from './entities/hero.entity';
-import { HeroService } from './hero.service';
-import { HeroController } from './hero.controller';
 
 @Module({
   controllers: [HeroController],
-  providers: [
-    HeroService,
-    EntityMiddlewareFactory(HeroService),
-    EntityMiddleware,
-  ],
+  providers: [HeroService],
   imports: [TypeOrmModule.forFeature([Hero])],
   exports: [TypeOrmModule],
 })
-export class HeroModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(EntityMiddleware)
-      .forRoutes(
-        { path: 'hero/:id', method: RequestMethod.PATCH },
-        { path: 'hero/:id', method: RequestMethod.DELETE },
-      );
-  }
-}
+export class HeroModule {}
 ```
 
 Explore the code example on GitHub [here](https://github.com/rafikidota/nestjs-iroh/)
