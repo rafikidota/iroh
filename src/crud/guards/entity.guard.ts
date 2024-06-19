@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import {
   CanActivate,
   ExecutionContext,
@@ -9,17 +10,13 @@ import {
   Type,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { GenericPersistentEntity } from '../entity';
 
 export function BuildEntityGuard<T>(
   TEntity: new (...args: any[]) => T,
 ): Type<CanActivate> {
   @Injectable()
   class EntityGuard implements CanActivate {
-    constructor(
-      protected readonly repository: Repository<T> &
-        Repository<GenericPersistentEntity>,
-    ) {}
+    constructor(protected readonly repository: Repository<T>) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const req = context.switchToHttp().getRequest();
