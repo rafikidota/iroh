@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Post,
   Body,
@@ -19,7 +18,7 @@ import { SearchPaginateDto } from '../dto';
 export function BuildCRUDController<
   T extends GenericPersistentEntity,
   D extends DeepPartial<T>,
->(E: new (...arg: any) => T) {
+>(E: new () => T) {
   class GenericController implements IGenericController<T, D> {
     constructor(readonly service: GenericService<T, D>) {}
 

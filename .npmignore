@@ -11,6 +11,8 @@ assets/
 
 .huskyrc
 
+.swcrc
+
 tsconfig.json
 tsup.config.ts
 
