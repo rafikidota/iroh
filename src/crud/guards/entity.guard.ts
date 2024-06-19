@@ -1,41 +1,40 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  Injectable,
   CanActivate,
   ExecutionContext,
-  Injectable,
-  InternalServerErrorException,
   NotFoundException,
+  InternalServerErrorException,
   Type,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
-export function BuildEntityGuard<T>(
-  entity: new (...args: any[]) => T,
-): Type<CanActivate> {
-  @Injectable()
-  class EntityGuard implements CanActivate {
-    constructor(
-      @InjectRepository(entity) private readonly repository: Repository<T>,
-    ) {}
+@Injectable()
+export class BuildEntityGuard<T> implements CanActivate {
+  constructor(
+    @InjectRepository((): Type<T> => {
+      return {} as Type<T>;
+    })
+    protected repository: Repository<T>,
+  ) {}
 
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-      const request = context.switchToHttp().getRequest();
-      const { id } = request.params;
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const req = context.switchToHttp().getRequest();
+    const { id } = req.params;
 
-      try {
-        const { name } = this.repository.metadata;
-        const entity = await this.repository.findOne(id);
-        if (!entity) {
-          throw new NotFoundException(`${name} with id ${id} not found`);
-        }
-        request.entity = entity; // Añadir la entidad al request para el decorador @Entity
-        return true;
-      } catch (error) {
-        throw new InternalServerErrorException();
+    try {
+      const entity = await this.repository.findOne(id);
+
+      if (!entity) {
+        throw new NotFoundException(
+          `${this.repository.metadata.name} with id ${id} not found`,
+        );
       }
+
+      req.entity = entity;
+      return true;
+    } catch (error) {
+      throw new InternalServerErrorException('Error while loading entity');
     }
   }
-
-  return EntityGuard;
 }

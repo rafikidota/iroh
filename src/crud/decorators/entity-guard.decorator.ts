@@ -1,6 +1,8 @@
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, applyDecorators } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Type } from '@nestjs/common/interfaces/type.interface';
 import { BuildEntityGuard } from '../guards/entity.guard';
 
-export function UseEntityGuard<T>() {
-  return UseGuards(BuildEntityGuard<T>);
-}
+export const UseEntityGuard = <T>(Entity: Type<T>) => {
+  return applyDecorators(UseGuards(BuildEntityGuard), InjectRepository(Entity));
+};
