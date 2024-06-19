@@ -5,16 +5,11 @@ import {
   NotFoundException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { GenericPersistentEntity } from '../entity';
 
 @Injectable()
 export class BuildEntityGuard<T> implements CanActivate {
-  constructor(
-    @InjectRepository(GenericPersistentEntity)
-    private readonly repository: Repository<T>,
-  ) {}
+  constructor(private readonly repository: Repository<T>) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
