@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AppError, handleDatabaseError } from 'src/common';
+import { AppError, handleDatabaseError } from '../../common';
 import { FindOneOptions, Repository } from 'typeorm';
 
 export function BuildEntityGuard<T>(E: new (...arg: any) => T) {

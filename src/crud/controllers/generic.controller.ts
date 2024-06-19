@@ -13,7 +13,7 @@ import { Entity, UseEntityGuard } from '../decorators';
 import { GenericPersistentEntity } from '../entity';
 import { GenericService, LoggerOptions } from '../services';
 import { DeepPartial } from 'typeorm';
-import { IGenericController } from 'src/intefaces/ICRUD.controller';
+import { IGenericController } from '../../intefaces/ICRUD.controller';
 import { SearchPaginateDto } from '../dto';
 
 export function BuildCRUDController<
