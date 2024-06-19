@@ -3,40 +3,50 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { AppError } from '../error';
+import { AppError, ErrorMap, PostgresError } from '../error';
+import { HttpException } from '@nestjs/common';
 
 export function handleDatabaseError(error: AppError) {
   console.log(error);
 
-  if (error.getStatus() < 500) {
+  if (error instanceof HttpException && error.getStatus() < 500) {
     throw error;
   }
-  if (error.code) {
-    // Handle PostgreSQL errors
-    switch (error.code) {
-      case '23505': // Unique violation
+  if (error instanceof PostgresError && error.code) {
+    const errors: ErrorMap = {
+      '23505': () => {
         throw new ConflictException('Duplicate entry');
-      case '23503': // Foreign key violation
+      },
+      '23503': () => {
         throw new BadRequestException('Invalid reference');
-      case '23502': // Not null violation
+      },
+      '23502': () => {
         throw new BadRequestException(
           'Null value in column that does not accept nulls',
         );
-      case '23514': // Check violation
+      },
+      '23514': () => {
         throw new BadRequestException('Check constraint violation');
-      case '23518': // Exclusion violation
+      },
+      '23518': () => {
         throw new BadRequestException('Exclusion constraint violation');
-      case '42883': // Undefined function
+      },
+      '42883': () => {
         throw new BadRequestException('Function does not exist');
-      case '42P01': // Undefined table
+      },
+      '42P01': () => {
         throw new BadRequestException('Table does not exist');
-      case '42P02': // Undefined parameter
+      },
+      '42P02': () => {
         throw new BadRequestException('Parameter does not exist');
-      default:
+      },
+      default: () => {
         throw new InternalServerErrorException('Database error');
-    }
+      },
+    };
+    const code = error.code in errors ? error.code : 'default';
+    errors[code]();
   } else {
-    // Handle other errors
     throw new InternalServerErrorException('An unexpected error occurred');
   }
 }
