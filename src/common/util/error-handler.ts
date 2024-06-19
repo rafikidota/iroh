@@ -4,14 +4,8 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { AppError, ErrorMap, PostgresError } from '../error';
-import { HttpException } from '@nestjs/common';
 
 export function handleDatabaseError(error: AppError) {
-  console.log(error);
-
-  if (error instanceof HttpException && error.getStatus() < 500) {
-    throw error;
-  }
   if (error instanceof PostgresError && error.code) {
     const errors: ErrorMap = {
       '23505': () => {
@@ -46,7 +40,6 @@ export function handleDatabaseError(error: AppError) {
     };
     const code = error.code in errors ? error.code : 'default';
     errors[code]();
-  } else {
-    throw new InternalServerErrorException('An unexpected error occurred');
   }
+  throw error;
 }
