@@ -12,12 +12,10 @@ export function BuildCRUDService<
   T extends GenericPersistentEntity,
   D extends DeepPartial<T>,
 >(E: new () => T) {
-  abstract class GenericService implements IGenericService<T, D> {
-    logger: GenericLogger;
-    repository: Repository<T>;
-    constructor(@InjectRepository(E) repo: Repository<T>) {
-      this.repository = repo;
-      const { name } = repo.metadata;
+  class GenericService implements IGenericService<T, D> {
+    public logger: GenericLogger;
+    constructor(@InjectRepository(E) readonly repository: Repository<T>) {
+      const { name } = repository.metadata;
       const context = `${name}Logger`;
       this.logger = new GenericLogger(context);
     }
