@@ -8,11 +8,11 @@ import { IGenericService } from '../interfaces/crud.service';
 import { LoggerOptions } from './util/logger.options';
 import { SearchPaginateDto } from '../dto/search.paginate.dto';
 
-export function BuildCRUDService<
+export function BuildGenericService<
   T extends GenericPersistentEntity,
   D extends DeepPartial<T>,
 >(E: new () => T) {
-  class GenericService implements IGenericService<T, D> {
+  class GenericCRUDService implements IGenericService<T, D> {
     public logger: GenericLogger;
     constructor(@InjectRepository(E) readonly repository: Repository<T>) {
       const { name } = repository.metadata;
@@ -96,5 +96,5 @@ export function BuildCRUDService<
       }
     }
   }
-  return GenericService;
+  return GenericCRUDService;
 }

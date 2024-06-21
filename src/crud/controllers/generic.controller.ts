@@ -15,11 +15,11 @@ import { LoggerOptions } from '../services';
 import { SearchPaginateDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
 
-export function BuildCRUDController<
+export function BuildGenericController<
   T extends GenericPersistentEntity,
   D extends DeepPartial<T>,
 >(E: new () => T) {
-  abstract class GenericController implements IGenericController<T, D> {
+  abstract class GenericCRUDController implements IGenericController<T, D> {
     constructor(readonly service: IGenericService<T, D>) {}
 
     @Post()
@@ -52,5 +52,5 @@ export function BuildCRUDController<
     }
   }
 
-  return GenericController;
+  return GenericCRUDController;
 }
