@@ -7,7 +7,6 @@ import {
   Patch,
   Delete,
   HttpCode,
-  Inject,
 } from '@nestjs/common';
 import { Entity, UseEntityGuard } from '../decorators';
 import { GenericPersistentEntity } from '../entity';
@@ -21,7 +20,7 @@ export function BuildCRUDController<
   D extends DeepPartial<T>,
 >(E: new () => T) {
   class GenericController implements IGenericController<T, D> {
-    constructor(@Inject() readonly service: IGenericService<T, D>) {}
+    constructor(readonly service: IGenericService<T, D>) {}
 
     @Post()
     create(@Body() body: D) {
