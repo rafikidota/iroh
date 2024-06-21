@@ -29,8 +29,8 @@ export class Hero extends GenericPersistentEntity {
 ```js
 import { Controller } from '@nestjs/common';
 import { BuildGenericController } from '@rafikidota/iroh';
-import { Hero } from './entities/hero.entity';
 import { HeroService } from './hero.service';
+import { Hero } from './entities/hero.entity';
 
 @Controller('hero')
 export class HeroController extends BuildGenericController(Hero) {
@@ -44,17 +44,11 @@ export class HeroController extends BuildGenericController(Hero) {
 
 ```ts
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { BuildGenericService } from '@rafikidota/iroh';
 import { Hero } from './entities/hero.entity';
 
 @Injectable()
-export class HeroService extends BuildGenericService(Hero) {
-  constructor(@InjectRepository(Hero) private repo: Repository<Hero>) {
-    super(repo);
-  }
-}
+export class HeroService extends BuildGenericService(Hero) {}
 ```
 
 ## Module
