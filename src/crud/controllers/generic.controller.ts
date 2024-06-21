@@ -15,7 +15,7 @@ import { BuildCRUDService, LoggerOptions } from '../services';
 import { DeepPartial } from 'typeorm';
 import { IGenericController } from '../../intefaces/ICRUD.controller';
 import { SearchPaginateDto } from '../dto';
-import { IGenericService } from 'src/intefaces/ICRUD.service';
+import { IGenericService } from '../../intefaces';
 
 export function BuildCRUDController<
   T extends GenericPersistentEntity,
