@@ -1,7 +1,7 @@
 {
   "name": "@rafikidota/iroh",
   "version": "0.2.29",
-  "description": "My own nestjs utils library with blackjacks and hookers",
+  "description": "Sometimes, the best way to solve your own problems is to help someone else.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rafikidota/iroh.git"
