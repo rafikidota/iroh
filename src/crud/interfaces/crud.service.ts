@@ -1,11 +1,12 @@
 import { DeepPartial } from 'typeorm';
-import { LoggerOptions, SearchPaginateDto } from '../crud';
+import { SearchPaginateDto } from '../dto';
+import { LoggerOptions } from '../services';
 
-export interface IGenericService<T, D> {
+export type IGenericService<T, D> = {
   create(createDto: DeepPartial<D>): Promise<T>;
   paginate(query: SearchPaginateDto): Promise<T[]>;
   findAll(): Promise<T[]>;
   findOne(id: string, options: LoggerOptions): Promise<T>;
   update(entity: T, updateDto: Partial<D>): Promise<T>;
-  remove(id: string): Promise<void>;
-}
+  remove(entity: T): Promise<void>;
+};

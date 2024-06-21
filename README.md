@@ -1,15 +1,11 @@
 # Iroh
 
-Just my own nestjs utils library with blackjacks and hookers
+Sometimes, the best way to solve your own problems is to help someone else.
 
 <img 
 alt="Iroh"
 src = "https://github.com/rafikidota/assets/raw/main/iroh/iroh.jpg?raw=true" 
 style="width:250px"/>
-
-```bash
-npm install @rafikidota/iroh
-```
 
 ## Using Iroh with Nestjs
 
@@ -32,14 +28,14 @@ export class Hero extends GenericPersistentEntity {
 
 ```js
 import { Controller } from '@nestjs/common';
-import { BuildCRUDController } from '@rafikidota/iroh';
+import { BuildGenericController } from '@rafikidota/iroh';
 import { HeroService } from './hero.service';
 import { Hero } from './entities/hero.entity';
 
 @Controller('hero')
-export class HeroController extends BuildCRUDController(Hero) {
-  constructor(private readonly hero: HeroService) {
-    super(hero);
+export class HeroController extends BuildGenericController(Hero) {
+  constructor(readonly service: HeroService) {
+    super(service);
   }
 }
 ```
@@ -48,31 +44,21 @@ export class HeroController extends BuildCRUDController(Hero) {
 
 ```ts
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { GenericService } from '@rafikidota/iroh';
+import { BuildGenericService } from '@rafikidota/iroh';
 import { Hero } from './entities/hero.entity';
-import { CreateHeroDto } from './dto/create-hero.dto';
 
 @Injectable()
-export class HeroService extends GenericService<Hero, CreateHeroDto> {
-  constructor(
-    @InjectRepository(Hero)
-    private repo: Repository<Hero>,
-  ) {
-    super(repo);
-  }
-}
+export class HeroService extends BuildGenericService(Hero) {}
 ```
 
 ## Module
 
 ```ts
 import { Module } from '@nestjs/common';
-import { HeroController } from './hero.controller';
-import { HeroService } from './hero.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Hero } from './entities/hero.entity';
+import { HeroController } from './hero.controller';
+import { HeroService } from './hero.service';
 
 @Module({
   controllers: [HeroController],

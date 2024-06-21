@@ -8,19 +8,19 @@ import {
   Delete,
   HttpCode,
 } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 import { Entity, UseEntityGuard } from '../decorators';
 import { GenericPersistentEntity } from '../entity';
-import { GenericService, LoggerOptions } from '../services';
-import { DeepPartial } from 'typeorm';
-import { IGenericController } from '../../intefaces/ICRUD.controller';
+import { LoggerOptions } from '../services';
 import { SearchPaginateDto } from '../dto';
+import type { IGenericController, IGenericService } from '../interfaces';
 
-export function BuildCRUDController<
+export function BuildGenericController<
   T extends GenericPersistentEntity,
   D extends DeepPartial<T>,
 >(E: new () => T) {
-  class GenericController implements IGenericController<T, D> {
-    constructor(readonly service: GenericService<T, D>) {}
+  abstract class GenericCRUDController implements IGenericController<T, D> {
+    constructor(readonly service: IGenericService<T, D>) {}
 
     @Post()
     create(@Body() body: D) {
@@ -48,9 +48,9 @@ export function BuildCRUDController<
     @HttpCode(204)
     @UseEntityGuard(E)
     remove(@Entity() entity: T) {
-      return this.service.remove(entity.id);
+      return this.service.remove(entity);
     }
   }
 
-  return GenericController;
+  return GenericCRUDController;
 }
