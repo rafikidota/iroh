@@ -7,5 +7,5 @@ export interface IGenericService<T, D> {
   findAll(): Promise<T[]>;
   findOne(id: string, options: LoggerOptions): Promise<T>;
   update(entity: T, updateDto: Partial<D>): Promise<T>;
-  remove(id: string): Promise<void>;
+  remove(entity: T): Promise<void>;
 }
