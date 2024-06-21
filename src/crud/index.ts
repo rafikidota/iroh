@@ -3,5 +3,6 @@ export * from './decorators';
 export * from './dto';
 export * from './entity';
 export * from './guards';
+export * from './interfaces';
 export * from './logger';
 export * from './services';
