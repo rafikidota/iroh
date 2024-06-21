@@ -6,7 +6,7 @@ import { GenericLogger } from '../logger/generic.logger';
 import { LoggerOptions } from './util/logger.options';
 import { handleDatabaseError } from '../../common/util/error-handler';
 import { AppError } from '../../common/error/app.error';
-import { IGenericService } from '../../intefaces/ICRUD.service';
+import { IGenericService } from '../../interfaces/crud.service';
 import { InjectRepository } from '@nestjs/typeorm';
 
 export function BuildCRUDService<

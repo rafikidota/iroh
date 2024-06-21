@@ -13,9 +13,9 @@ import { Entity, UseEntityGuard } from '../decorators';
 import { GenericPersistentEntity } from '../entity';
 import { BuildCRUDService, LoggerOptions } from '../services';
 import { DeepPartial } from 'typeorm';
-import { IGenericController } from '../../intefaces/ICRUD.controller';
+import { IGenericController } from '../../interfaces/crud.controller';
 import { SearchPaginateDto } from '../dto';
-import { IGenericService } from '../../intefaces';
+import { IGenericService } from '../../interfaces';
 
 export function BuildCRUDController<
   T extends GenericPersistentEntity,
