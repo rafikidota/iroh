@@ -8,10 +8,10 @@ import {
   Delete,
   HttpCode,
 } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 import { Entity, UseEntityGuard } from '../decorators';
 import { GenericPersistentEntity } from '../entity';
 import { LoggerOptions } from '../services';
-import { DeepPartial } from 'typeorm';
 import { SearchPaginateDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
 
@@ -19,7 +19,7 @@ export function BuildCRUDController<
   T extends GenericPersistentEntity,
   D extends DeepPartial<T>,
 >(E: new () => T) {
-  class GenericController implements IGenericController<T, D> {
+  abstract class GenericController implements IGenericController<T, D> {
     constructor(readonly service: IGenericService<T, D>) {}
 
     @Post()

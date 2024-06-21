@@ -1,24 +1,23 @@
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
-import { SearchPaginateDto } from '../dto/search.paginate.dto';
-import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
-import { NotFoundException } from '@nestjs/common';
-import { GenericLogger } from '../logger/generic.logger';
-import { LoggerOptions } from './util/logger.options';
-import { handleDatabaseError } from '../../common/util/error-handler';
-import { AppError } from '../../common/error/app.error';
-import { IGenericService } from '../interfaces/crud.service';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NotFoundException } from '@nestjs/common';
+import { AppError, handleDatabaseError } from './../../common';
+import { GenericLogger } from '../logger/generic.logger';
+import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
+import { IGenericService } from '../interfaces/crud.service';
+import { LoggerOptions } from './util/logger.options';
+import { SearchPaginateDto } from '../dto/search.paginate.dto';
 
 export function BuildCRUDService<
   T extends GenericPersistentEntity,
   D extends DeepPartial<T>,
 >(E: new () => T) {
-  class GenericService implements IGenericService<T, D> {
+  abstract class GenericService implements IGenericService<T, D> {
     logger: GenericLogger;
     repository: Repository<T>;
-    constructor(@InjectRepository(E) repository: Repository<T>) {
-      this.repository = repository;
-      const { name } = repository.metadata;
+    constructor(@InjectRepository(E) repo: Repository<T>) {
+      this.repository = repo;
+      const { name } = repo.metadata;
       const context = `${name}Logger`;
       this.logger = new GenericLogger(context);
     }

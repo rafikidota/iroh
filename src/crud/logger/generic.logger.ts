@@ -1,6 +1,7 @@
-import { LogLevel } from './level.interface';
 import { Injectable, Logger } from '@nestjs/common';
 import * as chalk from 'chalk';
+import { LogLevel } from './level.interface';
+
 @Injectable()
 export class GenericLogger extends Logger {
   startTime: number = Date.now();

@@ -1,5 +1,5 @@
 import { DeepPartial } from 'typeorm';
-import { SearchPaginateDto } from '..';
+import { SearchPaginateDto } from '../dto';
 
 export type IGenericController<T, D> = {
   create(body: DeepPartial<D>): Promise<Partial<T>>;

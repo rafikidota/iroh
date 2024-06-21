@@ -1,5 +1,6 @@
 import { DeepPartial } from 'typeorm';
-import { LoggerOptions, SearchPaginateDto } from '..';
+import { SearchPaginateDto } from '../dto';
+import { LoggerOptions } from '../services';
 
 export type IGenericService<T, D> = {
   create(createDto: DeepPartial<D>): Promise<T>;
