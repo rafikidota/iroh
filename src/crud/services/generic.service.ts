@@ -15,12 +15,12 @@ export function BuildGenericService<
   class GenericCRUDService implements IGenericService<T, D> {
     public logger: GenericLogger;
     constructor(@InjectRepository(E) readonly repository: Repository<T>) {
-      const { name } = repository.metadata;
+      const { name } = this.repository.metadata;
       const context = `${name}Logger`;
       this.logger = new GenericLogger(context);
     }
 
-    async create(createDto: D): Promise<T> {
+    public async create(createDto: D): Promise<T> {
       try {
         this.logger.restart();
         const entity = await this.repository.save(createDto);
@@ -31,7 +31,7 @@ export function BuildGenericService<
       }
     }
 
-    async paginate(query: SearchPaginateDto): Promise<T[]> {
+    public async paginate(query: SearchPaginateDto): Promise<T[]> {
       try {
         this.logger.restart();
         const { limit, page } = query;
@@ -43,7 +43,7 @@ export function BuildGenericService<
       }
     }
 
-    async findAll() {
+    public async findAll() {
       try {
         this.logger.restart();
         const entities = await this.repository.find();
@@ -54,7 +54,7 @@ export function BuildGenericService<
       }
     }
 
-    async findOne(id: string, options: LoggerOptions): Promise<T> {
+    public async findOne(id: string, options: LoggerOptions): Promise<T> {
       try {
         this.logger.restart();
         const { name } = this.repository.metadata;
@@ -73,7 +73,7 @@ export function BuildGenericService<
       }
     }
 
-    async update(entity: T, updateDto: Partial<D>): Promise<T> {
+    public async update(entity: T, updateDto: Partial<D>): Promise<T> {
       try {
         this.logger.restart();
         Object.assign(entity, updateDto);
@@ -85,7 +85,7 @@ export function BuildGenericService<
       }
     }
 
-    async remove(entity: T): Promise<void> {
+    public async remove(entity: T): Promise<void> {
       try {
         const { id } = entity;
         this.logger.restart();
