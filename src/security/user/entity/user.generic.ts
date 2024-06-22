@@ -1,7 +1,7 @@
 import { BeforeInsert, BeforeUpdate, Column } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { GenericPersistentEntity } from '../../crud';
-import { SoftUnique } from '../../crud/decorators';
+import { GenericPersistentEntity } from '../../../crud';
+import { SoftUnique } from '../../../crud/decorators';
 
 export class GenericUser extends GenericPersistentEntity {
   @Column()
@@ -25,16 +25,17 @@ export class GenericUser extends GenericPersistentEntity {
     return bcrypt.compare(password, this.password);
   }
 
-  private hash(password: string) {
-    this.password = bcrypt.hashSync(password, 10);
+  private async hash(password: string) {
+    this.password = await bcrypt.hash(password, 10);
   }
 
   @BeforeInsert()
   async beforeInsertHook() {
-    this.hash(this.password);
+    await this.hash(this.password);
   }
+
   @BeforeUpdate()
   async beforeUpdateHook() {
-    this.hash(this.password);
+    await this.hash(this.password);
   }
 }

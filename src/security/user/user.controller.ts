@@ -19,7 +19,7 @@ import type {
   IGenericController,
   IGenericService,
 } from '../../crud/interfaces';
-import { GenericUser } from './user.generic';
+import { GenericUser } from './entity/user.generic';
 
 export function BuildGenericUserController<
   T extends GenericUser,

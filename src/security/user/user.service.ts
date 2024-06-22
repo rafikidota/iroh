@@ -2,7 +2,7 @@ import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { AppError, handleDatabaseError } from './../../common';
-import { GenericUser } from './user.generic';
+import { GenericUser } from './entity/user.generic';
 import { GenericLogger, LoggerOptions, SearchPaginateDto } from '../../crud/';
 import type { IGenericService } from '../../crud/interfaces';
 
