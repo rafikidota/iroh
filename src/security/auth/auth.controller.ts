@@ -1,7 +1,7 @@
-import { Get, UseGuards } from '@nestjs/common';
+import { Get, HttpCode, UseGuards } from '@nestjs/common';
+import { BasicAuthGuard, JwtAuthGuard } from './guards';
 import { GenericUser, User } from '../user';
 import { IGenericAuthController, IGenericAuthService } from './interfaces';
-import { BasicAuthGuard } from './guards';
 
 export function BuildGenericAuthController<T extends GenericUser>() {
   abstract class GenericAuthController implements IGenericAuthController<T> {
@@ -19,6 +19,8 @@ export function BuildGenericAuthController<T extends GenericUser>() {
     }
 
     @Get('signout')
+    @UseGuards(JwtAuthGuard)
+    @HttpCode(204)
     signout(@User() user: T) {
       return this.service.signout(user);
     }

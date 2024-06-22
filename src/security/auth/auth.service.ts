@@ -5,6 +5,7 @@ import { GenericUser } from '../user';
 import { IGenericAuthService, ISignInResponse } from './interfaces';
 import { GenericLogger } from './../../crud';
 import { Payload } from './interfaces/payload';
+import { UnauthorizedException } from '@nestjs/common';
 
 export function BuildGenericAuthService<T extends GenericUser>(E: new () => T) {
   class GenericAuthService implements IGenericAuthService<T> {
@@ -15,7 +16,12 @@ export function BuildGenericAuthService<T extends GenericUser>(E: new () => T) {
     ) {
       this.logger = new GenericLogger('AuthLogger');
     }
-    public async signup(user: T): Promise<ISignInResponse> {
+    public async signup(user: T): Promise<Partial<T>> {
+      this.logger.log('signin');
+      return user;
+    }
+
+    public async signin(user: T): Promise<ISignInResponse> {
       const { id, name } = user;
       const payload: Payload = { id, name };
       const token = this.jwtService.sign(payload);
@@ -24,14 +30,10 @@ export function BuildGenericAuthService<T extends GenericUser>(E: new () => T) {
       const response: ISignInResponse = { token, user: found };
       return response;
     }
-
-    public async signin(user: T): Promise<Partial<T>> {
-      this.logger.log('signin');
-      return user;
-    }
-    public async signout(user: T): Promise<Partial<T>> {
-      this.logger.log('signup');
-      return user;
+    public async signout(user: T): Promise<void> {
+      if (!user) {
+        throw new UnauthorizedException();
+      }
     }
   }
   return GenericAuthService;
