@@ -30,12 +30,12 @@ export class GenericUser extends GenericPersistentEntity {
   }
 
   @BeforeInsert()
-  protected async beforeInsert() {
+  public async beforeInsert() {
     await this.hashPassword();
   }
 
   @BeforeUpdate()
-  protected async beforeUpdate() {
+  public async beforeUpdate() {
     if (this.password) {
       await this.hashPassword();
     }
