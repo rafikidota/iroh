@@ -25,17 +25,19 @@ export class GenericUser extends GenericPersistentEntity {
     return bcrypt.compare(password, this.password);
   }
 
-  private async hash(password: string) {
-    this.password = await bcrypt.hash(password, 10);
+  protected async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
   }
 
   @BeforeInsert()
-  async beforeInsertHook() {
-    await this.hash(this.password);
+  protected async beforeInsert() {
+    await this.hashPassword();
   }
 
   @BeforeUpdate()
-  async beforeUpdateHook() {
-    await this.hash(this.password);
+  protected async beforeUpdate() {
+    if (this.password) {
+      await this.hashPassword();
+    }
   }
 }
