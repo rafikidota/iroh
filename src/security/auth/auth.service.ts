@@ -1,7 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { FindOneOptions, Repository } from 'typeorm';
-import { Request } from 'express';
 import { GenericUser } from '../user';
 import { IGenericAuthService } from './interfaces';
 import { GenericLogger } from './../../crud';
@@ -16,23 +15,23 @@ export function BuildGenericAuthService<T extends GenericUser>(E: new () => T) {
     ) {
       this.logger = new GenericLogger('AuthLogger');
     }
-    public async signup(req: Request): Promise<Partial<T>> {
-      const { id, name } = req.user as Partial<T>;
+    public async signup(user: T): Promise<Partial<T>> {
+      const { id, name } = user;
       const payload: Payload = { id, name };
       const token = this.jwtService.sign(payload);
       const where = { where: { id } } as unknown as FindOneOptions<T>;
-      const user = await this.repository.findOne(where);
+      const found = await this.repository.findOne(where);
       this.logger.debug(token);
-      return user;
+      return found;
     }
 
-    public async signin(): Promise<Partial<T>[]> {
+    public async signin(user: T): Promise<Partial<T>> {
       this.logger.log('signin');
-      return [];
+      return user;
     }
-    public async signout(): Promise<Partial<T>> {
+    public async signout(user: T): Promise<Partial<T>> {
       this.logger.log('signup');
-      return {};
+      return user;
     }
   }
   return GenericAuthService;

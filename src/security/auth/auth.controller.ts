@@ -1,28 +1,26 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
-import { GenericUser } from '../user';
+import { Get, UseGuards } from '@nestjs/common';
+import { GenericUser, User } from '../user';
 import { IGenericAuthController, IGenericAuthService } from './interfaces';
 import { BasicAuthGuard } from './guards';
 
 export function BuildGenericAuthController<T extends GenericUser>() {
-  @Controller('auth')
   abstract class GenericAuthController implements IGenericAuthController<T> {
     constructor(readonly service: IGenericAuthService<T>) {}
 
-    @Get('signin')
-    @UseGuards(BasicAuthGuard)
-    signin(@Req() req: Request) {
-      return this.service.signin(req);
+    @Get('signup')
+    signup(@User() user: T) {
+      return this.service.signup(user);
     }
 
-    @Get('signup')
-    signup(@Req() req: Request) {
-      return this.service.signup(req);
+    @Get('signin')
+    @UseGuards(BasicAuthGuard)
+    signin(@User() user: T) {
+      return this.service.signin(user);
     }
 
     @Get('signout')
-    signout(@Req() req: Request) {
-      return this.service.signout(req);
+    signout(@User() user: T) {
+      return this.service.signout(user);
     }
   }
   return GenericAuthController;
