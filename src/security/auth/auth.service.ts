@@ -1,11 +1,11 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { FindOneOptions, Repository } from 'typeorm';
-import { GenericUser } from '../user';
 import { IGenericAuthService, ISignInResponse } from './interfaces';
 import { GenericLogger } from './../../crud';
 import { Payload } from './interfaces/payload';
 import { UnauthorizedException } from '@nestjs/common';
+import { GenericUser } from '../user/entity';
 
 export function BuildGenericAuthService<T extends GenericUser>(E: new () => T) {
   class GenericAuthService implements IGenericAuthService<T> {

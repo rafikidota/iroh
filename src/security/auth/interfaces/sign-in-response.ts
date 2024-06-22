@@ -1,4 +1,4 @@
-import { GenericUser } from '../../user';
+import { GenericUser } from '../../user/entity';
 
 export interface ISignInResponse {
   token: string;

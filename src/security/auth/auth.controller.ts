@@ -1,9 +1,10 @@
 import { Get, HttpCode, UseGuards } from '@nestjs/common';
 import { ApiBasicAuth, ApiBearerAuth } from '@nestjs/swagger';
-import { JwtAuthGuard } from './guards';
-import { GenericUser, User } from '../user';
-import { IGenericAuthController, IGenericAuthService } from './interfaces';
 import { BasicAuthGuard, NoPermission, Public } from './decorators';
+import { GenericUser } from '../user/entity';
+import { JwtAuthGuard } from './guards';
+import { IGenericAuthController, IGenericAuthService } from './interfaces';
+import { User } from '../user';
 
 export function BuildGenericAuthController<T extends GenericUser>(
   E: new () => T,
