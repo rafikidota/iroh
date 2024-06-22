@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { Buffer } from 'buffer';
 import { Request } from 'express';
 import { GenericUser } from '../../user/user.generic';
@@ -27,14 +27,15 @@ export function BuildBasicAuthGuard<T extends GenericUser>(E: new () => T) {
         )
           .toString()
           .split(':');
-        const where = { username } as unknown as FindOptionsWhere<T>;
-        const user: T = await this.repository.findOneBy(where);
+        const where = { where: { username } } as unknown as FindOneOptions<T>;
+        const user = await this.repository.findOne(where);
         if (!user) {
-          throw new NotFoundException();
+          const { name: entity } = this.repository.metadata;
+          throw new NotFoundException(`${entity} ${username} not found`);
         }
         const ok = await user.verifyPassword(password);
         if (!ok) {
-          throw new UnauthorizedException();
+          throw new UnauthorizedException('Wrong credential');
         }
         Object.assign(request, { user });
         return true;
