@@ -21,9 +21,11 @@ export function BuildGenericUserService<
     public async create(createDto: D): Promise<T> {
       try {
         this.logger.restart();
-        const entity = await this.repository.save(createDto);
-        this.logger.post(`[${entity.id}]`);
-        return entity as unknown as T;
+        const user = this.repository.create(createDto);
+        user.hashPassword();
+        await this.repository.save(user);
+        this.logger.post(`[${user.id}]`);
+        return user as unknown as T;
       } catch (error) {
         handleDatabaseError(error as AppError);
       }
@@ -33,9 +35,9 @@ export function BuildGenericUserService<
       try {
         this.logger.restart();
         const { limit, page } = query;
-        const entities = await this.repository.find();
+        const users = await this.repository.find();
         this.logger.get(`${JSON.stringify({ limit, page })}`);
-        return entities;
+        return users;
       } catch (error) {
         handleDatabaseError(error as AppError);
       }
@@ -44,9 +46,9 @@ export function BuildGenericUserService<
     public async findAll() {
       try {
         this.logger.restart();
-        const entities = await this.repository.find();
+        const users = await this.repository.find();
         this.logger.get(`find all`);
-        return entities;
+        return users;
       } catch (error) {
         handleDatabaseError(error as AppError);
       }
@@ -57,25 +59,28 @@ export function BuildGenericUserService<
         this.logger.restart();
         const { name } = this.repository.metadata;
         const where = { where: { id } } as unknown as FindOneOptions<T>;
-        const entity = await this.repository.findOne(where);
-        if (!entity) {
+        const user = await this.repository.findOne(where);
+        if (!user) {
           this.logger.warn(`[${id}] NOT FOUND`);
           throw new NotFoundException(`${name} with id ${id} not found`);
         }
         if (options.logging) {
-          this.logger.get(`[${entity.id}]`);
+          this.logger.get(`[${user.id}]`);
         }
-        return entity as unknown as T;
+        return user as unknown as T;
       } catch (error) {
         handleDatabaseError(error as AppError);
       }
     }
 
-    public async update(entity: T, updateDto: Partial<D>): Promise<T> {
+    public async update(user: T, updateDto: Partial<D>): Promise<T> {
       try {
         this.logger.restart();
-        Object.assign(entity, updateDto);
-        const updatedEntity = await this.repository.save(entity);
+        Object.assign(user, updateDto);
+        if (updateDto.password) {
+          user.hashPassword();
+        }
+        const updatedEntity = await this.repository.save(user);
         this.logger.patch(`[${updatedEntity.id}]`);
         return updatedEntity as unknown as T;
       } catch (error) {
@@ -83,9 +88,9 @@ export function BuildGenericUserService<
       }
     }
 
-    public async remove(entity: T): Promise<void> {
+    public async remove(user: T): Promise<void> {
       try {
-        const { id } = entity;
+        const { id } = user;
         this.logger.restart();
         await this.repository.softDelete(id);
         this.logger.delete(`[${id}]`);
