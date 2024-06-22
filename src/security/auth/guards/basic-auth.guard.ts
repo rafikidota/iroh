@@ -27,7 +27,7 @@ export function BuildBasicAuthGuard<T extends GenericUser>(E: new () => T) {
         )
           .toString()
           .split(':');
-        const where = { where: { username } } as unknown as FindOptionsWhere<T>;
+        const where = { username } as unknown as FindOptionsWhere<T>;
         const user: T = await this.repository.findOneBy(where);
         if (!user) {
           throw new NotFoundException();
