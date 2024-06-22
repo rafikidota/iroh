@@ -12,11 +12,7 @@ import { AppError, handleDatabaseError } from '../../common';
 export function BuildEntityGuard<T>(E: new () => T) {
   @Injectable()
   class EntityGuard implements CanActivate {
-    repository: Repository<T>;
-
-    constructor(@InjectRepository(E) repository: Repository<T>) {
-      this.repository = repository;
-    }
+    constructor(@InjectRepository(E) readonly repository: Repository<T>) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
       try {
