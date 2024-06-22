@@ -9,7 +9,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
-import { Entity, UseEntityGuard } from '../decorators';
+import { Entity, EntityGuard } from '../decorators';
 import { GenericPersistentEntity } from '../entity';
 import { LoggerOptions } from '../services';
 import { SearchPaginateDto } from '../dto';
@@ -39,14 +39,14 @@ export function BuildGenericController<
     }
 
     @Patch(':id')
-    @UseEntityGuard(E)
+    @EntityGuard(E)
     update(@Entity() entity: T, @Body() body: Partial<D>) {
       return this.service.update(entity, body);
     }
 
     @Delete(':id')
     @HttpCode(204)
-    @UseEntityGuard(E)
+    @EntityGuard(E)
     remove(@Entity() entity: T) {
       return this.service.remove(entity);
     }
