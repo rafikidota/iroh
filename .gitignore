@@ -6,3 +6,4 @@ dist/
 
 # package manager
 yarn.lock
+yarn-error.log

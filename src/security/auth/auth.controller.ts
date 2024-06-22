@@ -1,22 +1,39 @@
-import { Post } from '@nestjs/common';
-import { GenericAuthService } from './auth.service';
-import { GenericUser } from '../user';
+import { Get, HttpCode, UseGuards } from '@nestjs/common';
+import { ApiBasicAuth, ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from './guards';
+import { GenericUser, User } from '../user';
+import { IGenericAuthController, IGenericAuthService } from './interfaces';
+import { BasicAuthGuard, NoPermission, Public } from './decorators';
 
-export class GenericAuthController<User extends GenericUser> {
-  constructor(readonly service: GenericAuthService<User>) {}
+export function BuildGenericAuthController<T extends GenericUser>(
+  E: new () => T,
+) {
+  abstract class GenericAuthController implements IGenericAuthController<T> {
+    constructor(readonly service: IGenericAuthService<T>) {}
 
-  @Post()
-  signin() {
-    return this.service.signin();
+    @Get('signup')
+    @ApiBearerAuth()
+    @NoPermission()
+    signup(@User() user: T) {
+      return this.service.signup(user);
+    }
+
+    @Get('signin')
+    @ApiBasicAuth()
+    @Public()
+    @BasicAuthGuard(E)
+    signin(@User() user: T) {
+      return this.service.signin(user);
+    }
+
+    @Get('signout')
+    @ApiBearerAuth()
+    @NoPermission()
+    @UseGuards(JwtAuthGuard)
+    @HttpCode(204)
+    signout(@User() user: T) {
+      return this.service.signout(user);
+    }
   }
-
-  @Post()
-  signup() {
-    return this.service.signup();
-  }
-
-  @Post()
-  signout() {
-    return this.service.signout();
-  }
+  return GenericAuthController;
 }

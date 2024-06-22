@@ -5,45 +5,58 @@ import {
   Query,
   Param,
   Patch,
-  HttpCode,
   Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
-import { DefaultDto, LoggerOptions, SearchPaginateDto } from '../../crud';
+import {
+  Entity,
+  EntityGuard,
+  LoggerOptions,
+  SearchPaginateDto,
+} from '../../crud';
+import type {
+  IGenericController,
+  IGenericService,
+} from '../../crud/interfaces';
 import { GenericUser } from './user.generic';
-import { GenericUserService } from './user.service';
-import { User } from './decorators';
 
-export class GenericUserController<
-  User extends GenericUser,
-  CreateUserDto extends DefaultDto,
-> {
-  constructor(readonly service: GenericUserService<User, CreateUserDto>) {}
+export function BuildGenericUserController<
+  T extends GenericUser,
+  D extends DeepPartial<T>,
+>(E: new () => T) {
+  abstract class GenericUserController implements IGenericController<T, D> {
+    constructor(readonly service: IGenericService<T, D>) {}
 
-  @Post()
-  create(@Body() body: DeepPartial<CreateUserDto>) {
-    return this.service.create(body);
+    @Post()
+    create(@Body() body: D) {
+      return this.service.create(body);
+    }
+
+    @Get()
+    paginate(@Query() query: SearchPaginateDto) {
+      return this.service.paginate(query);
+    }
+
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+      const options: LoggerOptions = { logging: true };
+      return this.service.findOne(id, options);
+    }
+
+    @Patch(':id')
+    @EntityGuard(E)
+    update(@Entity() entity: T, @Body() body: Partial<D>) {
+      return this.service.update(entity, body);
+    }
+
+    @Delete(':id')
+    @HttpCode(204)
+    @EntityGuard(E)
+    remove(@Entity() entity: T) {
+      return this.service.remove(entity);
+    }
   }
 
-  @Get()
-  paginate(@Query() query: SearchPaginateDto) {
-    return this.service.paginate(query);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    const options: LoggerOptions = { logging: true };
-    return this.service.findOne(id, options);
-  }
-
-  @Patch(':id')
-  update(@User() user: User, @Body() body: Partial<CreateUserDto>) {
-    return this.service.update(user, body);
-  }
-
-  @Delete(':id')
-  @HttpCode(204)
-  remove(@User() user: User) {
-    return this.service.remove(user.id);
-  }
+  return GenericUserController;
 }

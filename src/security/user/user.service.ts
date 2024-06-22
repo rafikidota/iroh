@@ -1,43 +1,98 @@
-import {
-  DefaultDto,
-  LoggerOptions,
-  GenericLogger,
-  SearchPaginateDto,
-} from '../../crud';
-import { Repository, DeepPartial } from 'typeorm';
+import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { NotFoundException } from '@nestjs/common';
+import { AppError, handleDatabaseError } from './../../common';
 import { GenericUser } from './user.generic';
+import { GenericLogger, LoggerOptions, SearchPaginateDto } from '../../crud/';
+import type { IGenericService } from '../../crud/interfaces';
 
-export class GenericUserService<
-  User extends GenericUser,
-  CreateUserDto extends DefaultDto = DefaultDto,
-> {
-  protected logger: GenericLogger;
-  private context: string;
-  constructor(
-    protected readonly repository: Repository<User> & Repository<GenericUser>,
-  ) {
-    this.context = `${repository.metadata.name}Logger`;
-    this.logger = new GenericLogger(this.context);
-  }
-  async create(createDto: DeepPartial<CreateUserDto>) {
-    console.log(createDto);
-  }
+export function BuildGenericUserService<
+  T extends GenericUser,
+  D extends DeepPartial<T>,
+>(E: new () => T) {
+  class GenericUserService implements IGenericService<T, D> {
+    public logger: GenericLogger;
+    constructor(@InjectRepository(E) readonly repository: Repository<T>) {
+      const { name } = this.repository.metadata;
+      const context = `${name}Logger`;
+      this.logger = new GenericLogger(context);
+    }
 
-  async paginate(query: SearchPaginateDto) {
-    console.log(query);
-  }
+    public async create(createDto: D): Promise<T> {
+      try {
+        this.logger.restart();
+        const entity = await this.repository.save(createDto);
+        this.logger.post(`[${entity.id}]`);
+        return entity as unknown as T;
+      } catch (error) {
+        handleDatabaseError(error as AppError);
+      }
+    }
 
-  async findAll() {}
+    public async paginate(query: SearchPaginateDto): Promise<T[]> {
+      try {
+        this.logger.restart();
+        const { limit, page } = query;
+        const entities = await this.repository.find();
+        this.logger.get(`${JSON.stringify({ limit, page })}`);
+        return entities;
+      } catch (error) {
+        handleDatabaseError(error as AppError);
+      }
+    }
 
-  async findOne(id: string, options: LoggerOptions) {
-    console.log(id, options);
-  }
+    public async findAll() {
+      try {
+        this.logger.restart();
+        const entities = await this.repository.find();
+        this.logger.get(`find all`);
+        return entities;
+      } catch (error) {
+        handleDatabaseError(error as AppError);
+      }
+    }
 
-  async update(entity: User, updateDto: Partial<CreateUserDto>) {
-    console.log(entity, updateDto);
-  }
+    public async findOne(id: string, options: LoggerOptions): Promise<T> {
+      try {
+        this.logger.restart();
+        const { name } = this.repository.metadata;
+        const where = { where: { id } } as unknown as FindOneOptions<T>;
+        const entity = await this.repository.findOne(where);
+        if (!entity) {
+          this.logger.warn(`[${id}] NOT FOUND`);
+          throw new NotFoundException(`${name} with id ${id} not found`);
+        }
+        if (options.logging) {
+          this.logger.get(`[${entity.id}]`);
+        }
+        return entity as unknown as T;
+      } catch (error) {
+        handleDatabaseError(error as AppError);
+      }
+    }
 
-  async remove(id: string) {
-    console.log(id);
+    public async update(entity: T, updateDto: Partial<D>): Promise<T> {
+      try {
+        this.logger.restart();
+        Object.assign(entity, updateDto);
+        const updatedEntity = await this.repository.save(entity);
+        this.logger.patch(`[${updatedEntity.id}]`);
+        return updatedEntity as unknown as T;
+      } catch (error) {
+        handleDatabaseError(error as AppError);
+      }
+    }
+
+    public async remove(entity: T): Promise<void> {
+      try {
+        const { id } = entity;
+        this.logger.restart();
+        await this.repository.softDelete(id);
+        this.logger.delete(`[${id}]`);
+      } catch (error) {
+        handleDatabaseError(error as AppError);
+      }
+    }
   }
+  return GenericUserService;
 }
