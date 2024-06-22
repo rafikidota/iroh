@@ -3,12 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { AppError, handleDatabaseError } from './../../common';
 import { GenericUser } from './user.generic';
-import {
-  GenericLogger,
-  IGenericService,
-  LoggerOptions,
-  SearchPaginateDto,
-} from '../../crud/';
+import { GenericLogger, LoggerOptions, SearchPaginateDto } from '../../crud/';
+import type { IGenericService } from '../../crud/interfaces';
 
 export function BuildGenericUserService<
   T extends GenericUser,

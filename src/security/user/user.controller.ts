@@ -15,7 +15,10 @@ import {
   LoggerOptions,
   SearchPaginateDto,
 } from '../../crud';
-import { IGenericController, IGenericService } from '../../crud/interfaces';
+import type {
+  IGenericController,
+  IGenericService,
+} from '../../crud/interfaces';
 import { GenericUser } from './user.generic';
 
 export function BuildGenericUserController<
