@@ -22,16 +22,10 @@ export class GenericUser extends GenericPersistentEntity {
   password: string;
 
   public verifyPassword(password: string) {
-    console.log('Hashing password...', {
-      password,
-      pass: this.password,
-    });
     return bcrypt.compare(password, this.password);
   }
 
   public hashPassword() {
-    console.log('Hashing password...', this.password);
     this.password = bcrypt.hashSync(this.password, 10);
-    console.log('Password hashed:', this.password);
   }
 }
