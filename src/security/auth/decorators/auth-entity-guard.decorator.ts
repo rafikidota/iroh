@@ -17,11 +17,8 @@ export function AuthEntityGuard<T extends GenericUser>() {
     constructor(private reflector: Reflector) {}
 
     canActivate(context: ExecutionContext) {
-      const target = context.getHandler();
-      const AuthEntity = this.reflector.get<Type<T>>(
-        AUTH_ENTITY_KEY,
-        target.constructor,
-      );
+      const target = context.getClass(); // Use getClass() to get the controller class
+      const AuthEntity = this.reflector.get<Type<T>>(AUTH_ENTITY_KEY, target);
 
       if (AuthEntity) {
         return applyDecorators(UseGuards(BuildBasicAuthGuard<T>(AuthEntity)));
