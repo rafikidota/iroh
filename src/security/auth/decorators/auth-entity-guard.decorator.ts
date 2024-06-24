@@ -1,30 +1,34 @@
 import {
-  UseGuards,
-  Type,
   Injectable,
-  mixin,
   ExecutionContext,
   applyDecorators,
+  UseGuards,
+  SetMetadata,
+  Type,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GenericUser } from './../../user/entity/user.generic';
 import { BuildBasicAuthGuard } from '../guards';
 import { AUTH_ENTITY_KEY } from './auth-entiy.decorator';
 
-export function AuthEntityGuard<T extends GenericUser>() {
-  @Injectable()
-  class MixinAuthGuard {
-    constructor(private reflector: Reflector) {}
+@Injectable()
+class MixinAuthGuard {
+  constructor(private reflector: Reflector) {}
 
-    canActivate(context: ExecutionContext) {
-      const target = context.getClass(); // Use getClass() to get the controller class
-      const AuthEntity = this.reflector.get<Type<T>>(AUTH_ENTITY_KEY, target);
+  canActivate(context: ExecutionContext) {
+    const target = context.getClass();
+    const AuthEntity = this.reflector.get(AUTH_ENTITY_KEY, target);
 
-      if (AuthEntity) {
-        return applyDecorators(UseGuards(BuildBasicAuthGuard<T>(AuthEntity)));
-      }
+    if (AuthEntity) {
+      return true;
     }
+    return false;
   }
+}
 
-  return UseGuards(mixin(MixinAuthGuard));
+export function AuthEntityGuard<T extends GenericUser>(entity: Type<T>) {
+  return applyDecorators(
+    SetMetadata(AUTH_ENTITY_KEY, entity),
+    UseGuards(BuildBasicAuthGuard<T>(entity), MixinAuthGuard),
+  );
 }
