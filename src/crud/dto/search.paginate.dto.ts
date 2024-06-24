@@ -8,13 +8,13 @@ export class SearchPaginateDto {
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  page: number;
+  page: number = 1;
 
   @ApiProperty()
   @Type(() => Number)
   @IsNumber()
   @IsOptional()
-  limit: number;
+  limit: number = 10;
 
   // @ApiProperty()
   // @IsOptional()
