@@ -4,7 +4,7 @@ import { GenericUser } from './entity';
 import { DeepPartial } from 'typeorm';
 import type { IGenericAuthController } from '../auth';
 import type { IGenericService } from '../../crud';
-export function BuildGenericAuthModule<
+export function BuildGenericUserModule<
   T extends GenericUser,
   D extends DeepPartial<T>,
   C extends IGenericAuthController<T>,
