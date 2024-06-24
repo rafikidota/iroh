@@ -15,7 +15,6 @@ import { GenericPersistentEntity } from '../entity';
 import { LoggerOptions } from '../services';
 import { SearchPaginateDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
-import { AuthEntityGuard } from '../../security';
 
 export function BuildGenericController<
   T extends GenericPersistentEntity,
@@ -26,21 +25,18 @@ export function BuildGenericController<
 
     @Post()
     @ApiBearerAuth()
-    @AuthEntityGuard()
     create(@Body() body: D) {
       return this.service.create(body);
     }
 
     @Get()
     @ApiBearerAuth()
-    @AuthEntityGuard()
     paginate(@Query() query: SearchPaginateDto) {
       return this.service.paginate(query);
     }
 
     @Get(':id')
     @ApiBearerAuth()
-    @AuthEntityGuard()
     findOne(@Param('id') id: string) {
       const options: LoggerOptions = { logging: true };
       return this.service.findOne(id, options);
@@ -48,7 +44,6 @@ export function BuildGenericController<
 
     @Patch(':id')
     @ApiBearerAuth()
-    @AuthEntityGuard()
     @EntityGuard(E)
     update(@Entity() entity: T, @Body() body: Partial<D>) {
       return this.service.update(entity, body);
@@ -56,7 +51,6 @@ export function BuildGenericController<
 
     @Delete(':id')
     @ApiBearerAuth()
-    @AuthEntityGuard()
     @EntityGuard(E)
     @HttpCode(204)
     remove(@Entity() entity: T) {

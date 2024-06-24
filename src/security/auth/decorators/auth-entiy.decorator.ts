@@ -1,7 +1,9 @@
-import { SetMetadata } from '@nestjs/common';
-import { GenericUser } from './../../user';
+import { applyDecorators, Type, UseGuards } from '@nestjs/common';
+import { GenericUser } from './../../user/entity/user.generic';
+import { BuildBasicAuthGuard } from '../guards';
 
 export const AUTH_ENTITY_KEY = 'AuthEntity';
 
-export const AuthEntity = <T extends GenericUser>(entity: new () => T) =>
-  SetMetadata(AUTH_ENTITY_KEY, entity);
+export function AuthEntity<T extends GenericUser>(entity: Type<T>) {
+  return applyDecorators(UseGuards(BuildBasicAuthGuard(entity)));
+}
