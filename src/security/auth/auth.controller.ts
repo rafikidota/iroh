@@ -14,6 +14,7 @@ export function BuildGenericAuthController<T extends GenericUser>(
 
     @Get('signup')
     @ApiBearerAuth()
+    @Public()
     @NoPermission()
     signup(@User() user: T) {
       return this.service.signup(user);
@@ -21,7 +22,6 @@ export function BuildGenericAuthController<T extends GenericUser>(
 
     @Get('signin')
     @ApiBasicAuth()
-    @Public()
     @BasicAuthGuard(E)
     signin(@User() user: T) {
       return this.service.signin(user);
