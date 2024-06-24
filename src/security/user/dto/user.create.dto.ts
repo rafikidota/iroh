@@ -1,7 +1,8 @@
 import { IsString, IsEmail } from 'class-validator';
-import { DefaultDto } from '../../../crud';
+import { PartialType } from '@nestjs/swagger';
+import { GenericPersistentEntity } from '../../../crud';
 
-export class CreateGenericUserDto extends DefaultDto {
+export class CreateGenericUserDto extends PartialType(GenericPersistentEntity) {
   @IsString()
   name: string;
 
