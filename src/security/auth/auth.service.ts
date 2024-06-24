@@ -22,8 +22,8 @@ export function BuildGenericAuthService<T extends GenericUser>(E: new () => T) {
     }
 
     public async signin(user: T): Promise<ISignInResponse> {
-      const { id, name } = user;
-      const payload: Payload = { id, name };
+      const { id } = user;
+      const payload: Payload = { id };
       const token = this.jwtService.sign(payload);
       const where = { where: { id } } as unknown as FindOneOptions<T>;
       const found = await this.repository.findOne(where);
