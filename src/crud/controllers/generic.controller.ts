@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   HttpCode,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 import { Entity, EntityGuard } from '../decorators';
@@ -53,7 +54,7 @@ export function BuildGenericController<
     @ApiResponse({ status: 200, description: `${E.name} found by id`, type: E })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
-    findOne(@Param('id') id: string) {
+    findOne(@Param('id', ParseUUIDPipe) id: string) {
       const options: LoggerOptions = { logging: true };
       return this.service.findOne(id, options);
     }
