@@ -1,0 +1,21 @@
+{
+  "ignorePatterns": ["node_modules/", "dist/"],
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "prettier",
+    "import"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "import/no-absolute-path": "error",
+    "@typescript-eslint/no-explicit-any": "off"
+  }
+}
