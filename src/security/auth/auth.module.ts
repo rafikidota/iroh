@@ -1,35 +1,27 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Module, Type, forwardRef } from '@nestjs/common';
+import { Module, Type } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { DeepPartial } from 'typeorm';
+import dotenv from 'dotenv';
+import { v4 as uuidv4 } from 'uuid';
 import { GenericUser } from '../user';
 import { JwtStrategy } from './strategies';
 import type { IGenericAuthController, IGenericAuthService } from './interfaces';
-import type { IGenericService } from '../../crud';
+
+dotenv.config();
 export function BuildGenericAuthModule<
   T extends GenericUser,
-  D extends DeepPartial<T>,
   C extends IGenericAuthController<T>,
   A extends IGenericAuthService<T>,
-  U extends IGenericService<T, D>,
->(
-  User: Type<T>,
-  AuthController: Type<C>,
-  AuthService: Type<A>,
-  UserService: Type<U>,
-  UserModule: Type<any>,
-) {
+>(User: Type<T>, AuthController: Type<C>, AuthService: Type<A>) {
   @Module({
     controllers: [AuthController],
-    providers: [AuthService, UserService, JwtStrategy],
+    providers: [AuthService, JwtStrategy],
     imports: [
       TypeOrmModule.forFeature([User]),
-      forwardRef(() => UserModule),
       PassportModule.register({ defaultStrategy: 'jwt' }),
       JwtModule.register({
-        secret: process.env.JWT_SECRET || 'defaultSecret', // Asegúrate de usar una variable de entorno
+        secret: process.env.JWT_SECRET || uuidv4(),
         signOptions: { expiresIn: '72h' },
       }),
     ],
