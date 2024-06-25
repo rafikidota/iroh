@@ -15,6 +15,7 @@
   ],
   "rules": {
     "prettier/prettier": "error",
-    "import/no-absolute-path": "error"
+    "import/no-absolute-path": "error",
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }
