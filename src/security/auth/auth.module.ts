@@ -18,7 +18,7 @@ export function BuildGenericAuthModule<
   AuthController: Type<C>,
   AuthService: Type<A>,
   UserService: Type<U>,
-  UserModule: DynamicModule | Promise<DynamicModule>,
+  UserModule: Type<any>,
 ) {
   @Module({
     controllers: [AuthController],
