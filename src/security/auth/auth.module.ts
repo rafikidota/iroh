@@ -1,4 +1,5 @@
-import { DynamicModule, Module, Type, forwardRef } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Module, Type, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';

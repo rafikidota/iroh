@@ -1,4 +1,5 @@
-import { DynamicModule, Module, Type } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Module, Type } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GenericUser } from './entity';
 import { DeepPartial } from 'typeorm';
