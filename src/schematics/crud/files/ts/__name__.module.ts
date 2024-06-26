@@ -1,20 +1,14 @@
-import { Module } from '@nestjs/common'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { <%= classify(name) %>Persistence } from "./infra/<%= lowerCase(name) %>.persistence.entity";
-import { <%= classify(name) %>Repository } from "./infra/<%= lowerCase(name) %>.repository";
-import { <%= classify(name) %>Controller } from "./<%= lowerCase(name) %>.controller";
-import { <%= classify(name) %>Service } from './<%= lowerCase(name) %>.service';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from '../../common/auth/auth.module';
+import { <%= classify(name) %> } from './entities/<%= lowercase(name) %>.entity';
+import { <%= classify(name) %>Controller } from './<%= lowercase(name) %>.controller';
+import { <%= classify(name) %>Service } from './<%= lowercase(name) %>.service';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([<%= classify(name) %>Persistence])],
-    providers: [
-        <%= classify(name) %>Repository,
-        <%= classify(name) %>Service],
-    controllers: [
-        <%= classify(name) %>Controller
-    ],
-    exports: [],
+  controllers: [<%= classify(name) %>Controller],
+  providers: [<%= classify(name) %>Service],
+  imports: [TypeOrmModule.forFeature([<%= classify(name) %>]), AuthModule],
+  exports: [TypeOrmModule],
 })
-export class <%= classify(name) %>Module {
-}
+export class <%= classify(name) %>Module {}
