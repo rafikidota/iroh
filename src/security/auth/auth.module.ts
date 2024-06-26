@@ -12,8 +12,8 @@ dotenv.config();
 export function BuildGenericAuthModule<
   T extends GenericUser,
   C extends IGenericAuthController<T>,
-  A extends IGenericAuthService<T>,
->(User: Type<T>, AuthController: Type<C>, AuthService: Type<A>) {
+  S extends IGenericAuthService<T>,
+>(User: Type<T>, AuthController: Type<C>, AuthService: Type<S>) {
   @Module({
     controllers: [AuthController],
     providers: [AuthService, JwtStrategy],

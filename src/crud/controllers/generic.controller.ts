@@ -8,6 +8,7 @@ import {
   Delete,
   HttpCode,
   ParseUUIDPipe,
+  Type,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 import { Entity, EntityGuard } from '../decorators';
@@ -20,7 +21,7 @@ import { ApiResponse } from '@nestjs/swagger';
 export function BuildGenericController<
   T extends GenericPersistentEntity,
   D extends DeepPartial<T>,
->(E: new () => T) {
+>(E: Type<T>) {
   abstract class GenericCRUDController implements IGenericController<T, D> {
     constructor(readonly service: IGenericService<T, D>) {}
 
