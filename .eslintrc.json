@@ -1,5 +1,5 @@
 {
-  "ignorePatterns": ["node_modules/", "dist/"],
+  "ignorePatterns": ["node_modules/", "dist/","src/schematics/**/*.ts"],
   "parser": "@typescript-eslint/parser",
   "extends": [
     "eslint:recommended",
