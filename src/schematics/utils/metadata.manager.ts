@@ -18,7 +18,7 @@ import {
 import { DeclarationOptions } from './module.declarator';
 
 export class MetadataManager {
-  constructor(private content: string) { }
+  constructor(private content: string) {}
 
   public insert(
     metadata: string,
@@ -32,8 +32,13 @@ export class MetadataManager {
     );
     const decoratorNodes: Node[] = this.getDecoratorMetadata(source, '@Module');
     const node: Node = decoratorNodes[0];
-    const matchingProperties: PropertyAssignment[] = (node as ObjectLiteralExpression).properties
-      .filter((prop): prop is PropertyAssignment => prop.kind === SyntaxKind.PropertyAssignment)
+    const matchingProperties: PropertyAssignment[] = (
+      node as ObjectLiteralExpression
+    ).properties
+      .filter(
+        (prop): prop is PropertyAssignment =>
+          prop.kind === SyntaxKind.PropertyAssignment,
+      )
       .filter((prop) => {
         const name = prop.name;
         switch (name.kind) {
@@ -45,7 +50,6 @@ export class MetadataManager {
             return false;
         }
       });
-
 
     symbol = this.mergeSymbolAndExpr(symbol, staticOptions);
     const addBlankLinesIfDynamic = () => {
@@ -105,7 +109,7 @@ export class MetadataManager {
       if (node) {
         result.push(node);
         if (node.getChildCount(sourceFile) > 0) {
-          node.forEachChild(child => {
+          node.forEachChild((child) => {
             queue.push(child);
           });
         }
@@ -114,7 +118,6 @@ export class MetadataManager {
 
     return result;
   }
-
 
   private insertMetadataToEmptyModuleDecorator(
     expr: ObjectLiteralExpression,

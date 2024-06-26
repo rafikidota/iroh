@@ -12,10 +12,7 @@ import {
   url,
 } from '@angular-devkit/schematics';
 
-import {
-  DeclarationOptions,
-  ModuleDeclarator,
-} from '../utils';
+import { DeclarationOptions, ModuleDeclarator } from '../utils';
 
 import { ModuleFinder } from '../utils/module.finder';
 import { Location, NameParser } from '../utils/name.parser';
@@ -23,12 +20,8 @@ import { mergeSourceRoot } from '../utils/source-root.helpers';
 
 import { CrudOptions } from './schema';
 
-import {
-  lowerCase,
-  upperCase,
-  dashToUnderscore,
-} from '../utils/string-utils';
-import { camelize, classify } from "@angular-devkit/core/src/utils/strings";
+import { lowerCase, upperCase, dashToUnderscore } from '../utils/string-utils';
+import { camelize, classify } from '@angular-devkit/core/src/utils/strings';
 
 export function main(options: CrudOptions): Rule {
   options = transform(options);
@@ -38,7 +31,7 @@ export function main(options: CrudOptions): Rule {
         mergeSourceRoot(options),
         addDeclarationToModule(options),
         mergeWith(generate(options)),
-      ])
+      ]),
     )(tree, context);
   };
 }
@@ -95,11 +88,16 @@ function addDeclarationToModule(options: CrudOptions): Rule {
     // for now, we'll pass in staticOptions using the `register()` method
     // with no default options
     // const staticOptions = { name: 'register', value: {} }; // dont use static options, we dont want module imports like GeneratedModule.register({})
-    const declarationOptions = Object.assign({ /*staticOptions*/ }, options);
+    const declarationOptions = Object.assign(
+      {
+        /*staticOptions*/
+      },
+      options,
+    );
 
     tree.overwrite(
       options.module,
-      declarator.declare(content, declarationOptions as DeclarationOptions)
+      declarator.declare(content, declarationOptions as DeclarationOptions),
     );
     return tree;
   };
