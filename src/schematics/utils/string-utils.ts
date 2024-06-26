@@ -6,6 +6,6 @@ export function upperCase(str: string): string {
   return str.toUpperCase();
 }
 
-export function dashToUnderscore(str) {
+export function dashToUnderscore(str: string): string {
   return str.replace(/-/g, '_');
 }

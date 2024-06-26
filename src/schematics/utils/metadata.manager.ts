@@ -18,7 +18,7 @@ import {
 import { DeclarationOptions } from './module.declarator';
 
 export class MetadataManager {
-  constructor(private content: string) {}
+  constructor(private content: string) { }
 
   public insert(
     metadata: string,
@@ -32,9 +32,9 @@ export class MetadataManager {
     );
     const decoratorNodes: Node[] = this.getDecoratorMetadata(source, '@Module');
     const node: Node = decoratorNodes[0];
-    const matchingProperties: ObjectLiteralElement[] = (node as ObjectLiteralExpression).properties
-      .filter((prop) => prop.kind === SyntaxKind.PropertyAssignment)
-      .filter((prop: PropertyAssignment) => {
+    const matchingProperties: PropertyAssignment[] = (node as ObjectLiteralExpression).properties
+      .filter((prop): prop is PropertyAssignment => prop.kind === SyntaxKind.PropertyAssignment)
+      .filter((prop) => {
         const name = prop.name;
         switch (name.kind) {
           case SyntaxKind.Identifier:
@@ -45,6 +45,7 @@ export class MetadataManager {
             return false;
         }
       });
+
 
     symbol = this.mergeSymbolAndExpr(symbol, staticOptions);
     const addBlankLinesIfDynamic = () => {
@@ -96,19 +97,24 @@ export class MetadataManager {
   }
 
   private getSourceNodes(sourceFile: SourceFile): Node[] {
-    const nodes: Node[] = [sourceFile];
-    const result = [];
-    while (nodes.length > 0) {
-      const node = nodes.shift();
+    const result: Node[] = [];
+    const queue: Node[] = [sourceFile];
+
+    while (queue.length > 0) {
+      const node = queue.shift();
       if (node) {
         result.push(node);
-        if (node.getChildCount(sourceFile) >= 0) {
-          nodes.unshift(...node.getChildren());
+        if (node.getChildCount(sourceFile) > 0) {
+          node.forEachChild(child => {
+            queue.push(child);
+          });
         }
       }
     }
+
     return result;
   }
+
 
   private insertMetadataToEmptyModuleDecorator(
     expr: ObjectLiteralExpression,
@@ -170,7 +176,7 @@ export class MetadataManager {
       node = arrLiteral.elements;
     }
     if (Array.isArray(node)) {
-      const nodeArray = (node as {}) as Node[];
+      const nodeArray = node as unknown as Node[];
       const symbolsArray = nodeArray.map((childNode) =>
         childNode.getText(source),
       );
@@ -187,8 +193,9 @@ export class MetadataManager {
       toInsert = staticOptions ? this.addBlankLines(symbol) : `${symbol}`;
     } else {
       const text = (node as Node).getFullText(source);
-      if (text.match(/^\r?\n/)) {
-        toInsert = `,${text.match(/^\r?\n(\r?)\s+/)[0]}${symbol}`;
+      if (text) {
+        const match = text.match(/^\r?\n(\r?)\s+/);
+        toInsert = match ? `,${match[0]}${symbol}` : `, ${symbol}`;
       } else {
         toInsert = `, ${symbol}`;
       }

@@ -58,7 +58,7 @@ function transform(options: CrudOptions): CrudOptions {
 
 function generate(options: CrudOptions) {
   return (context: SchematicContext) =>
-    apply(url(join('./files' as Path, options.language)), [
+    apply(url(join('./files' as Path, options.language!)), [
       template({
         ...strings,
         ...options,
@@ -73,7 +73,7 @@ function generate(options: CrudOptions) {
         camelize,
         dashToUnderscore,
       }),
-      move(options.path),
+      move(options.path!),
     ])(context);
 }
 
@@ -85,11 +85,11 @@ function addDeclarationToModule(options: CrudOptions): Rule {
     options.module = new ModuleFinder(tree).find({
       name: options.name,
       path: options.path as Path,
-    });
+    })!;
     if (!options.module) {
       return tree;
     }
-    const content = tree.read(options.module).toString();
+    const content = tree.read(options.module)!.toString();
 
     const declarator: ModuleDeclarator = new ModuleDeclarator();
     // for now, we'll pass in staticOptions using the `register()` method
