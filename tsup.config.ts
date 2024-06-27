@@ -12,9 +12,7 @@ export default defineConfig({
     '!src/**/*.json',
   ],
   dts: true,
-  splitting: false,
+  shims: true,
   skipNodeModulesBundle: true,
   clean: true,
-  outDir: 'dist',
-  target: 'es2022',
 });
