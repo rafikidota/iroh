@@ -28,11 +28,15 @@ export class Hero extends GenericPersistentEntity {
 
 ```js
 import { Controller } from '@nestjs/common';
-import { GenericController } from '@rafikidota/iroh';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Auth, GenericController } from '@rafikidota/iroh';
 import { HeroService } from './hero.service';
 import { Hero } from './entities/hero.entity';
 
-@Controller('hero')
+@Auth()
+@ApiBearerAuth()
+@ApiTags(Hero.name)
+@Controller(Hero.name.toLowerCase())
 export class HeroController extends GenericController(Hero) {
   constructor(readonly service: HeroService) {
     super(service);
@@ -56,6 +60,7 @@ export class HeroService extends GenericService(Hero) {}
 ```ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from '../../common/auth/auth.module';
 import { Hero } from './entities/hero.entity';
 import { HeroController } from './hero.controller';
 import { HeroService } from './hero.service';
@@ -63,7 +68,7 @@ import { HeroService } from './hero.service';
 @Module({
   controllers: [HeroController],
   providers: [HeroService],
-  imports: [TypeOrmModule.forFeature([Hero])],
+  imports: [TypeOrmModule.forFeature([Hero]), AuthModule],
   exports: [TypeOrmModule],
 })
 export class HeroModule {}
