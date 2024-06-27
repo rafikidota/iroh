@@ -4,10 +4,10 @@ import { FindOneOptions, Repository } from 'typeorm';
 import { IGenericAuthService, ISignInResponse } from './interfaces';
 import { GenericLogger } from './../../crud';
 import { Payload } from './interfaces/payload';
-import { UnauthorizedException } from '@nestjs/common';
+import { Type, UnauthorizedException } from '@nestjs/common';
 import { GenericUser } from '../user/entity';
 
-export function BuildGenericAuthService<T extends GenericUser>(E: new () => T) {
+export function GenericAuthService<T extends GenericUser>(E: Type<T>) {
   class GenericAuthService implements IGenericAuthService<T> {
     public logger: GenericLogger;
     constructor(

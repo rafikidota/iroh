@@ -3,13 +3,14 @@ import {
   CanActivate,
   ExecutionContext,
   NotFoundException,
+  Type,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { Request } from 'express';
 import { AppError, handleDatabaseError } from '../../common';
 
-export function BuildEntityGuard<T>(E: new () => T) {
+export function BuildEntityGuard<T>(E: Type<T>) {
   @Injectable()
   class EntityGuard implements CanActivate {
     constructor(@InjectRepository(E) readonly repository: Repository<T>) {}

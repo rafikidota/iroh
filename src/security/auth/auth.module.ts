@@ -9,7 +9,7 @@ import { JwtStrategy } from './strategies';
 import type { IGenericAuthController, IGenericAuthService } from './interfaces';
 
 dotenv.config();
-export function BuildGenericAuthModule<
+export function GenericAuthModule<
   T extends GenericUser,
   C extends IGenericAuthController<T>,
   S extends IGenericAuthService<T>,

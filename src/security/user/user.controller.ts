@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   HttpCode,
+  Type,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 import {
@@ -21,10 +22,10 @@ import type {
 } from '../../crud/interfaces';
 import { GenericUser } from './entity/user.generic';
 
-export function BuildGenericUserController<
+export function GenericUserController<
   T extends GenericUser,
   D extends DeepPartial<T>,
->(E: new () => T) {
+>(E: Type<T>) {
   abstract class GenericUserController implements IGenericController<T, D> {
     constructor(readonly service: IGenericService<T, D>) {}
 

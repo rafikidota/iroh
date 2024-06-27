@@ -1,6 +1,6 @@
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, Type } from '@nestjs/common';
 import { AppError, handleDatabaseError } from './../../common';
 import { GenericLogger } from '../logger/generic.logger';
 import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
@@ -8,10 +8,10 @@ import { IGenericService } from '../interfaces/crud.service';
 import { LoggerOptions } from './util/logger.options';
 import { SearchPaginateDto } from '../dto/search.paginate.dto';
 
-export function BuildGenericService<
+export function GenericService<
   T extends GenericPersistentEntity,
   D extends DeepPartial<T>,
->(E: new () => T) {
+>(E: Type<T>) {
   class GenericCRUDService implements IGenericService<T, D> {
     public logger: GenericLogger;
     constructor(@InjectRepository(E) readonly repository: Repository<T>) {

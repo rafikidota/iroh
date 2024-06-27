@@ -18,7 +18,7 @@ import { SearchPaginateDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
 import { ApiResponse } from '@nestjs/swagger';
 
-export function BuildGenericController<
+export function GenericController<
   T extends GenericPersistentEntity,
   D extends DeepPartial<T>,
 >(E: Type<T>) {

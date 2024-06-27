@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   Injectable,
   NotFoundException,
+  Type,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,7 +12,7 @@ import { Buffer } from 'buffer';
 import { Request } from 'express';
 import { GenericUser } from '../../user/entity/user.generic';
 
-export function BuildBasicAuthGuard<T extends GenericUser>(E: new () => T) {
+export function BuildBasicAuthGuard<T extends GenericUser>(E: Type<T>) {
   @Injectable()
   class BasicAuthGuard implements CanActivate {
     constructor(@InjectRepository(E) readonly repository: Repository<T>) {}
