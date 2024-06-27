@@ -23,7 +23,7 @@ export function BuildEntityGuard<T>(E: Type<T>) {
         const { id } = request.params;
         const valid = validateUUID(id);
         if (!valid) {
-          throw new BadRequestException(`Invalid uuid: ${id}`);
+          throw new BadRequestException('Validation failed (uuid is expected)');
         }
         const where = { where: { id } } as unknown as FindOneOptions<T>;
         const entity = await this.repository.findOne(where);
