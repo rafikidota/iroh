@@ -11,14 +11,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "scripts": {
     "prepare": "husky",
-    "build": "tsc",
-    "prebuild": "rimraf dist",
+    "build": "rimraf -rf dist && tsc -p tsconfig.json",
     "postbuild": "mkdir -p dist/schematics/crud/files/ts && cp -ar ./src/schematics/crud/files/ts/* dist/schematics/crud/files/ts",
     "lint": "eslint . --fix",
     "format": "prettier --write \"**/*.ts\"",
