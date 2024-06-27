@@ -2,12 +2,14 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
+  BadRequestException,
   NotFoundException,
   Type,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { Request } from 'express';
+import { validate as validateUUID } from 'uuid';
 import { AppError, handleDatabaseError } from '../../common';
 
 export function BuildEntityGuard<T>(E: Type<T>) {
@@ -19,6 +21,10 @@ export function BuildEntityGuard<T>(E: Type<T>) {
       try {
         const request = context.switchToHttp().getRequest<Request>();
         const { id } = request.params;
+        const valid = validateUUID(id);
+        if (!valid) {
+          throw new BadRequestException(`Invalid uuid: ${id}`);
+        }
         const where = { where: { id } } as unknown as FindOneOptions<T>;
         const entity = await this.repository.findOne(where);
         if (!entity) {
