@@ -71,6 +71,7 @@
     "nestjs",
     "typeorm",
     "generic",
+    "schematics",
     "crud",
     "auth"
   ]
