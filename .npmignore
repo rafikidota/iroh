@@ -14,6 +14,7 @@ assets/
 .swcrc
 
 tsconfig.json
+tsconfig.build.json
 tsup.config.ts
 
 .eslintrc.json
