@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  format: ['esm'],
+  format: ['cjs', 'esm'],
   entry: [
     'src/index.ts',
     'src/schematics/crud/*.ts',
