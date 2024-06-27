@@ -20,8 +20,9 @@
     "strictBindCallApply": true,
     "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "src/**/files/**"]
+  "include": ["src/**/*.ts", "src/schematics/crud/schema.json"], 
+  "exclude": ["node_modules", "src/**/files/ts/**"]
 }
