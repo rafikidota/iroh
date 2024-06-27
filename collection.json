@@ -5,6 +5,11 @@
       "description": "Schematic to generate a dynamic crud module.",
       "factory": "./dist/schematics/crud/crud.factory#main",
       "schema": "./dist/schematics/crud/schema.json"
+    },
+    "auth": {
+      "description": "Schematic to generate a dynamic auth module.",
+      "factory": "./dist/schematics/auth/auth.factory#main",
+      "schema": "./dist/schematics/auth/schema.json"
     }
   }
 }

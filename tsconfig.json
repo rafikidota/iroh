@@ -21,8 +21,12 @@
     "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*.ts", "src/schematics/crud/schema.json"], 
+  "include": [
+    "src/**/*.ts",
+    "src/schematics/crud/schema.json",
+    "src/schematics/auth/schema.json"
+  ],
   "exclude": ["node_modules", "src/**/files/ts/**"]
 }
