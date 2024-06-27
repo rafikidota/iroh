@@ -17,7 +17,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "prepare": "husky",
-    "build": "tsup",
+    "build": "tsc",
     "prebuild": "rimraf dist",
     "postbuild": "mkdir -p dist/schematics/crud/files/ts && cp -ar ./src/schematics/crud/files/ts/* dist/schematics/crud/files/ts",
     "lint": "eslint . --fix",
