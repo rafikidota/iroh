@@ -18,6 +18,7 @@
     "node_modules/",
     "dist/",
     "src/schematics/crud/files/ts/**/*.ts",
+    "src/schematics/auth/files/ts/**/*.ts",
     "tsup.config.ts" 
   ],
   "rules": {
