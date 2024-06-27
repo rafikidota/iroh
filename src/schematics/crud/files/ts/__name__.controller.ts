@@ -1,8 +1,8 @@
 import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Auth, BuildGenericController } from '@rafikidota/iroh';
-import { <%= classify(name) %>Service } from './<%= lowercase(name) %>.service';
-import { <%= classify(name) %> } from './entities/<%= lowercase(name) %>.entity';
+import { <%= classify(name) %>Service } from './<%= lowerCase(name) %>.service';
+import { <%= classify(name) %> } from './entities/<%= lowerCase(name) %>.entity';
 
 @Auth()
 @ApiBearerAuth()
