@@ -11,6 +11,11 @@ style="width:250px"/>
 
 The following TypeScript code snippet illustrates an example of using the Iroh library within the Nestjs framework. This code establishes a basic Nestjs CRUD and highlights how to implement Iroh in your Nestjs project.
 
+## Generate new modules
+```sh
+npx nest g -c @rafikidota/iroh crud 
+```
+
 ## Entity
 
 ```ts
