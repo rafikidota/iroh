@@ -15,4 +15,5 @@ export default defineConfig({
   shims: true,
   skipNodeModulesBundle: true,
   clean: true,
+  splitting: false,
 });
