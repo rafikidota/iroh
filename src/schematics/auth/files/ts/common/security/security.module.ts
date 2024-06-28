@@ -5,4 +5,4 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [UserModule, AuthModule],
 })
-export class CommonModule {}
+export class SecurityModule {}
