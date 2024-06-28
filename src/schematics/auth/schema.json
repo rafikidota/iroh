@@ -44,7 +44,6 @@
     }
   },
   "required": [
-    "name",
-    "path"
+    "name"
   ]
 }
