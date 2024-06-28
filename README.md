@@ -11,13 +11,29 @@ style="width:250px"/>
 
 The following TypeScript code snippet illustrates an example of using the Iroh library within the Nestjs framework. This code establishes a basic Nestjs CRUD and highlights how to implement Iroh in your Nestjs project.
 
-## Generate new modules
+## Prerequisites
+Before using the schematics, ensure you have the following:
+- A NestJS project set up
+- TypeORM configured
+- Necessary dependencies installed
+
+## Step-by-Step Guide
+
+## 1. Generate Auth Module
+Run the following command to generate the `auth` module:
 ```sh
-npx nest g -c @rafikidota/iroh crud 
+npx nest g -c @rafikidota/iroh auth 
 ```
 
-## Entity
+## 2. Generate CRUD Module
+Use the following command to generate a new `CRUD` module:
+```sh
+npx nest g -c @rafikidota/iroh crud <module-name> <destination-path>
+```
 
+## 3. Output
+### Entity
+Define your entity by extending `GenericPersistentEntity`:
 ```ts
 import { Column, Entity } from 'typeorm';
 import { GenericPersistentEntity } from '@rafikidota/iroh';
@@ -29,8 +45,8 @@ export class Hero extends GenericPersistentEntity {
 }
 ```
 
-## Controller
-
+### Controller
+Define your controller by extending `GenericController`:
 ```js
 import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -49,8 +65,8 @@ export class HeroController extends GenericController(Hero) {
 }
 ```
 
-## Service
-
+### Service
+Define your service by extending `GenericService`:
 ```ts
 import { Injectable } from '@nestjs/common';
 import { GenericService } from '@rafikidota/iroh';
@@ -60,8 +76,8 @@ import { Hero } from './entities/hero.entity';
 export class HeroService extends GenericService(Hero) {}
 ```
 
-## Module
-
+### Module
+Import necessary modules and set up your feature module:
 ```ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -79,4 +95,7 @@ import { HeroService } from './hero.service';
 export class HeroModule {}
 ```
 
-Explore the code example on GitHub [here](https://github.com/rafikidota/nestjs-iroh/)
+## Additional Resources
+- [NestJS Documentation](https://docs.nestjs.com/)
+- [TypeORM Documentation](https://typeorm.io/)
+- [Nestjs Iroh example on GitHub](https://github.com/rafikidota/nestjs-iroh/)
