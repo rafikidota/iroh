@@ -1,4 +1,4 @@
 import { HttpException } from '@nestjs/common';
-import { PostgresError } from './postgresql.error';
+import { PostgresError } from '../database/postgresql.error';
 
 export type AppError = PostgresError | HttpException;

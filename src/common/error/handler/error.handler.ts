@@ -3,7 +3,9 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { AppError, ErrorMap, PostgresError } from '../error';
+import { AppError } from '../types';
+import { ErrorMap } from '../util';
+import { PostgresError } from '../database';
 
 export function handleDatabaseError(error: AppError) {
   if (error instanceof PostgresError && error.code) {
