@@ -41,6 +41,7 @@ function transform(options: InitOptions): InitOptions {
 
   target.metadata = 'imports';
   target.type = 'module';
+  target.skipImport = true;
 
   const location: Location = new NameParser().parse(target);
   target.name = strings.dasherize(location.name);
