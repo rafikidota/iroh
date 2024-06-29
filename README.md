@@ -19,10 +19,10 @@ Before using the schematics, ensure you have the following:
 
 ## Step-by-Step Guide
 
-## 1. Generate Auth Module
-Run the following command to generate the `auth` module:
+## 1. Generate Basic Modules
+Run the following command to generate the `core`, `common` and `security` modules:
 ```sh
-npx nest g -c @rafikidota/iroh auth 
+npx nest g -c @rafikidota/iroh init 
 ```
 
 ## 2. Generate CRUD Module

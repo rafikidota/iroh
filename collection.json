@@ -6,10 +6,10 @@
       "factory": "./dist/schematics/crud/crud.factory#main",
       "schema": "./dist/schematics/crud/schema.json"
     },
-    "auth": {
-      "description": "Schematic to generate a dynamic auth module.",
-      "factory": "./dist/schematics/auth/auth.factory#main",
-      "schema": "./dist/schematics/auth/schema.json"
+    "init": {
+      "description": "Schematic to generate dynamic basic modules.",
+      "factory": "./dist/schematics/init/init.factory#main",
+      "schema": "./dist/schematics/init/schema.json"
     }
   }
 }

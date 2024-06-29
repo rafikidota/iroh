@@ -1,4 +1,4 @@
-export interface AuthOptions {
+export interface InitOptions {
   /**
    * The name of the module.
    */

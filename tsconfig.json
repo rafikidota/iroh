@@ -26,7 +26,7 @@
   "include": [
     "src/**/*.ts",
     "src/schematics/crud/schema.json",
-    "src/schematics/auth/schema.json"
+    "src/schematics/init/schema.json"
   ],
   "exclude": ["node_modules", "src/**/files/ts/**"]
 }

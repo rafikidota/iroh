@@ -18,12 +18,12 @@ import { ModuleFinder } from '../utils/module.finder';
 import { Location, NameParser } from '../utils/name.parser';
 import { mergeSourceRoot } from '../utils/source-root.helpers';
 
-import { AuthOptions } from './schema';
+import { InitOptions } from './schema';
 
 import { lowerCase, upperCase, dashToUnderscore } from '../utils/string-utils';
 import { camelize, classify } from '@angular-devkit/core/src/utils/strings';
 
-export function main(options: AuthOptions): Rule {
+export function main(options: InitOptions): Rule {
   options = transform(options);
   return (tree: Tree, context: SchematicContext) => {
     return branchAndMerge(
@@ -36,8 +36,8 @@ export function main(options: AuthOptions): Rule {
   };
 }
 
-function transform(options: AuthOptions): AuthOptions {
-  const target: AuthOptions = Object.assign({}, options);
+function transform(options: InitOptions): InitOptions {
+  const target: InitOptions = Object.assign({}, options);
 
   target.metadata = 'imports';
   target.type = 'module';
@@ -49,7 +49,7 @@ function transform(options: AuthOptions): AuthOptions {
   return target;
 }
 
-function generate(options: AuthOptions) {
+function generate(options: InitOptions) {
   return (context: SchematicContext) =>
     apply(url(join('./files' as Path, options.language!)), [
       template({
@@ -70,7 +70,7 @@ function generate(options: AuthOptions) {
     ])(context);
 }
 
-function addDeclarationToModule(options: AuthOptions): Rule {
+function addDeclarationToModule(options: InitOptions): Rule {
   return (tree: Tree) => {
     if (options.skipImport !== undefined && options.skipImport) {
       return tree;
