@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from '../../common/auth/auth.module';
+import { AuthModule } from '../../common/security/auth/auth.module';
 import { <%= classify(name) %> } from './entities/<%= lowerCase(name) %>.entity';
 import { <%= classify(name) %>Controller } from './<%= lowerCase(name) %>.controller';
 import { <%= classify(name) %>Service } from './<%= lowerCase(name) %>.service';
