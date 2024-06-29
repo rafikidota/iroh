@@ -1,7 +1,7 @@
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
-import { AppError, handleDatabaseError } from './../../common';
+import { AppError, ErrorHandler } from './../../common';
 import { GenericLogger, LoggerOptions } from '../logger';
 import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
 import { IGenericService } from '../interfaces/crud.service';
@@ -15,10 +15,12 @@ export function GenericService<
     constructor(
       @InjectRepository(E) readonly repository: Repository<T>,
       readonly logger: GenericLogger,
+      readonly handler: ErrorHandler,
     ) {
       const { name } = this.repository.metadata;
       const context = `${name}Logger`;
       this.logger = new GenericLogger(context);
+      this.handler = ErrorHandler.getInstance();
     }
 
     public async create(createDto: D): Promise<T> {
@@ -28,7 +30,7 @@ export function GenericService<
         this.logger.post(`[${entity.id}]`);
         return entity as unknown as T;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -40,7 +42,7 @@ export function GenericService<
         this.logger.get(`${JSON.stringify({ limit, page })}`);
         return entities;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -51,7 +53,7 @@ export function GenericService<
         this.logger.get(`find all`);
         return entities;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -70,7 +72,7 @@ export function GenericService<
         }
         return entity as unknown as T;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -82,7 +84,7 @@ export function GenericService<
         this.logger.patch(`[${updatedEntity.id}]`);
         return updatedEntity as unknown as T;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -93,7 +95,7 @@ export function GenericService<
         await this.repository.softDelete(id);
         this.logger.delete(`[${id}]`);
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
   }
