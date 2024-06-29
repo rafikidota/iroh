@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import chalk from 'chalk';
-import { LogLevel } from './level.interface';
+import { LogLevel } from './util';
 
 @Injectable()
 export class GenericLogger extends Logger {
