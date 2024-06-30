@@ -16,16 +16,18 @@ import { GenericPersistent } from '../entity';
 import { LoggerOptions } from '../logger';
 import { SearchPaginateDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiResponse } from '@nestjs/swagger';
 
 export function GenericController<
   T extends GenericPersistent,
   D extends DeepPartial<T>,
->(E: Type<T>) {
+  U extends Partial<T>,
+>(E: Type<T>, CreateDto: Type<D>, UpdateDto: Type<U>) {
   abstract class GenericCRUDController implements IGenericController<T, D> {
     constructor(readonly service: IGenericService<T, D>) {}
 
     @Post()
+    @ApiBody({ type: CreateDto })
     @ApiResponse({
       status: 201,
       description: `${E.name} was created successfully`,
@@ -61,6 +63,7 @@ export function GenericController<
     }
 
     @Patch(':id')
+    @ApiBody({ type: UpdateDto })
     @ApiResponse({
       status: 200,
       description: `${E.name} was updated successfully`,

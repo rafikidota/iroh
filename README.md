@@ -71,12 +71,14 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Auth, GenericController } from '@rafikidota/iroh';
 import { HeroService } from './hero.service';
 import { Hero } from './entities/hero.entity';
+import { CreateHeroDto } from './dto/hero.create.dto';
+import { UpdateHeroDto } from './dto/hero.update.dto';
 
 @Auth()
 @ApiBearerAuth()
 @ApiTags(Hero.name)
 @Controller(Hero.name.toLowerCase())
-export class HeroController extends GenericController(Hero) {
+export class HeroController extends GenericController(Hero, CreateHeroDto, UpdateHeroDto) {
   constructor(readonly service: HeroService) {
     super(service);
   }
