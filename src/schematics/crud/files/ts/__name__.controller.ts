@@ -10,7 +10,11 @@ import { Update<%= classify(name) %>Dto } from './dto/<%= lowerCase(name) %>.upd
 @ApiBearerAuth()
 @ApiTags(<%= classify(name) %>.name)
 @Controller(<%= classify(name) %>.name.toLowerCase())
-export class <%= classify(name) %>Controller extends GenericController(<%= classify(name) %>, Create<%= classify(name) %>Dto, Update<%= classify(name) %>Dto) {
+export class <%= classify(name) %>Controller extends GenericController(
+  <%= classify(name) %>,
+  Create<%= classify(name) %>Dto,
+  Update<%= classify(name) %>Dto
+) {
   constructor(readonly service: <%= classify(name) %>Service) {
     super(service);
   }
