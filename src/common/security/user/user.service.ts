@@ -1,6 +1,6 @@
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Inject, NotFoundException, Type } from '@nestjs/common';
+import { NotFoundException, Type } from '@nestjs/common';
 import { AppError, ErrorHandler } from './../../../common';
 import { GenericUser } from './entity/user.generic';
 import {
@@ -15,16 +15,13 @@ export function GenericUserService<
   D extends DeepPartial<T>,
 >(E: Type<T>) {
   class GenericUserService implements IGenericService<T, D> {
-    constructor(
-      @InjectRepository(E)
-      readonly repository: Repository<T>,
-      @Inject(GenericLogger)
-      readonly logger: GenericLogger,
-      readonly handler: ErrorHandler,
-    ) {
+    public readonly logger: GenericLogger;
+    public readonly handler: ErrorHandler;
+    constructor(@InjectRepository(E) readonly repository: Repository<T>) {
       const { name } = this.repository.metadata;
       const context = `${name}Logger`;
       this.logger = new GenericLogger(context);
+      this.handler = ErrorHandler.getInstance();
     }
 
     public async create(createDto: D): Promise<T> {

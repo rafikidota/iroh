@@ -12,11 +12,9 @@ export function GenericService<
   D extends DeepPartial<T>,
 >(E: Type<T>) {
   class GenericCRUDService implements IGenericService<T, D> {
-    constructor(
-      @InjectRepository(E) readonly repository: Repository<T>,
-      readonly logger: GenericLogger,
-      readonly handler: ErrorHandler,
-    ) {
+    public readonly logger: GenericLogger;
+    public readonly handler: ErrorHandler;
+    constructor(@InjectRepository(E) readonly repository: Repository<T>) {
       const { name } = this.repository.metadata;
       const context = `${name}Logger`;
       this.logger = new GenericLogger(context);
