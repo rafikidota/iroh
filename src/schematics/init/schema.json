@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "InitSchema",
+  "title": "Nest Base Init Module Options Schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the module.",
+      "default": ""
+    },
+    "path": {
+      "type": "string",
+      "format": "path",
+      "description": "The path to create the module.",
+      "default": ""
+    },
+    "module": {
+      "type": "string",
+      "format": "path",
+      "description": "The path to import the module."
+    },
+    "language": {
+      "type": "string",
+      "description": "Nest module language (ts/js)."
+    },
+    "sourceRoot": {
+      "type": "string",
+      "description": "Nest module source root directory."
+    },
+    "skipImport": {
+      "description": "Flag to skip the module import.",
+      "default": true
+    }
+  },
+  "required": []
+}

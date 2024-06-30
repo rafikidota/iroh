@@ -1,23 +1,24 @@
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NotFoundException } from '@nestjs/common';
-import { AppError, handleDatabaseError } from './../../common';
-import { GenericLogger } from '../logger/generic.logger';
-import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
+import { NotFoundException, Type } from '@nestjs/common';
+import { AppError, ErrorHandler } from './../../common';
+import { GenericLogger, LoggerOptions } from '../logger';
+import { GenericPersistent } from '../entity/generic.persistent';
 import { IGenericService } from '../interfaces/crud.service';
-import { LoggerOptions } from './util/logger.options';
-import { SearchPaginateDto } from '../dto/search.paginate.dto';
+import { SearchDto } from '../dto/search.dto';
 
-export function BuildGenericService<
-  T extends GenericPersistentEntity,
+export function GenericService<
+  T extends GenericPersistent,
   D extends DeepPartial<T>,
->(E: new () => T) {
+>(E: Type<T>) {
   class GenericCRUDService implements IGenericService<T, D> {
-    public logger: GenericLogger;
+    public readonly logger: GenericLogger;
+    public readonly handler: ErrorHandler;
     constructor(@InjectRepository(E) readonly repository: Repository<T>) {
       const { name } = this.repository.metadata;
       const context = `${name}Logger`;
       this.logger = new GenericLogger(context);
+      this.handler = ErrorHandler.getInstance();
     }
 
     public async create(createDto: D): Promise<T> {
@@ -27,19 +28,23 @@ export function BuildGenericService<
         this.logger.post(`[${entity.id}]`);
         return entity as unknown as T;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
-    public async paginate(query: SearchPaginateDto): Promise<T[]> {
+    public async paginate(query: SearchDto): Promise<T[]> {
       try {
         this.logger.restart();
-        const { limit, page } = query;
-        const entities = await this.repository.find();
-        this.logger.get(`${JSON.stringify({ limit, page })}`);
+        const { limit, page, offset } = query;
+        const take = limit || 10;
+        const skip = offset || (page - 1) * limit || 0;
+        const entities = await this.repository.find({ take, skip });
+        this.logger.get(
+          `[Paginate - Limit: ${limit}, Page: ${page}, Found: ${entities.length}]`,
+        );
         return entities;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -50,7 +55,7 @@ export function BuildGenericService<
         this.logger.get(`find all`);
         return entities;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -69,7 +74,7 @@ export function BuildGenericService<
         }
         return entity as unknown as T;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -81,7 +86,7 @@ export function BuildGenericService<
         this.logger.patch(`[${updatedEntity.id}]`);
         return updatedEntity as unknown as T;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -92,7 +97,7 @@ export function BuildGenericService<
         await this.repository.softDelete(id);
         this.logger.delete(`[${id}]`);
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
   }

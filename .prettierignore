@@ -1,2 +1,4 @@
 node_modules/
 dist/
+src/schematics/crud/files/**/*.ts
+src/schematics/init/files/**/*.ts

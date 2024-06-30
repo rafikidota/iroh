@@ -1,1 +1,1 @@
-export * from './error-map';
+export * from './error.map';

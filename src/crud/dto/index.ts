@@ -1,2 +1,2 @@
-export * from './default.dto';
-export * from './search.paginate.dto';
+export * from './pagination.dto';
+export * from './search.dto';
