@@ -13,7 +13,7 @@ import {
 import { DeepPartial } from 'typeorm';
 import { Entity, EntityGuard } from '../decorators';
 import { GenericPersistent } from '../entity';
-import { LoggerOptions } from '../services';
+import { LoggerOptions } from '../logger';
 import { SearchPaginateDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
 import { ApiResponse } from '@nestjs/swagger';

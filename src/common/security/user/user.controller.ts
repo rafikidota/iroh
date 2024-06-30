@@ -15,11 +15,11 @@ import {
   EntityGuard,
   LoggerOptions,
   SearchPaginateDto,
-} from '../../crud';
+} from '../../../crud';
 import type {
   IGenericController,
   IGenericService,
-} from '../../crud/interfaces';
+} from '../../../crud/interfaces';
 import { GenericUser } from './entity/user.generic';
 
 export function GenericUserController<

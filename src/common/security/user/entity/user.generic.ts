@@ -1,7 +1,7 @@
 import { Column } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { GenericPersistent } from '../../../crud';
-import { SoftUnique } from '../../../crud/decorators';
+import { GenericPersistent } from '../../../../crud';
+import { SoftUnique } from '../../../../crud/decorators';
 
 export class GenericUser extends GenericPersistent {
   @Column()

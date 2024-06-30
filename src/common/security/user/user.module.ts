@@ -3,7 +3,7 @@ import { Module, Type } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GenericUser } from './entity';
 import { DeepPartial } from 'typeorm';
-import type { IGenericController, IGenericService } from '../../crud';
+import type { IGenericController, IGenericService } from '../../../crud';
 export function GenericUserModule<
   T extends GenericUser,
   D extends DeepPartial<T>,

@@ -10,12 +10,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { Request } from 'express';
 import { validate as validateUUID } from 'uuid';
-import { AppError, handleDatabaseError } from '../../common';
+import { AppError, ErrorHandler } from '../../common';
 
 export function BuildEntityGuard<T>(E: Type<T>) {
   @Injectable()
   class EntityGuard implements CanActivate {
-    constructor(@InjectRepository(E) readonly repository: Repository<T>) {}
+    constructor(
+      @InjectRepository(E)
+      readonly repository: Repository<T>,
+      readonly handler: ErrorHandler,
+    ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
       try {
@@ -34,7 +38,7 @@ export function BuildEntityGuard<T>(E: Type<T>) {
         Object.assign(request, { entity });
         return true;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
   }

@@ -1,4 +1,4 @@
-import { SearchPaginateDto } from './../../../crud';
+import { SearchPaginateDto } from './../../../../crud';
 import { DeepPartial } from 'typeorm';
 
 export type IGenericUserController<T, D> = {

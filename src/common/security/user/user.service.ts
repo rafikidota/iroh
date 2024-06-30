@@ -1,18 +1,25 @@
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
-import { AppError, handleDatabaseError } from './../../common';
+import { AppError, ErrorHandler } from './../../../common';
 import { GenericUser } from './entity/user.generic';
-import { GenericLogger, LoggerOptions, SearchPaginateDto } from '../../crud/';
-import type { IGenericService } from '../../crud/interfaces';
+import {
+  GenericLogger,
+  LoggerOptions,
+  SearchPaginateDto,
+} from '../../../crud/';
+import type { IGenericService } from '../../../crud/interfaces';
 
 export function GenericUserService<
   T extends GenericUser,
   D extends DeepPartial<T>,
 >(E: Type<T>) {
   class GenericUserService implements IGenericService<T, D> {
-    public logger: GenericLogger;
-    constructor(@InjectRepository(E) readonly repository: Repository<T>) {
+    constructor(
+      @InjectRepository(E) readonly repository: Repository<T>,
+      readonly logger: GenericLogger,
+      readonly handler: ErrorHandler,
+    ) {
       const { name } = this.repository.metadata;
       const context = `${name}Logger`;
       this.logger = new GenericLogger(context);
@@ -27,7 +34,7 @@ export function GenericUserService<
         this.logger.post(`[${user.id}]`);
         return user as unknown as T;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -39,7 +46,7 @@ export function GenericUserService<
         this.logger.get(`${JSON.stringify({ limit, page })}`);
         return users;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -50,7 +57,7 @@ export function GenericUserService<
         this.logger.get(`find all`);
         return users;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -69,7 +76,7 @@ export function GenericUserService<
         }
         return user as unknown as T;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -84,7 +91,7 @@ export function GenericUserService<
         this.logger.patch(`[${updatedEntity.id}]`);
         return updatedEntity as unknown as T;
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
 
@@ -95,7 +102,7 @@ export function GenericUserService<
         await this.repository.softDelete(id);
         this.logger.delete(`[${id}]`);
       } catch (error) {
-        handleDatabaseError(error as AppError);
+        this.handler.catch(error as AppError);
       }
     }
   }
