@@ -5,7 +5,7 @@ import { AppError, ErrorHandler } from './../../common';
 import { GenericLogger, LoggerOptions } from '../logger';
 import { GenericPersistent } from '../entity/generic.persistent';
 import { IGenericService } from '../interfaces/crud.service';
-import { SearchPaginateDto } from '../dto/search.paginate.dto';
+import { SearchDto } from '../dto/search.dto';
 
 export function GenericService<
   T extends GenericPersistent,
@@ -32,11 +32,12 @@ export function GenericService<
       }
     }
 
-    public async paginate(query: SearchPaginateDto): Promise<T[]> {
+    public async paginate(query: SearchDto): Promise<T[]> {
       try {
         this.logger.restart();
-        const { limit: take, page, limit } = query;
-        const skip = (page - 1) * limit;
+        const { limit, page, offset } = query;
+        const take = limit || 10;
+        const skip = offset || (page - 1) * limit || 0;
         const entities = await this.repository.find({ take, skip });
         this.logger.get(
           `[Paginate - Limit: ${limit}, Page: ${page}, Found: ${entities.length}]`,
