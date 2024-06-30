@@ -13,7 +13,7 @@ import { Update<%= classify(name) %>Dto } from './dto/<%= lowerCase(name) %>.upd
 export class <%= classify(name) %>Controller extends GenericController(
   <%= classify(name) %>,
   Create<%= classify(name) %>Dto,
-  Update<%= classify(name) %>Dto
+  Update<%= classify(name) %>Dto,
 ) {
   constructor(readonly service: <%= classify(name) %>Service) {
     super(service);
