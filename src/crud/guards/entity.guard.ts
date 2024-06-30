@@ -15,10 +15,10 @@ import { AppError, ErrorHandler } from '../../common';
 export function BuildEntityGuard<T>(E: Type<T>) {
   @Injectable()
   class EntityGuard implements CanActivate {
+    public readonly handler: ErrorHandler;
     constructor(
       @InjectRepository(E)
       readonly repository: Repository<T>,
-      readonly handler: ErrorHandler,
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
