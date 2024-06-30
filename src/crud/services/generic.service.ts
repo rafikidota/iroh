@@ -37,9 +37,12 @@ export function GenericService<
     public async paginate(query: SearchPaginateDto): Promise<T[]> {
       try {
         this.logger.restart();
-        const { limit, page } = query;
-        const entities = await this.repository.find();
-        this.logger.get(`${JSON.stringify({ limit, page })}`);
+        const { limit: take, page, limit } = query;
+        const skip = (page - 1) * limit;
+        const entities = await this.repository.find({ take, skip });
+        this.logger.get(
+          `[Paginate - Limit: ${limit}, Page: ${page}, Found: ${entities.length}]`,
+        );
         return entities;
       } catch (error) {
         this.handler.catch(error as AppError);
