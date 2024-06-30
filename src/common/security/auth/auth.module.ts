@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { GenericUser } from '../user';
 import { JwtStrategy } from './strategies';
 import type { IGenericAuthController, IGenericAuthService } from './interfaces';
+import { GenericLogger } from '../../../crud/logger';
 
 dotenv.config();
 export function GenericAuthModule<
@@ -16,7 +17,7 @@ export function GenericAuthModule<
 >(User: Type<T>, AuthController: Type<C>, AuthService: Type<S>) {
   @Module({
     controllers: [AuthController],
-    providers: [AuthService, JwtStrategy],
+    providers: [AuthService, JwtStrategy, GenericLogger],
     imports: [
       TypeOrmModule.forFeature([User]),
       PassportModule.register({ defaultStrategy: 'jwt' }),
