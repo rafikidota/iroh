@@ -12,14 +12,14 @@ import {
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 import { Entity, EntityGuard } from '../decorators';
-import { GenericPersistentEntity } from '../entity';
+import { GenericPersistent } from '../entity';
 import { LoggerOptions } from '../services';
 import { SearchPaginateDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
 import { ApiResponse } from '@nestjs/swagger';
 
 export function GenericController<
-  T extends GenericPersistentEntity,
+  T extends GenericPersistent,
   D extends DeepPartial<T>,
 >(E: Type<T>) {
   abstract class GenericCRUDController implements IGenericController<T, D> {

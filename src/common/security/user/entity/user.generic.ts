@@ -1,9 +1,9 @@
 import { Column } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { GenericPersistentEntity } from '../../../crud';
+import { GenericPersistent } from '../../../crud';
 import { SoftUnique } from '../../../crud/decorators';
 
-export class GenericUser extends GenericPersistentEntity {
+export class GenericUser extends GenericPersistent {
   @Column()
   name: string;
 

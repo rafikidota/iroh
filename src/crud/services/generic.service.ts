@@ -3,12 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
 import { AppError, ErrorHandler } from './../../common';
 import { GenericLogger, LoggerOptions } from '../logger';
-import { GenericPersistentEntity } from '../entity/generic.persistent.entity';
+import { GenericPersistent } from '../entity/generic.persistent';
 import { IGenericService } from '../interfaces/crud.service';
 import { SearchPaginateDto } from '../dto/search.paginate.dto';
 
 export function GenericService<
-  T extends GenericPersistentEntity,
+  T extends GenericPersistent,
   D extends DeepPartial<T>,
 >(E: Type<T>) {
   class GenericCRUDService implements IGenericService<T, D> {

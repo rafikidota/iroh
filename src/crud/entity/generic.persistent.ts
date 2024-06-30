@@ -5,7 +5,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export class GenericPersistentEntity {
+export class GenericPersistent {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

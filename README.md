@@ -51,13 +51,13 @@ npx nest g -c @rafikidota/iroh crud <module-name> <destination-path>
 
 ## 4. Output files
 ### Entity
-Define your entity by extending `GenericPersistentEntity`:
+Define your entity by extending `GenericPersistent`:
 ```ts
 import { Column, Entity } from 'typeorm';
-import { GenericPersistentEntity } from '@rafikidota/iroh';
+import { GenericPersistent } from '@rafikidota/iroh';
 
 @Entity()
-export class Hero extends GenericPersistentEntity {
+export class Hero extends GenericPersistent {
   @Column()
   name: string;
 }
