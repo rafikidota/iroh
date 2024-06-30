@@ -14,7 +14,7 @@ import { DeepPartial } from 'typeorm';
 import { Entity, EntityGuard } from '../decorators';
 import { GenericPersistent } from '../entity';
 import { LoggerOptions } from '../logger';
-import { SearchPaginateDto } from '../dto';
+import { SearchDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 
@@ -49,7 +49,7 @@ export function GenericController<
     })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
-    paginate(@Query() query: SearchPaginateDto) {
+    paginate(@Query() query: SearchDto) {
       return this.service.paginate(query);
     }
 

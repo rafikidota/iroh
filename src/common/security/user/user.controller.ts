@@ -10,12 +10,7 @@ import {
   Type,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
-import {
-  Entity,
-  EntityGuard,
-  LoggerOptions,
-  SearchPaginateDto,
-} from '../../../crud';
+import { Entity, EntityGuard, LoggerOptions, SearchDto } from '../../../crud';
 import type {
   IGenericController,
   IGenericService,
@@ -35,7 +30,7 @@ export function GenericUserController<
     }
 
     @Get()
-    paginate(@Query() query: SearchPaginateDto) {
+    paginate(@Query() query: SearchDto) {
       return this.service.paginate(query);
     }
 

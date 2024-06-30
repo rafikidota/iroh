@@ -3,11 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
 import { AppError, ErrorHandler } from './../../../common';
 import { GenericUser } from './entity/user.generic';
-import {
-  GenericLogger,
-  LoggerOptions,
-  SearchPaginateDto,
-} from '../../../crud/';
+import { GenericLogger, LoggerOptions, SearchDto } from '../../../crud/';
 import type { IGenericService } from '../../../crud/interfaces';
 
 export function GenericUserService<
@@ -37,7 +33,7 @@ export function GenericUserService<
       }
     }
 
-    public async paginate(query: SearchPaginateDto): Promise<T[]> {
+    public async paginate(query: SearchDto): Promise<T[]> {
       try {
         this.logger.restart();
         const { limit, page } = query;
