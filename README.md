@@ -25,13 +25,31 @@ Run the following command to generate the `core`, `common` and `security` module
 npx nest g -c @rafikidota/iroh init 
 ```
 
-## 2. Generate CRUD Module
-Use the following command to generate a new `CRUD` module:
+## 2. Import Basic Modules on AppModule
+
+```ts
+import { Module } from '@nestjs/common';
+import { CommonModule } from './common/common.module';
+import { CoreModule } from './modules/core.module';
+@Module({
+  imports: [
+    //... some other imports
+    CommonModule,
+    CoreModule,
+  ],
+  controllers: [],
+  providers: [],
+})
+export class AppModule {}
+```
+
+## 3. Generate CRUD Module
+Run the following command to generate a new `CRUD` module:
 ```sh
 npx nest g -c @rafikidota/iroh crud <module-name> <destination-path>
 ```
 
-## 3. Output
+## 4. Output files
 ### Entity
 Define your entity by extending `GenericPersistentEntity`:
 ```ts
