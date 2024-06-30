@@ -1,6 +1,6 @@
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NotFoundException, Type } from '@nestjs/common';
+import { Inject, NotFoundException, Type } from '@nestjs/common';
 import { AppError, ErrorHandler } from './../../../common';
 import { GenericUser } from './entity/user.generic';
 import {
@@ -16,7 +16,9 @@ export function GenericUserService<
 >(E: Type<T>) {
   class GenericUserService implements IGenericService<T, D> {
     constructor(
-      @InjectRepository(E) readonly repository: Repository<T>,
+      @InjectRepository(E)
+      readonly repository: Repository<T>,
+      @Inject(GenericLogger)
       readonly logger: GenericLogger,
       readonly handler: ErrorHandler,
     ) {

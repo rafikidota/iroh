@@ -1,10 +1,10 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import { Inject, Type, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { FindOneOptions, Repository } from 'typeorm';
 import { IGenericAuthService, ISignInResponse } from './interfaces';
 import { GenericLogger } from './../../../crud';
 import { Payload } from './interfaces/payload';
-import { Type, UnauthorizedException } from '@nestjs/common';
 import { GenericUser } from '../user/entity';
 
 export function GenericAuthService<T extends GenericUser>(E: Type<T>) {
@@ -13,6 +13,7 @@ export function GenericAuthService<T extends GenericUser>(E: Type<T>) {
       @InjectRepository(E)
       readonly repository: Repository<T>,
       readonly jwtService: JwtService,
+      @Inject(GenericLogger)
       readonly logger: GenericLogger,
     ) {
       this.logger = new GenericLogger('AuthLogger');

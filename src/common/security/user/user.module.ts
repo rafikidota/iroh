@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Module, Type } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GenericLogger } from './../../../crud/logger';
 import { GenericUser } from './entity';
 import { DeepPartial } from 'typeorm';
 import type { IGenericController, IGenericService } from '../../../crud';
@@ -17,7 +18,7 @@ export function GenericUserModule<
 ) {
   @Module({
     controllers: [UserController],
-    providers: [UserService],
+    providers: [UserService, GenericLogger],
     imports: [TypeOrmModule.forFeature([User]), AuthModule],
     exports: [TypeOrmModule, UserService],
   })
