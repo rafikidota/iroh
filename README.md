@@ -78,7 +78,11 @@ import { UpdateHeroDto } from './dto/hero.update.dto';
 @ApiBearerAuth()
 @ApiTags(Hero.name)
 @Controller(Hero.name.toLowerCase())
-export class HeroController extends GenericController(Hero, CreateHeroDto, UpdateHeroDto) {
+export class HeroController extends GenericController(
+  Hero,
+  CreateHeroDto,
+  UpdateHeroDto,
+) {
   constructor(readonly service: HeroService) {
     super(service);
   }
