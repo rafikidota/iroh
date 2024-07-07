@@ -26,15 +26,21 @@ export function GenericAuthService<T extends GenericUser>(E: Type<T>) {
       const { id } = user;
       const payload: Payload = { id };
       const token = this.jwtService.sign(payload);
-      const where = { where: { id } } as unknown as FindOneOptions<T>;
-      const found = await this.repository.findOne(where);
+      const found = await this.findUser(id);
       const response: ISignInResponse = { token, user: found };
       return response;
     }
-    public async signout(user: T): Promise<void> {
-      if (!user) {
+    public async signout(payload: Payload): Promise<void> {
+      const { id } = payload;
+      const found = await this.findUser(id);
+      if (!found) {
         throw new UnauthorizedException();
       }
+    }
+
+    public async findUser(id: string): Promise<T> {
+      const where = { where: { id } } as unknown as FindOneOptions<T>;
+      return await this.repository.findOne(where);
     }
   }
   return GenericAuthService;
