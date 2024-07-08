@@ -19,7 +19,7 @@ export function GenericRepository<
     public async create(createDto: D): Promise<T> {
       this.logger.restart();
       const entity = await this.repository.save(createDto);
-      this.logger.create(`[${entity.id}]`);
+      this.logger.created(entity.id);
       return entity as unknown as T;
     }
 
@@ -30,7 +30,7 @@ export function GenericRepository<
       const skip = offset || (page - 1) * limit || 0;
       const entities = await this.repository.find({ take, skip });
       const length = entities.length;
-      this.logger.paginate({ limit, page, offset, length });
+      this.logger.foundMany({ limit, page, offset, length });
       return entities;
     }
 
@@ -48,7 +48,7 @@ export function GenericRepository<
         throw new NotFoundException(`${name} with id ${id} not found`);
       }
       if (options.logging) {
-        this.logger.findOne(`[${entity.id}]`);
+        this.logger.foundOne(id);
       }
       return entity as unknown as T;
     }
@@ -57,7 +57,7 @@ export function GenericRepository<
       this.logger.restart();
       Object.assign(entity, updateDto);
       const updatedEntity = await this.repository.save(entity);
-      this.logger.update(`[${updatedEntity.id}]`);
+      this.logger.updated(updatedEntity.id);
       return updatedEntity as unknown as T;
     }
 
@@ -65,7 +65,7 @@ export function GenericRepository<
       const { id } = entity;
       this.logger.restart();
       await this.repository.softDelete(id);
-      this.logger.delete(`[${id}]`);
+      this.logger.removed(id);
     }
   }
   return GenericTypeOrmRepository;

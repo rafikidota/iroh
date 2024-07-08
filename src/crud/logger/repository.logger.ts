@@ -15,30 +15,30 @@ export class RepositoryLogger extends GenericLogger {
     this.name = name;
   }
 
-  create(id: string) {
+  created(id: string) {
     const log = this.getSingleEntityLog(LowerCaseOperationLevel.CREATE, id);
     super.verbose(log);
   }
 
-  findOne(id: string) {
+  foundOne(id: string) {
     const log = this.getSingleEntityLog(LowerCaseOperationLevel.FINDONE, id);
     super.verbose(log);
   }
 
-  update(id: string) {
+  foundMany(query: PaginateLoggerOptions) {
+    const { limit, offset, page, length } = query;
+    const timestamp = this.getTimestamp();
+    const log = `[${TitleCaseOperationLevel.PAGINATE} - Limit: ${limit}, Offset: ${offset}, Page: ${page}, Found: ${length}] ${timestamp}`;
+    super.verbose(log);
+  }
+
+  updated(id: string) {
     const log = this.getSingleEntityLog(LowerCaseOperationLevel.UPDATE, id);
     super.verbose(log);
   }
 
-  remove(id: string) {
+  removed(id: string) {
     const log = this.getSingleEntityLog(LowerCaseOperationLevel.REMOVE, id);
-    super.verbose(log);
-  }
-
-  paginate(query: PaginateLoggerOptions) {
-    const { limit, offset, page, length } = query;
-    const timestamp = this.getTimestamp();
-    const log = `[${TitleCaseOperationLevel.PAGINATE} - Limit: ${limit}, Offset: ${offset}, Page: ${page}, Found: ${length}] ${timestamp}`;
     super.verbose(log);
   }
 
