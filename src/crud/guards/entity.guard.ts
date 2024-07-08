@@ -19,7 +19,9 @@ export function BuildEntityGuard<T>(E: Type<T>) {
     constructor(
       @InjectRepository(E)
       readonly repository: Repository<T>,
-    ) {}
+    ) {
+      this.handler = ErrorHandler.getInstance();
+    }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
       try {
