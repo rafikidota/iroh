@@ -1,10 +1,9 @@
-import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { DeepPartial } from 'typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
 import { AppError, ErrorHandler } from './../../common';
-import { GenericLogger, LoggerOptions } from '../logger';
+import { ServiceLogger, LoggerOptions } from '../logger';
 import { GenericPersistent } from '../entity/generic.persistent';
-import { IGenericService } from '../interfaces/crud.service';
+import { IGenericService, IGenericRepository } from '../interfaces';
 import { SearchDto } from '../dto/search.dto';
 
 export function GenericService<
@@ -12,20 +11,18 @@ export function GenericService<
   D extends DeepPartial<T>,
 >(E: Type<T>) {
   class GenericCRUDService implements IGenericService<T, D> {
-    public readonly logger: GenericLogger;
+    public readonly logger: ServiceLogger;
     public readonly handler: ErrorHandler;
-    constructor(@InjectRepository(E) readonly repository: Repository<T>) {
-      const { name } = this.repository.metadata;
-      const context = `${name}Logger`;
-      this.logger = new GenericLogger(context);
+    constructor(readonly repository: IGenericRepository<T, D>) {
+      this.logger = new ServiceLogger(E.name);
       this.handler = ErrorHandler.getInstance();
     }
 
     public async create(createDto: D): Promise<T> {
       try {
         this.logger.restart();
-        const entity = await this.repository.save(createDto);
-        this.logger.post(`[${entity.id}]`);
+        const entity = await this.repository.create(createDto);
+        this.logger.created(entity.id);
         return entity as unknown as T;
       } catch (error) {
         this.handler.catch(error as AppError);
@@ -36,12 +33,9 @@ export function GenericService<
       try {
         this.logger.restart();
         const { limit, page, offset } = query;
-        const take = limit || 10;
-        const skip = offset || (page - 1) * limit || 0;
-        const entities = await this.repository.find({ take, skip });
-        this.logger.get(
-          `[Paginate - Limit: ${limit}, Page: ${page}, Found: ${entities.length}]`,
-        );
+        const entities = await this.repository.paginate(query);
+        const length = entities.length;
+        this.logger.foundMany({ limit, page, offset, length });
         return entities;
       } catch (error) {
         this.handler.catch(error as AppError);
@@ -50,10 +44,7 @@ export function GenericService<
 
     public async findAll() {
       try {
-        this.logger.restart();
-        const entities = await this.repository.find();
-        this.logger.get(`find all`);
-        return entities;
+        return await this.repository.findAll();
       } catch (error) {
         this.handler.catch(error as AppError);
       }
@@ -62,15 +53,13 @@ export function GenericService<
     public async findOne(id: string, options: LoggerOptions): Promise<T> {
       try {
         this.logger.restart();
-        const { name } = this.repository.metadata;
-        const where = { where: { id } } as unknown as FindOneOptions<T>;
-        const entity = await this.repository.findOne(where);
+        const entity = await this.repository.findOne(id, options);
         if (!entity) {
           this.logger.warn(`[${id}] NOT FOUND`);
-          throw new NotFoundException(`${name} with id ${id} not found`);
+          throw new NotFoundException(`${E.name} with id ${id} not found`);
         }
         if (options.logging) {
-          this.logger.get(`[${entity.id}]`);
+          this.logger.foundOne(entity.id);
         }
         return entity as unknown as T;
       } catch (error) {
@@ -82,8 +71,8 @@ export function GenericService<
       try {
         this.logger.restart();
         Object.assign(entity, updateDto);
-        const updatedEntity = await this.repository.save(entity);
-        this.logger.patch(`[${updatedEntity.id}]`);
+        const updatedEntity = await this.repository.update(entity, updateDto);
+        this.logger.updated(updatedEntity.id);
         return updatedEntity as unknown as T;
       } catch (error) {
         this.handler.catch(error as AppError);
@@ -92,10 +81,9 @@ export function GenericService<
 
     public async remove(entity: T): Promise<void> {
       try {
-        const { id } = entity;
         this.logger.restart();
-        await this.repository.softDelete(id);
-        this.logger.delete(`[${id}]`);
+        await this.repository.remove(entity);
+        this.logger.removed(entity.id);
       } catch (error) {
         this.handler.catch(error as AppError);
       }
