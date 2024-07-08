@@ -5,4 +5,5 @@ export * from './entity';
 export * from './guards';
 export * from './interfaces';
 export * from './logger';
+export * from './repository';
 export * from './services';
