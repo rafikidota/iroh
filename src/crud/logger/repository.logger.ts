@@ -39,6 +39,6 @@ export class RepositoryLogger extends GenericLogger {
 
   private getSingleEntityLog(operation: string, id: string) {
     const timestamp = this.getTimestamp();
-    return `${operation} [${id}] ${timestamp}`;
+    return `${operation} ${id} ${timestamp}`;
   }
 }

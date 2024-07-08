@@ -15,10 +15,10 @@ export class RequestLoggingInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const { headers, method, url } = request;
 
-    this.logger.debug(`Method: ${method}, URL: ${url}`);
+    this.logger.log(`Method: ${method}, URL: ${url}, Headers: `);
     const clonedHeaders = { ...headers };
     delete clonedHeaders.authorization;
-    this.logger.debug(`Headers: \n${JSON.stringify(clonedHeaders)}`);
+    this.logger.debug(`\n\n${JSON.stringify(clonedHeaders)}\n\n`);
 
     return next.handle();
   }

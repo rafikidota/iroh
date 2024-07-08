@@ -14,7 +14,8 @@ export class BodyLoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
     const { body } = request;
-    this.logger.debug(`Body: \n${JSON.stringify(body)}`);
+    this.logger.log(`Request Body: `);
+    this.logger.debug(`\n\n${JSON.stringify(body)}\n\n`);
     return next.handle();
   }
 }

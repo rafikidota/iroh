@@ -14,7 +14,8 @@ export class QueryLoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
     const { query } = request;
-    this.logger.debug(`Query: \n${JSON.stringify(query)}`);
+    this.logger.log(`Query Params:`);
+    this.logger.debug(`\n\n${JSON.stringify(query)}\n\n`);
     return next.handle();
   }
 }
