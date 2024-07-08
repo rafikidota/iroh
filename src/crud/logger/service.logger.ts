@@ -40,7 +40,7 @@ export class ServiceLogger extends GenericLogger {
   }
 
   updated(id: string) {
-    const log = chalk.cyan(`[${TitleCaseOperationLevel.UPDATE}] [${id}]`);
+    const log = chalk.blue(`[${TitleCaseOperationLevel.UPDATE}] [${id}]`);
     this.print(log);
   }
 
