@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
 import { AppError, ErrorHandler } from './../../../common';
 import { GenericUser } from './entity/user.generic';
-import { GenericLogger, LoggerOptions, SearchDto } from '../../../crud/';
+import { ServiceLogger, LoggerOptions, SearchDto } from '../../../crud/';
 import type { IGenericService } from '../../../crud/interfaces';
 
 export function GenericUserService<
@@ -11,12 +11,12 @@ export function GenericUserService<
   D extends DeepPartial<T>,
 >(E: Type<T>) {
   class GenericUserService implements IGenericService<T, D> {
-    public readonly logger: GenericLogger;
+    public readonly logger: ServiceLogger;
     public readonly handler: ErrorHandler;
     constructor(@InjectRepository(E) readonly repository: Repository<T>) {
       const { name } = this.repository.metadata;
       const context = `${name}Logger`;
-      this.logger = new GenericLogger(context);
+      this.logger = new ServiceLogger(context);
       this.handler = ErrorHandler.getInstance();
     }
 
@@ -26,7 +26,7 @@ export function GenericUserService<
         const user = this.repository.create(createDto);
         user.hashPassword();
         await this.repository.save(user);
-        this.logger.post(`[${user.id}]`);
+        this.logger.created(user.id);
         return user as unknown as T;
       } catch (error) {
         this.handler.catch(error as AppError);
@@ -36,9 +36,10 @@ export function GenericUserService<
     public async paginate(query: SearchDto): Promise<T[]> {
       try {
         this.logger.restart();
-        const { limit, page } = query;
+        const { limit, page, offset } = query;
         const users = await this.repository.find();
-        this.logger.get(`${JSON.stringify({ limit, page })}`);
+        const length = users.length;
+        this.logger.foundMany({ limit, page, offset, length });
         return users;
       } catch (error) {
         this.handler.catch(error as AppError);
@@ -47,10 +48,7 @@ export function GenericUserService<
 
     public async findAll() {
       try {
-        this.logger.restart();
-        const users = await this.repository.find();
-        this.logger.get(`find all`);
-        return users;
+        return await this.repository.find();
       } catch (error) {
         this.handler.catch(error as AppError);
       }
@@ -67,7 +65,7 @@ export function GenericUserService<
           throw new NotFoundException(`${name} with id ${id} not found`);
         }
         if (options.logging) {
-          this.logger.get(`[${user.id}]`);
+          this.logger.foundOne(user.id);
         }
         return user as unknown as T;
       } catch (error) {
@@ -83,7 +81,7 @@ export function GenericUserService<
           user.hashPassword();
         }
         const updatedEntity = await this.repository.save(user);
-        this.logger.patch(`[${updatedEntity.id}]`);
+        this.logger.updated(updatedEntity.id);
         return updatedEntity as unknown as T;
       } catch (error) {
         this.handler.catch(error as AppError);
@@ -92,10 +90,9 @@ export function GenericUserService<
 
     public async remove(user: T): Promise<void> {
       try {
-        const { id } = user;
         this.logger.restart();
-        await this.repository.softDelete(id);
-        this.logger.delete(`[${id}]`);
+        await this.repository.softDelete(user.id);
+        this.logger.removed(user.id);
       } catch (error) {
         this.handler.catch(error as AppError);
       }
