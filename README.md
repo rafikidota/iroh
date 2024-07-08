@@ -95,9 +95,26 @@ Define your service by extending `GenericService`:
 import { Injectable } from '@nestjs/common';
 import { GenericService } from '@rafikidota/iroh';
 import { Hero } from './entities/hero.entity';
+import { HeroRepository } from './hero.repository';
 
 @Injectable()
-export class HeroService extends GenericService(Hero) {}
+export class HeroService extends GenericService(Hero) {
+  constructor(readonly repo: HeroRepository) {
+    super(repo);
+  }
+}
+```
+
+### Repository
+Define your repository by extending `GenericRepository`:
+```ts
+import { Injectable } from '@nestjs/common';
+import { GenericRepository } from '@rafikidota/iroh';
+import { Hero } from './entities/hero.entity';
+
+@Injectable()
+export class HeroRepository extends GenericRepository(Hero) {}
+
 ```
 
 ### Module
@@ -105,14 +122,15 @@ Import necessary modules and set up your feature module:
 ```ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from '../../common/auth/auth.module';
+import { AuthModule } from '../../common/security/auth/auth.module';
 import { Hero } from './entities/hero.entity';
 import { HeroController } from './hero.controller';
 import { HeroService } from './hero.service';
+import { HeroRepository } from './hero.repository';
 
 @Module({
   controllers: [HeroController],
-  providers: [HeroService],
+  providers: [HeroService, HeroRepository],
   imports: [TypeOrmModule.forFeature([Hero]), AuthModule],
   exports: [TypeOrmModule],
 })

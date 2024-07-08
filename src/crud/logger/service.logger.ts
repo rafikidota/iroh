@@ -22,30 +22,30 @@ export class ServiceLogger extends GenericLogger {
   }
 
   created(id: string) {
-    const log = chalk.green(`[${TitleCaseOperationLevel.CREATE}] [${id}]`);
+    const log = chalk.green(`${TitleCaseOperationLevel.CREATE} ${id}`);
     this.print(log);
   }
 
   foundOne(id: string) {
-    const log = chalk.magenta(`[${TitleCaseOperationLevel.FINDONE}] [${id}]`);
+    const log = chalk.cyan(`${TitleCaseOperationLevel.FINDONE} ${id}`);
     this.print(log);
   }
 
   foundMany(query: PaginateLoggerOptions) {
     const { limit, offset, page, length } = query;
     const log = chalk.magenta(
-      `[${TitleCaseOperationLevel.PAGINATE}] - Limit: ${limit}, Offset: ${offset}, Page: ${page}, Found: ${length}`,
+      `${TitleCaseOperationLevel.PAGINATE} - Limit: ${limit}, Offset: ${offset}, Page: ${page}, Found: ${length}`,
     );
     this.print(log);
   }
 
   updated(id: string) {
-    const log = chalk.cyan(`[${TitleCaseOperationLevel.UPDATE}] [${id}]`);
+    const log = chalk.hex('#FF6700')(`${TitleCaseOperationLevel.UPDATE} ${id}`);
     this.print(log);
   }
 
   removed(id: string) {
-    const log = chalk.red(`[${TitleCaseOperationLevel.REMOVE}] [${id}]`);
+    const log = chalk.red(`${TitleCaseOperationLevel.REMOVE} ${id}`);
     this.print(log);
   }
 

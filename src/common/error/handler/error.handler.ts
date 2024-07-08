@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import { AppError } from '../types';
 import { ErrorMap } from '../util';
@@ -10,6 +11,7 @@ import { IErrorHandler } from '../interfaces';
 
 export class ErrorHandler implements IErrorHandler {
   private static instance: ErrorHandler;
+  private logger: Logger = new Logger(ErrorHandler.name);
 
   public static getInstance(): ErrorHandler {
     if (!this.instance) {
@@ -19,6 +21,7 @@ export class ErrorHandler implements IErrorHandler {
   }
 
   public catch(error: AppError): void {
+    this.logger.error(`${error.name} ${error.message}`);
     if (error instanceof PostgresError && error.code) {
       const errors: ErrorMap = {
         '23505': () => {

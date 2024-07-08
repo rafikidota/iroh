@@ -1,27 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { PaginateLoggerOptions } from './util';
 import { GenericLogger } from './generic.logger';
-import {
-  LowerCaseOperationLevel,
-  TitleCaseOperationLevel,
-} from './util/levels';
+import { TitleCaseOperationLevel } from './util/levels';
 
 @Injectable()
 export class RepositoryLogger extends GenericLogger {
-  public name: string;
   constructor(name: string) {
     const context = `${name}Repository`;
     super(context);
-    this.name = name;
   }
 
   created(id: string) {
-    const log = this.getSingleEntityLog(LowerCaseOperationLevel.CREATE, id);
+    const log = this.getSingleEntityLog(TitleCaseOperationLevel.CREATE, id);
     super.verbose(log);
   }
 
   foundOne(id: string) {
-    const log = this.getSingleEntityLog(LowerCaseOperationLevel.FINDONE, id);
+    const log = this.getSingleEntityLog(TitleCaseOperationLevel.FINDONE, id);
     super.verbose(log);
   }
 
@@ -33,17 +28,17 @@ export class RepositoryLogger extends GenericLogger {
   }
 
   updated(id: string) {
-    const log = this.getSingleEntityLog(LowerCaseOperationLevel.UPDATE, id);
+    const log = this.getSingleEntityLog(TitleCaseOperationLevel.UPDATE, id);
     super.verbose(log);
   }
 
   removed(id: string) {
-    const log = this.getSingleEntityLog(LowerCaseOperationLevel.REMOVE, id);
+    const log = this.getSingleEntityLog(TitleCaseOperationLevel.REMOVE, id);
     super.verbose(log);
   }
 
   private getSingleEntityLog(operation: string, id: string) {
     const timestamp = this.getTimestamp();
-    return `${this.name} ${operation} successfully [${id}] ${timestamp}`;
+    return `${operation} ${id} ${timestamp}`;
   }
 }
