@@ -16,13 +16,14 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "prepare": "husky",
-    "build": "rimraf -rf dist && tsc -p tsconfig.json",
-    "postbuild": "yarn move:crud && yarn move:init",
+    "prebuild": "rimraf -rf dist",
+    "build": "tsc -p tsconfig.json",
+    "postbuild": "npm run move:crud && npm run move:init",
     "move:crud": "mkdir -p dist/schematics/crud/files/ts && cp -ar ./src/schematics/crud/files/ts/* dist/schematics/crud/files/ts",
     "move:init": "mkdir -p dist/schematics/init/files/ts && cp -ar ./src/schematics/init/files/ts/* dist/schematics/init/files/ts",
     "lint": "eslint . --fix",
     "format": "prettier --write \"**/*.ts\"",
-    "prepublishOnly": "rimraf dist && npm run lint && npm run build"
+    "prepublishOnly": "npm run lint && npm run build"
   },
   "dependencies": {
     "@angular-devkit/core": "15.2.1",
