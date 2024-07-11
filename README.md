@@ -106,14 +106,14 @@ export class HeroService extends GenericService(Hero) {
 ```
 
 ### Repository
-Define your repository by extending `GenericRepository`:
+Define your repository by extending `GenericTypeOrmRepository`:
 ```ts
 import { Injectable } from '@nestjs/common';
-import { GenericRepository } from '@rafikidota/iroh';
+import { GenericTypeOrmRepository } from '@rafikidota/iroh';
 import { Hero } from './entities/hero.entity';
 
 @Injectable()
-export class HeroRepository extends GenericRepository(Hero) {}
+export class HeroRepository extends GenericTypeOrmRepository(Hero) {}
 
 ```
 

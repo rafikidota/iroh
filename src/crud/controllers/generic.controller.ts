@@ -10,6 +10,7 @@ import {
   ParseUUIDPipe,
   Type,
   UseInterceptors,
+  UseFilters,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 import { Entity, EntityGuard } from '../decorators';
@@ -18,11 +19,8 @@ import { LoggerOptions } from '../logger';
 import { SearchDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import {
-  BodyLoggingInterceptor,
-  QueryLoggingInterceptor,
-  RequestLoggingInterceptor,
-} from '../../common/interceptors';
+import { RequestLoggingInterceptor } from '../../common/interceptors';
+import { HttpExceptionFilter } from '../../common/filters';
 
 export function GenericController<
   T extends GenericPersistent,
@@ -30,6 +28,7 @@ export function GenericController<
   U extends Partial<T>,
 >(E: Type<T>, CreateDto: Type<D>, UpdateDto: Type<U>) {
   @UseInterceptors(RequestLoggingInterceptor)
+  @UseFilters(HttpExceptionFilter)
   abstract class GenericCRUDController implements IGenericController<T, D> {
     constructor(readonly service: IGenericService<T, D>) {}
 
@@ -43,7 +42,6 @@ export function GenericController<
     @ApiResponse({ status: 400, description: 'Bad request' })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
-    @UseInterceptors(BodyLoggingInterceptor)
     create(@Body() body: D) {
       return this.service.create(body);
     }
@@ -57,7 +55,6 @@ export function GenericController<
     })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
-    @UseInterceptors(QueryLoggingInterceptor)
     paginate(@Query() query: SearchDto) {
       return this.service.paginate(query);
     }
@@ -66,7 +63,6 @@ export function GenericController<
     @ApiResponse({ status: 200, description: `${E.name} found by id`, type: E })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
-    @UseInterceptors(QueryLoggingInterceptor)
     findOne(@Param('id', ParseUUIDPipe) id: string) {
       const options: LoggerOptions = { logging: true };
       return this.service.findOne(id, options);
@@ -81,7 +77,6 @@ export function GenericController<
     })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
-    @UseInterceptors(BodyLoggingInterceptor)
     @EntityGuard(E)
     update(@Entity() entity: T, @Body() body: Partial<D>) {
       return this.service.update(entity, body);
