@@ -10,6 +10,7 @@ import {
   ParseUUIDPipe,
   Type,
   UseInterceptors,
+  UseFilters,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 import { Entity, EntityGuard } from '../decorators';
@@ -19,6 +20,7 @@ import { SearchDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { RequestLoggingInterceptor } from '../../common/interceptors';
+import { HttpExceptionFilter } from '../../common/filters';
 
 export function GenericController<
   T extends GenericPersistent,
@@ -26,6 +28,7 @@ export function GenericController<
   U extends Partial<T>,
 >(E: Type<T>, CreateDto: Type<D>, UpdateDto: Type<U>) {
   @UseInterceptors(RequestLoggingInterceptor)
+  @UseFilters(HttpExceptionFilter)
   abstract class GenericCRUDController implements IGenericController<T, D> {
     constructor(readonly service: IGenericService<T, D>) {}
 
