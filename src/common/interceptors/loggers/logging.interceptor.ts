@@ -9,10 +9,10 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 @Injectable()
-export class RequestLoggingInterceptor implements NestInterceptor {
+export class LoggingInterceptor implements NestInterceptor {
   private readonly logger: Logger;
   constructor() {
-    this.logger = new Logger(RequestLoggingInterceptor.name);
+    this.logger = new Logger(LoggingInterceptor.name);
   }
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();

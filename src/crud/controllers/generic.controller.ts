@@ -19,7 +19,7 @@ import { LoggerOptions } from '../logger';
 import { SearchDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import { RequestLoggingInterceptor } from '../../common/interceptors';
+import { LoggingInterceptor } from '../../common/interceptors';
 import { HttpExceptionFilter } from '../../common/filters';
 
 export function GenericController<
@@ -27,7 +27,7 @@ export function GenericController<
   D extends DeepPartial<T>,
   U extends Partial<T>,
 >(E: Type<T>, CreateDto: Type<D>, UpdateDto: Type<U>) {
-  @UseInterceptors(RequestLoggingInterceptor)
+  @UseInterceptors(LoggingInterceptor)
   @UseFilters(HttpExceptionFilter)
   abstract class GenericCRUDController implements IGenericController<T, D> {
     constructor(readonly service: IGenericService<T, D>) {}
