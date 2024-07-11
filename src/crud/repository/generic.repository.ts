@@ -6,11 +6,11 @@ import { GenericPersistent } from '../entity/generic.persistent';
 import { IGenericRepository } from '../interfaces/crud.repository';
 import { SearchDto } from '../dto/search.dto';
 
-export function GenericRepository<
+export function GenericTypeOrmRepository<
   T extends GenericPersistent,
   D extends DeepPartial<T>,
 >(E: Type<T>) {
-  class GenericTypeOrmRepository implements IGenericRepository<T, D> {
+  class TypeOrmRepository implements IGenericRepository<T, D> {
     public readonly logger: RepositoryLogger;
     constructor(@InjectRepository(E) readonly repository: Repository<T>) {
       this.logger = new RepositoryLogger(E.name);
@@ -68,5 +68,5 @@ export function GenericRepository<
       this.logger.removed(id);
     }
   }
-  return GenericTypeOrmRepository;
+  return TypeOrmRepository;
 }
