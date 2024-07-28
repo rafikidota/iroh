@@ -28,10 +28,51 @@ export class HttpExceptionFilter extends BaseExceptionFilter {
     const time = chalk.yellow(`+${timestamp}ms`);
 
     const ip = headers['x-forwarded-for'] || request.connection.remoteAddress;
-    const lvl = status === HttpStatus.INTERNAL_SERVER_ERROR ? 'error' : 'warn';
     const log = `${method} ${url} ${status} - ${message} - ${ip} - ${time}`;
 
-    this.logger[lvl](log);
+    if (
+      [
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        HttpStatus.NOT_IMPLEMENTED,
+        HttpStatus.BAD_GATEWAY,
+        HttpStatus.SERVICE_UNAVAILABLE,
+        HttpStatus.GATEWAY_TIMEOUT,
+        HttpStatus.HTTP_VERSION_NOT_SUPPORTED,
+      ].includes(status)
+    ) {
+      this.logger.error(log);
+    }
+
+    if (
+      [
+        HttpStatus.BAD_REQUEST,
+        HttpStatus.UNAUTHORIZED,
+        HttpStatus.PAYMENT_REQUIRED,
+        HttpStatus.FORBIDDEN,
+        HttpStatus.NOT_FOUND,
+        HttpStatus.METHOD_NOT_ALLOWED,
+        HttpStatus.NOT_ACCEPTABLE,
+        HttpStatus.PROXY_AUTHENTICATION_REQUIRED,
+        HttpStatus.REQUEST_TIMEOUT,
+        HttpStatus.CONFLICT,
+        HttpStatus.GONE,
+        HttpStatus.LENGTH_REQUIRED,
+        HttpStatus.PRECONDITION_FAILED,
+        HttpStatus.PAYLOAD_TOO_LARGE,
+        HttpStatus.URI_TOO_LONG,
+        HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+        HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE,
+        HttpStatus.EXPECTATION_FAILED,
+        HttpStatus.I_AM_A_TEAPOT,
+        HttpStatus.MISDIRECTED,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        HttpStatus.FAILED_DEPENDENCY,
+        HttpStatus.PRECONDITION_REQUIRED,
+        HttpStatus.TOO_MANY_REQUESTS,
+      ].includes(status)
+    ) {
+      this.logger.warn(log);
+    }
 
     super.catch(exception, host);
   }
