@@ -16,7 +16,7 @@ export function GenericAuthModule<
 >(User: Type<T>, AuthController: Type<C>, AuthService: Type<S>) {
   @Module({
     controllers: [AuthController],
-    providers: [AuthService, JwtStrategy],
+    providers: [AuthService, JwtStrategy(User)],
     imports: [
       TypeOrmModule.forFeature([User]),
       PassportModule.register({ defaultStrategy: 'jwt' }),
@@ -25,7 +25,7 @@ export function GenericAuthModule<
         signOptions: { expiresIn: '72h' },
       }),
     ],
-    exports: [TypeOrmModule, JwtModule, PassportModule, JwtStrategy],
+    exports: [TypeOrmModule, JwtModule, PassportModule, JwtStrategy(User)],
   })
   class AuthModule {}
   return AuthModule;
