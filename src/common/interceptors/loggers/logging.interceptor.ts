@@ -20,10 +20,12 @@ export class LoggingInterceptor implements NestInterceptor {
     const { method, url, headers } = request;
     const ip = headers['x-forwarded-for'] || request.connection.remoteAddress;
 
-    const startTime = Date.now();
-    Object.assign(request, { startTime });
+    if (!request.startTime) {
+      request.startTime = Date.now();
+    }
     return next.handle().pipe(
       tap(() => {
+        const { startTime } = context.switchToHttp().getRequest();
         const endTime = Date.now();
         const timestamp = endTime - startTime;
         const time = chalk.yellow(`+${timestamp}ms`);
