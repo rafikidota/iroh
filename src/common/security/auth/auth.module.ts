@@ -25,7 +25,7 @@ export function GenericAuthModule<
         signOptions: { expiresIn: '72h' },
       }),
     ],
-    exports: [TypeOrmModule, JwtModule, PassportModule, JwtStrategy(User)],
+    exports: [TypeOrmModule, JwtModule, PassportModule],
   })
   class AuthModule {}
   return AuthModule;
