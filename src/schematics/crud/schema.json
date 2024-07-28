@@ -21,7 +21,7 @@
         "$source": "argv",
         "index": 1
       },
-      "x-prompt": "What path would you like to use for create the module?"
+      "x-prompt": "What path would you like to use to create the module?"
     },
     "module": {
       "type": "string",
