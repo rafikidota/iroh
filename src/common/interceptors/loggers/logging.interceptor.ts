@@ -13,7 +13,8 @@ import { tap } from 'rxjs/operators';
 export class LoggingInterceptor implements NestInterceptor {
   private readonly logger: Logger;
   constructor() {
-    this.logger = new Logger(LoggingInterceptor.name);
+    const options = { timestamp: true };
+    this.logger = new Logger(LoggingInterceptor.name, options);
   }
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();

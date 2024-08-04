@@ -10,7 +10,12 @@ import chalk from 'chalk';
 
 @Catch()
 export class HttpExceptionFilter extends BaseExceptionFilter {
-  private readonly logger = new Logger(HttpExceptionFilter.name);
+  private readonly logger;
+  constructor() {
+    super();
+    const options = { timestamp: true };
+    this.logger = new Logger(HttpExceptionFilter.name, options);
+  }
 
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();

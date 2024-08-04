@@ -15,6 +15,6 @@ const getLog = (options: BootstrapLoggerOptions) => {
 };
 
 export function BootstrapLogger(options: BootstrapLoggerOptions) {
-  const logger = new Logger('BootstrapLogger');
+  const logger = new Logger('BootstrapLogger', { timestamp: true });
   logger.log(getLog(options));
 }

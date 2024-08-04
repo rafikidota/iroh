@@ -1,5 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-@Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {}
+export function JwtAuthGuard() {
+  @Injectable()
+  class JwtAuthGuard extends AuthGuard('jwt') {
+    canActivate(context: ExecutionContext): boolean {
+      const request = context.switchToHttp().getRequest();
+      if (!request.startTime) {
+        request.startTime = Date.now();
+      }
+      return super.canActivate(context) as boolean;
+    }
+  }
+  return new JwtAuthGuard();
+}
