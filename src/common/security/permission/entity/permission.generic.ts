@@ -16,4 +16,7 @@ export class GenericPermission extends GenericPersistent {
 
   @Column()
   code: string;
+
+  @Column()
+  path: string;
 }
