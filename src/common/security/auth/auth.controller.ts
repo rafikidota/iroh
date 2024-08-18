@@ -13,11 +13,12 @@ import {
   ApiBody,
   ApiResponse,
 } from '@nestjs/swagger';
-import { BasicAuthGuard, NoPermission, Public } from './decorators';
+import { BasicAuthGuard, Public } from './decorators';
 import { GenericUser } from '../user/entity';
 import { JwtAuthGuard } from './guards';
 import { IGenericAuthController, IGenericAuthService } from './interfaces';
 import { User } from '../user/decorators';
+import { NoPermission } from '../permission/decorators';
 import { HttpExceptionFilter, LoggingInterceptor } from '../../../common';
 
 export function GenericAuthController<
