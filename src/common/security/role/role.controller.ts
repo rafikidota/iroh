@@ -9,8 +9,8 @@ import {
   HttpCode,
   Type,
 } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { DeepPartial } from 'typeorm';
 import { Entity, EntityGuard, LoggerOptions, SearchDto } from '../../../crud';
 import type {
   IGenericController,

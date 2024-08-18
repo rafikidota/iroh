@@ -1,5 +1,5 @@
-import { InjectRepository } from '@nestjs/typeorm';
 import { Type, UnauthorizedException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { FindOneOptions, Repository } from 'typeorm';
 import { IGenericAuthService, ISignInResponse } from './interfaces';

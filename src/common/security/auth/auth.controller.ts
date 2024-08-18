@@ -6,20 +6,20 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
 import {
   ApiBasicAuth,
   ApiBearerAuth,
   ApiBody,
   ApiResponse,
 } from '@nestjs/swagger';
+import { DeepPartial } from 'typeorm';
+import { HttpExceptionFilter, LoggingInterceptor } from '../../../common';
 import { BasicAuthGuard, Public } from './decorators';
-import { GenericUser } from '../user/entity';
-import { JwtAuthGuard } from './guards';
-import { IGenericAuthController, IGenericAuthService } from './interfaces';
 import { User } from '../user/decorators';
 import { NoPermission } from '../permission/decorators';
-import { HttpExceptionFilter, LoggingInterceptor } from '../../../common';
+import { JwtAuthGuard } from './guards';
+import { IGenericAuthController, IGenericAuthService } from './interfaces';
+import { GenericUser } from '../user/entity';
 
 export function GenericAuthController<
   T extends GenericUser,

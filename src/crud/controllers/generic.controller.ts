@@ -12,13 +12,13 @@ import {
   UseInterceptors,
   UseFilters,
 } from '@nestjs/common';
+import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { DeepPartial } from 'typeorm';
 import { Entity, EntityGuard } from '../decorators';
 import { GenericPersistent } from '../entity';
 import { LoggerOptions } from '../logger';
 import { SearchDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { LoggingInterceptor } from '../../common/interceptors';
 import { HttpExceptionFilter } from '../../common/filters';
 
