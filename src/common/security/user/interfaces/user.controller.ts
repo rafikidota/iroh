@@ -1,5 +1,5 @@
-import { SearchDto } from './../../../../crud';
 import { DeepPartial } from 'typeorm';
+import { SearchDto } from './../../../../crud';
 
 export type IGenericUserController<T, D> = {
   create(body: DeepPartial<D>): Promise<Partial<T>>;

@@ -8,27 +8,22 @@ import {
   Delete,
   HttpCode,
   Type,
-  UseFilters,
-  UseInterceptors,
 } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { DeepPartial } from 'typeorm';
 import { Entity, EntityGuard, LoggerOptions, SearchDto } from '../../../crud';
 import type {
   IGenericController,
   IGenericService,
 } from '../../../crud/interfaces';
-import { GenericUser } from './entity/user.generic';
-import { HttpExceptionFilter, LoggingInterceptor } from '../../../common';
+import { GenericRole } from './entity/role.generic';
 
-export function GenericUserController<
-  T extends GenericUser,
+export function GenericRoleController<
+  T extends GenericRole,
   D extends DeepPartial<T>,
   U extends Partial<T>,
 >(E: Type<T>, CreateDto: Type<D>, UpdateDto: Type<U>) {
-  @UseInterceptors(LoggingInterceptor)
-  @UseFilters(HttpExceptionFilter)
-  abstract class GenericUserController implements IGenericController<T, D> {
+  abstract class GenericRoleController implements IGenericController<T, D> {
     constructor(readonly service: IGenericService<T, D>) {}
 
     @Post()
@@ -95,5 +90,5 @@ export function GenericUserController<
     }
   }
 
-  return GenericUserController;
+  return GenericRoleController;
 }

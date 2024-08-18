@@ -1,5 +1,5 @@
-import { DeepPartial } from 'typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 import { AppError, ErrorHandler } from './../../common';
 import { ServiceLogger, LoggerOptions } from '../logger';
 import { GenericPersistent } from '../entity/generic.persistent';

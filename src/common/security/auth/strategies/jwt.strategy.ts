@@ -1,8 +1,8 @@
-import { PassportStrategy } from '@nestjs/passport';
 import { BadRequestException, Injectable, Type } from '@nestjs/common';
-import { Strategy, ExtractJwt } from 'passport-jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PassportStrategy } from '@nestjs/passport';
 import { FindOneOptions, Repository } from 'typeorm';
+import { Strategy, ExtractJwt } from 'passport-jwt';
 import dotenv from 'dotenv';
 import { Payload } from '../interfaces';
 import { GenericUser } from '../../../security/user';
