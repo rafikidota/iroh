@@ -22,7 +22,7 @@ export function GenericPermissionModule<
   PermissionService: Type<S>,
   PermissionRepository: Type<IGenericRepository<T, D>>,
   PermissionSeeder: Type<IPermissionSeeder>,
-  AuthModule: Type<unknown>,
+  AuthModule: Type<any>,
 ) {
   @Module({
     controllers: [PermissionController],
