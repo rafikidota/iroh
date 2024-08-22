@@ -1,14 +1,12 @@
 import { Module, Type } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import dotenv from 'dotenv';
-import { v4 as uuidv4 } from 'uuid';
 import { GenericUser } from '../user';
 import { JwtStrategy } from './strategies';
 import type { IGenericAuthController, IGenericAuthService } from './interfaces';
 
-dotenv.config();
 export function GenericAuthModule<
   T extends GenericUser,
   C extends IGenericAuthController<T>,
@@ -20,9 +18,12 @@ export function GenericAuthModule<
     imports: [
       TypeOrmModule.forFeature([User]),
       PassportModule.register({ defaultStrategy: 'jwt' }),
-      JwtModule.register({
-        secret: process.env.JWT_SECRET || uuidv4(),
-        signOptions: { expiresIn: '72h' },
+      JwtModule.registerAsync({
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: async (config: ConfigService) => ({
+          secret: config.get<string>('JWT_SECRET'),
+        }),
       }),
     ],
     exports: [TypeOrmModule, JwtModule, PassportModule],
