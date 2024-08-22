@@ -1,4 +1,4 @@
-import { Module, ModuleMetadata, OnModuleInit, Type } from '@nestjs/common';
+import { Module, OnModuleInit, Type } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
@@ -22,7 +22,7 @@ export function GenericPermissionModule<
   PermissionService: Type<S>,
   PermissionRepository: Type<IGenericRepository<T, D>>,
   PermissionSeeder: Type<IPermissionSeeder>,
-  AuthModule: Type<ModuleMetadata>,
+  AuthModule: Type<unknown>,
 ) {
   @Module({
     controllers: [PermissionController],
