@@ -1,4 +1,4 @@
-import { Module, OnModuleInit, Type } from '@nestjs/common';
+import { Module, Type } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
@@ -35,12 +35,6 @@ export function GenericPermissionModule<
     ],
     exports: [TypeOrmModule, PermissionService],
   })
-  class PermissionModule implements OnModuleInit {
-    constructor(readonly seeder: IPermissionSeeder) {}
-
-    async onModuleInit() {
-      this.seeder.synchronize();
-    }
-  }
+  class PermissionModule {}
   return PermissionModule;
 }
