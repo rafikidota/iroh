@@ -1,12 +1,12 @@
 import { Injectable, OnModuleInit, Type } from '@nestjs/common';
-import { GenericPermission } from '../entity';
+import { InjectRepository } from '@nestjs/typeorm';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { AxiosResponse, AxiosError } from 'axios';
-import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
+import { AxiosResponse, AxiosError } from 'axios';
 import { firstValueFrom, catchError, of } from 'rxjs';
-import { SeederLogger } from 'crud/logger/providers/seeder.logger';
+import { GenericPermission } from '../entity';
+import { SeederLogger } from './../../../../crud/logger';
 
 export function GenericPermissionSeeder<T extends GenericPermission>(
   E: Type<T>,
