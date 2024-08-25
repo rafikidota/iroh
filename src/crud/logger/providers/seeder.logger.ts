@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { GenericLogger } from './generic.logger';
+import { GenericPersistent } from './../../entity/generic.persistent';
 
 @Injectable()
-export class SeederLogger extends GenericLogger {
-  constructor(readonly name: string) {
-    const context = `${name}Seeder`;
+export class SeederLogger<T extends GenericPersistent> extends GenericLogger {
+  constructor(readonly entity: new () => T) {
+    const context = `${entity.name}Seeder`;
     super(context);
   }
 
@@ -15,6 +16,6 @@ export class SeederLogger extends GenericLogger {
 
   private getLog(id: string) {
     const timestamp = this.getTimestamp();
-    return `New ${this.name} ${id} seeded ${timestamp}`;
+    return `New ${this.entity.name} ${id} seeded ${timestamp}`;
   }
 }

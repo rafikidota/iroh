@@ -16,8 +16,9 @@ export function GenericPermissionSeeder<T extends GenericPermission>(
     constructor(
       readonly config: ConfigService,
       readonly http: HttpService,
-      readonly logger: SeederLogger,
-      @InjectRepository(E) readonly repository: Repository<T>,
+      readonly logger: SeederLogger<T>,
+      @InjectRepository(E)
+      readonly repository: Repository<T>,
     ) {}
     onModuleInit() {
       this.synchronize();
