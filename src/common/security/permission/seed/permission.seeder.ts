@@ -13,13 +13,15 @@ export function GenericPermissionSeeder<T extends GenericPermission>(
 ) {
   @Injectable()
   class PermissionSeeder implements OnModuleInit {
+    readonly logger: SeederLogger;
     constructor(
       readonly config: ConfigService,
       readonly http: HttpService,
-      readonly logger: SeederLogger<T>,
       @InjectRepository(E)
       readonly repository: Repository<T>,
-    ) {}
+    ) {
+      this.logger = new SeederLogger(E.name);
+    }
     onModuleInit() {
       this.synchronize();
     }
