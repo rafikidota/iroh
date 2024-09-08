@@ -3,12 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PassportStrategy } from '@nestjs/passport';
 import { FindOneOptions, Repository } from 'typeorm';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import dotenv from 'dotenv';
 import { Payload } from '../interfaces';
 import { GenericUser } from '../../../security/user';
 import { ConfigService } from '@nestjs/config';
-
-dotenv.config();
 
 export function JwtStrategy<T extends GenericUser>(E: Type<T>) {
   @Injectable()
