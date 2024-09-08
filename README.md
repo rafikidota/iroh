@@ -68,13 +68,13 @@ Define your controller by extending `GenericController`:
 ```js
 import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Auth, GenericController } from '@rafikidota/iroh';
+import { AuthGuard, GenericController } from '@rafikidota/iroh';
 import { HeroService } from './hero.service';
 import { Hero } from './entities/hero.entity';
 import { CreateHeroDto } from './dto/hero.create.dto';
 import { UpdateHeroDto } from './dto/hero.update.dto';
 
-@Auth()
+@AuthGuard()
 @ApiBearerAuth()
 @ApiTags(Hero.name)
 @Controller(Hero.name.toLowerCase())
