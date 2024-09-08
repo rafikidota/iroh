@@ -21,6 +21,12 @@ export class GenericUser extends GenericPersistent {
   @Column()
   password: string;
 
+  @Column({
+    enum: ['admin', 'client', 'others'],
+    default: 'client',
+  })
+  role: string;
+
   public verifyPassword(password: string) {
     return bcrypt.compare(password, this.password);
   }
