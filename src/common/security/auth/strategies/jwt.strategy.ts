@@ -6,16 +6,21 @@ import { Strategy, ExtractJwt } from 'passport-jwt';
 import dotenv from 'dotenv';
 import { Payload } from '../interfaces';
 import { GenericUser } from '../../../security/user';
+import { ConfigService } from '@nestjs/config';
 
 dotenv.config();
 
 export function JwtStrategy<T extends GenericUser>(E: Type<T>) {
   @Injectable()
   class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(@InjectRepository(E) readonly repository: Repository<T>) {
+    constructor(
+      @InjectRepository(E)
+      readonly repository: Repository<T>,
+      readonly config: ConfigService,
+    ) {
       const jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
       const ignoreExpiration = false;
-      const secretOrKey = process.env.JWT_SECRET;
+      const secretOrKey = config.get<string>('JWT_SECRET');
       if (!secretOrKey) {
         throw new Error('JWT_SECRET is not defined');
       }
