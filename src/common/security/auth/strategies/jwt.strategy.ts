@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Type } from '@nestjs/common';
+import { Injectable, NotFoundException, Type } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PassportStrategy } from '@nestjs/passport';
 import { FindOneOptions, Repository } from 'typeorm';
@@ -28,7 +28,7 @@ export function JwtStrategy<T extends GenericUser>(E: Type<T>) {
       const where = { where: { id } } as unknown as FindOneOptions<T>;
       const user = await this.repository.findOne(where);
       if (!user) {
-        throw new BadRequestException(`${E.name} with id ${id} not found`);
+        throw new NotFoundException(`${E.name} with id ${id} not found`);
       }
       return user;
     }
