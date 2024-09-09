@@ -23,6 +23,7 @@ export class GenericUser extends GenericPersistent {
   password: string;
 
   @Column({
+    type: 'enum',
     enum: RoleEnum,
     default: RoleEnum.CLIENT,
   })
