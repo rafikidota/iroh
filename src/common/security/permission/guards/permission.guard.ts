@@ -21,8 +21,12 @@ export function BuildPermissionGuard<T extends GenericPermission>(E: Type<T>) {
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-      const handler = context.getHandler();
-      const ok = this.reflector.get<boolean>(NoPermissionNeededKey, handler);
+      const constexHandler = context.getHandler();
+      const contextClass = context.getClass();
+      const ok = this.reflector.getAllAndOverride<boolean>(
+        NoPermissionNeededKey,
+        [constexHandler, contextClass],
+      );
 
       const request = context.switchToHttp().getRequest();
       const { user } = request;
