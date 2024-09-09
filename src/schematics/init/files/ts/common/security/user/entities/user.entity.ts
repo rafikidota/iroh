@@ -5,5 +5,6 @@ import { Role } from '../../role/entities/role.entity';
 @Entity()
 export class User extends GenericUser {
   @ManyToOne(() => Role, (role) => role.users, { eager: true })
+  @JoinColumn({ name: 'role_id' })
   role: Role;
 }
