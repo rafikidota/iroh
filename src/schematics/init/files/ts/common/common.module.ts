@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { LoggerModule } from '@rafikidota/iroh';
 import { SecurityModule } from './security/security.module';
 import { EnvConfiguration } from './config/env.config';
 import { JoiValidationSchema } from './config/joi.validation';
@@ -11,7 +12,8 @@ import { JoiValidationSchema } from './config/joi.validation';
       load: [EnvConfiguration],
       validationSchema: JoiValidationSchema
     }),
-    SecurityModule
+    SecurityModule,
+    LoggerModule
   ],
 })
 export class CommonModule { }
