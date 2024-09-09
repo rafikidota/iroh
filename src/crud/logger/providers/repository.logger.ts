@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PaginateLoggerOptions } from './util';
+import { PaginateLoggerOptions } from '../util';
 import { GenericLogger } from './generic.logger';
-import { TitleCaseOperationLevel } from './util/levels';
+import { TitleCaseOperationLevel } from '../util/levels';
 
 @Injectable()
 export class RepositoryLogger extends GenericLogger {

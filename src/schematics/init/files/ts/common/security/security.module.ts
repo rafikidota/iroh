@@ -6,5 +6,6 @@ import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [UserModule, AuthModule, PermissionModule, RoleModule],
+  exports: [UserModule, AuthModule, PermissionModule, RoleModule],
 })
 export class SecurityModule {}

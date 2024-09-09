@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import chalk from 'chalk';
 import { GenericLogger } from './generic.logger';
-import { PaginateLoggerOptions, TitleCaseOperationLevel } from './util';
+import { PaginateLoggerOptions, TitleCaseOperationLevel } from '../util';
 
 @Injectable()
 export class ServiceLogger extends GenericLogger {

@@ -1,5 +1,4 @@
 import { SetMetadata } from '@nestjs/common';
 
 export const NoPermissionNeededKey = 'NoPermissionNeeded';
-export const NoPermission = (...args: string[]) =>
-  SetMetadata(NoPermissionNeededKey, args);
+export const NoPermission = () => SetMetadata(NoPermissionNeededKey, true);

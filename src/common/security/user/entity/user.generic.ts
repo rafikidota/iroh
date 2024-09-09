@@ -2,6 +2,7 @@ import { Column } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { GenericPersistent } from '../../../../crud/entity/generic.persistent';
 import { SoftUnique } from '../../../../crud/decorators/soft-unique.decorator';
+import { UserRoleEnum, UserRoleEnumType } from '../enum/user.role.enum';
 
 export class GenericUser extends GenericPersistent {
   @Column()
@@ -20,6 +21,13 @@ export class GenericUser extends GenericPersistent {
 
   @Column()
   password: string;
+
+  @Column({
+    type: 'enum',
+    enum: UserRoleEnum,
+    default: UserRoleEnum.CLIENT,
+  })
+  role: UserRoleEnumType;
 
   public verifyPassword(password: string) {
     return bcrypt.compare(password, this.password);

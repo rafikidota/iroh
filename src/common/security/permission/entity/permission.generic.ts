@@ -1,6 +1,6 @@
 import { Column } from 'typeorm';
 import { GenericPersistent } from '../../../../crud/entity/generic.persistent';
-import { MethodPermission } from '../enum/method.permission.enum';
+import { MethodPermissionEnum, MethodPermissionType } from '../enum';
 
 export class GenericPermission extends GenericPersistent {
   @Column()
@@ -10,9 +10,10 @@ export class GenericPermission extends GenericPersistent {
   description: string;
 
   @Column({
-    enum: MethodPermission,
+    type: 'enum',
+    enum: MethodPermissionEnum,
   })
-  method: string;
+  method: MethodPermissionType;
 
   @Column()
   code: string;

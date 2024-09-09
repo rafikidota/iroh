@@ -22,12 +22,10 @@ export function BuildBasicAuthGuard<T extends GenericUser>(E: Type<T>) {
       const request = ctx.getRequest<Request>();
       const { authorization } = request.headers;
       if (authorization && authorization.startsWith('Basic')) {
-        const [username, password] = Buffer.from(
-          authorization.split('Basic')[1],
-          'base64',
-        )
-          .toString()
-          .split(':');
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [prefix, auth] = authorization.split('Basic');
+        const buffer = Buffer.from(auth, 'base64');
+        const [username, password] = buffer.toString().split(':');
         const where = { where: { username } } as unknown as FindOneOptions<T>;
         const user = await this.repository.findOne(where);
         if (!user) {
