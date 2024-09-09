@@ -10,9 +10,10 @@ export class GenericPermission extends GenericPersistent {
   description: string;
 
   @Column({
+    type: 'enum',
     enum: MethodPermission,
   })
-  method: string;
+  method: MethodPermission;
 
   @Column()
   code: string;
