@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GenericPermission } from '../entity';
 import { NoPermissionNeededKey } from '../decorators';
+import { RoleEnum } from '../../user/enum/role.enum';
 
 export function BuildPermissionGuard<T extends GenericPermission>(E: Type<T>) {
   @Injectable()
@@ -21,12 +22,16 @@ export function BuildPermissionGuard<T extends GenericPermission>(E: Type<T>) {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const handler = context.getHandler();
-      const NoPermissionNeeded = this.reflector.get<boolean>(
-        NoPermissionNeededKey,
-        handler,
-      );
+      const ok = this.reflector.get<boolean>(NoPermissionNeededKey, handler);
 
-      return NoPermissionNeeded ? true : false;
+      const request = context.switchToHttp().getRequest();
+      const { user } = request;
+
+      if (user.role === RoleEnum.ADMIN || ok) {
+        return true;
+      }
+
+      return false;
     }
   }
   return PermissionGuard;

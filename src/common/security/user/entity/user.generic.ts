@@ -2,6 +2,7 @@ import { Column } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { GenericPersistent } from '../../../../crud/entity/generic.persistent';
 import { SoftUnique } from '../../../../crud/decorators/soft-unique.decorator';
+import { RoleEnum } from '../enum/role.enum';
 
 export class GenericUser extends GenericPersistent {
   @Column()
@@ -22,8 +23,8 @@ export class GenericUser extends GenericPersistent {
   password: string;
 
   @Column({
-    enum: ['admin', 'client', 'others'],
-    default: 'client',
+    enum: RoleEnum,
+    default: RoleEnum.CLIENT,
   })
   role: string;
 
