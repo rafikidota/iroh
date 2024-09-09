@@ -27,7 +27,7 @@ export class GenericUser extends GenericPersistent {
     enum: UserRoleEnum,
     default: UserRoleEnum.CLIENT,
   })
-  role: UserRoleEnumType;
+  type: UserRoleEnumType;
 
   public verifyPassword(password: string) {
     return bcrypt.compare(password, this.password);

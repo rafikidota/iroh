@@ -27,7 +27,7 @@ export function BuildPermissionGuard<T extends GenericPermission>(E: Type<T>) {
       const request = context.switchToHttp().getRequest();
       const { user } = request;
 
-      if (user.role === UserRoleEnum.ADMIN || ok) {
+      if (user.type === UserRoleEnum.ADMIN || ok) {
         return true;
       }
 
