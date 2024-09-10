@@ -73,7 +73,7 @@ import { HeroService } from './hero.service';
 import { Hero } from './entities/hero.entity';
 import { CreateHeroDto } from './dto/hero.create.dto';
 import { UpdateHeroDto } from './dto/hero.update.dto';
-import { Permission } from '../../common/security/permission';
+import { Permission } from '../../common/security';
 
 @ApiBearerAuth()
 @ApiTags(Hero.name)
