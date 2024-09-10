@@ -11,6 +11,10 @@ import { GenericPermission } from '../entity';
 import { NoPermissionNeededKey } from '../decorators';
 import { UserRoleEnum } from '../../user/enum';
 
+const replaceBracesWithColon = (route: string) => {
+  return route.replace(/{(\w+)}/g, ':$1').toLowerCase();
+};
+
 export function BuildPermissionGuard<T extends GenericPermission>(E: Type<T>) {
   @Injectable()
   class PermissionGuard implements CanActivate {
@@ -21,18 +25,55 @@ export function BuildPermissionGuard<T extends GenericPermission>(E: Type<T>) {
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-      const constexHandler = context.getHandler();
-      const contextClass = context.getClass();
-      const ok = this.reflector.getAllAndOverride<boolean>(
-        NoPermissionNeededKey,
-        [constexHandler, contextClass],
-      );
+      const handler = context.getHandler();
+      const controller = context.getClass();
+      const targets = [handler, controller];
+      const key = NoPermissionNeededKey;
+      const ok =
+        this.reflector.getAllAndOverride<boolean>(key, targets) || false;
 
       const request = context.switchToHttp().getRequest();
       const { user } = request;
+      if (!user) {
+        return false;
+      }
 
       if (user.type === UserRoleEnum.ADMIN || ok) {
         return true;
+      }
+
+      const { role } = user;
+      if (!role) {
+        return false;
+      }
+
+      const { permissions } = role;
+      if (!permissions || !permissions.length) {
+        return false;
+      }
+
+      const { route } = request;
+      const requestPath = route.path.toLowerCase();
+      const requestMethod = request.method.toLowerCase();
+
+      const allPermissions = await this.repository.find();
+
+      for (const permission of allPermissions) {
+        const { path, method } = permission;
+        const permissionMethod = method.toLowerCase();
+        const permissionPath = replaceBracesWithColon(path);
+
+        if (
+          requestMethod === permissionMethod &&
+          requestPath === permissionPath
+        ) {
+          const hasPermission = permissions.some(
+            (p: T) => p.id === permission.id,
+          );
+          if (hasPermission) {
+            return true;
+          }
+        }
       }
 
       return false;
