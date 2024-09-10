@@ -17,7 +17,6 @@ export class PaginationDto {
   page?: number = 1;
 
   @ApiProperty({
-    default: 10,
     minimum: 1,
     description: 'How many rows do you need?',
   })
@@ -27,7 +26,7 @@ export class PaginationDto {
   @IsInt()
   @IsPositive()
   @Min(1)
-  limit?: number = 10;
+  limit?: number;
 
   @ApiProperty({
     default: 0,
