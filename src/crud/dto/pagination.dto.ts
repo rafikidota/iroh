@@ -4,7 +4,6 @@ import { IsInt, IsNumber, IsOptional, IsPositive, Min } from 'class-validator';
 
 export class PaginationDto {
   @ApiProperty({
-    default: 1,
     minimum: 1,
     description: `What's the page number to start listing from`,
   })
@@ -14,7 +13,7 @@ export class PaginationDto {
   @IsInt()
   @IsPositive()
   @Min(1)
-  page?: number = 1;
+  page?: number;
 
   @ApiProperty({
     minimum: 1,
@@ -29,14 +28,13 @@ export class PaginationDto {
   limit?: number;
 
   @ApiProperty({
-    default: 0,
-    minimum: 0,
+    minimum: 1,
     description: 'How many rows do you want to skip?',
   })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @IsInt()
-  @Min(0)
-  offset?: number = 0;
+  @Min(1)
+  offset?: number;
 }
