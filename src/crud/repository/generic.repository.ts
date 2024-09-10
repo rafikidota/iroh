@@ -35,7 +35,7 @@ export function GenericTypeOrmRepository<
       if (limit) {
         options.take = limit;
       }
-      if (page) {
+      if (page && limit) {
         options.skip = (page - 1) * limit;
       }
       if (offset) {
