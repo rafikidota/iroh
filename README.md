@@ -68,15 +68,16 @@ Define your controller by extending `GenericController`:
 ```js
 import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { AuthGuard, GenericController } from '@rafikidota/iroh';
+import { GenericController, SecurityGuard } from '@rafikidota/iroh';
 import { HeroService } from './hero.service';
 import { Hero } from './entities/hero.entity';
 import { CreateHeroDto } from './dto/hero.create.dto';
 import { UpdateHeroDto } from './dto/hero.update.dto';
+import { Permission } from '../../common/security';
 
-@AuthGuard()
 @ApiBearerAuth()
 @ApiTags(Hero.name)
+@SecurityGuard(Permission)
 @Controller(Hero.name.toLowerCase())
 export class HeroController extends GenericController(
   Hero,
@@ -122,7 +123,7 @@ Import necessary modules and set up your feature module:
 ```ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from '../../common/security/auth/auth.module';
+import { SecurityModule } from '../../common/security';
 import { Hero } from './entities/hero.entity';
 import { HeroController } from './hero.controller';
 import { HeroService } from './hero.service';
@@ -131,7 +132,7 @@ import { HeroRepository } from './hero.repository';
 @Module({
   controllers: [HeroController],
   providers: [HeroService, HeroRepository],
-  imports: [TypeOrmModule.forFeature([Hero]), AuthModule],
+  imports: [TypeOrmModule.forFeature([Hero]), SecurityModule],
   exports: [TypeOrmModule],
 })
 export class HeroModule {}

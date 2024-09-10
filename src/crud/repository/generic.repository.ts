@@ -1,6 +1,11 @@
 import { NotFoundException, Type } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  FindOneOptions,
+  FindManyOptions,
+  Repository,
+} from 'typeorm';
 import { LoggerOptions, RepositoryLogger } from '../logger';
 import { GenericPersistent } from '../entity/generic.persistent';
 import { IGenericRepository } from '../interfaces/crud.repository';
@@ -25,10 +30,18 @@ export function GenericTypeOrmRepository<
 
     public async paginate(query: SearchDto): Promise<T[]> {
       this.logger.restart();
+      const options = {} as unknown as FindManyOptions<T>;
       const { limit, page, offset } = query;
-      const take = limit || 10;
-      const skip = offset || (page - 1) * limit || 0;
-      const entities = await this.repository.find({ take, skip });
+      if (limit) {
+        options.take = limit;
+      }
+      if (page && limit) {
+        options.skip = (page - 1) * limit;
+      }
+      if (offset) {
+        options.skip = offset;
+      }
+      const entities = await this.repository.find(options);
       const length = entities.length;
       this.logger.foundMany({ limit, page, offset, length });
       return entities;
