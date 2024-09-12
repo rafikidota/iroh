@@ -20,28 +20,32 @@ import type {
 } from '../../../crud/interfaces';
 import { GenericUser } from './entity/user.generic';
 import { HttpExceptionFilter, LoggingInterceptor } from '../../../common';
+import { GenericUserView } from './entity/user.view';
 
 export function GenericUserController<
   T extends GenericUser,
-  D extends DeepPartial<T>,
+  DTO extends DeepPartial<T>,
   U extends Partial<T>,
->(E: Type<T>, CreateDto: Type<D>, UpdateDto: Type<U>) {
+  V extends GenericUserView,
+>(E: Type<T>, CreateDto: Type<DTO>, UpdateDto: Type<U>, View: Type<V>) {
   @UseInterceptors(LoggingInterceptor)
   @UseFilters(HttpExceptionFilter)
-  abstract class GenericUserController implements IGenericController<T, D> {
-    constructor(readonly service: IGenericService<T, D>) {}
+  abstract class GenericUserController
+    implements IGenericController<T, DTO, V>
+  {
+    constructor(readonly service: IGenericService<T, DTO, V>) {}
 
     @Post()
     @ApiBody({ type: CreateDto })
     @ApiResponse({
       status: 201,
       description: `${E.name} was created successfully`,
-      type: E,
+      type: View,
     })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
-    create(@Body() body: D) {
+    create(@Body() body: DTO) {
       return this.service.create(body);
     }
 
@@ -49,7 +53,7 @@ export function GenericUserController<
     @ApiResponse({
       status: 200,
       description: `List of ${E.name.toLocaleLowerCase()}s`,
-      type: E,
+      type: View,
       isArray: true,
     })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
@@ -59,7 +63,11 @@ export function GenericUserController<
     }
 
     @Get(':id')
-    @ApiResponse({ status: 200, description: `${E.name} found by id`, type: E })
+    @ApiResponse({
+      status: 200,
+      description: `${E.name} found by id`,
+      type: View,
+    })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
     findOne(@Param('id') id: string) {
@@ -72,12 +80,12 @@ export function GenericUserController<
     @ApiResponse({
       status: 200,
       description: `${E.name} was updated successfully`,
-      type: E,
+      type: View,
     })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
     @EntityGuard(E)
-    update(@Entity() entity: T, @Body() body: Partial<D>) {
+    update(@Entity() entity: T, @Body() body: Partial<DTO>) {
       return this.service.update(entity, body);
     }
 

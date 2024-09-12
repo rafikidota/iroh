@@ -1,14 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Module, Type } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { GenericUser } from './entity';
+import { GenericUser, GenericUserView } from './entity';
 import { DeepPartial } from 'typeorm';
 import type { IGenericController, IGenericService } from '../../../crud';
 export function GenericUserModule<
   T extends GenericUser,
-  D extends DeepPartial<T>,
-  C extends IGenericController<T, D>,
-  U extends IGenericService<T, D>,
+  V extends GenericUserView,
+  DTO extends DeepPartial<T>,
+  C extends IGenericController<T, DTO, V>,
+  U extends IGenericService<T, DTO, V>,
 >(
   User: Type<T>,
   UserController: Type<C>,
