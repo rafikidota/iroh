@@ -15,7 +15,7 @@ import {
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { DeepPartial } from 'typeorm';
 import { Entity, EntityGuard } from '../decorators';
-import { GenericPersistent } from '../mapper';
+import { GenericPersistent, GenericView } from '../mapper';
 import { LoggerOptions } from '../logger';
 import { SearchDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
@@ -26,18 +26,19 @@ export function GenericController<
   T extends GenericPersistent,
   D extends DeepPartial<T>,
   U extends Partial<T>,
->(E: Type<T>, CreateDto: Type<D>, UpdateDto: Type<U>) {
+  V extends GenericView,
+>(E: Type<T>, CreateDto: Type<D>, UpdateDto: Type<U>, View: Type<V>) {
   @UseInterceptors(LoggingInterceptor)
   @UseFilters(HttpExceptionFilter)
-  abstract class GenericCRUDController implements IGenericController<T, D> {
-    constructor(readonly service: IGenericService<T, D>) {}
+  abstract class GenericCRUDController implements IGenericController<T, D, V> {
+    constructor(readonly service: IGenericService<T, D, V>) {}
 
     @Post()
     @ApiBody({ type: CreateDto })
     @ApiResponse({
       status: 201,
       description: `${E.name} was created successfully`,
-      type: E,
+      type: View,
     })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
@@ -50,7 +51,7 @@ export function GenericController<
     @ApiResponse({
       status: 200,
       description: `List of ${E.name.toLocaleLowerCase()}s`,
-      type: E,
+      type: View,
       isArray: true,
     })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
@@ -60,7 +61,11 @@ export function GenericController<
     }
 
     @Get(':id')
-    @ApiResponse({ status: 200, description: `${E.name} found by id`, type: E })
+    @ApiResponse({
+      status: 200,
+      description: `${E.name} found by id`,
+      type: View,
+    })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
     findOne(@Param('id', ParseUUIDPipe) id: string) {
@@ -73,7 +78,7 @@ export function GenericController<
     @ApiResponse({
       status: 200,
       description: `${E.name} was updated successfully`,
-      type: E,
+      type: View,
     })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
