@@ -17,21 +17,23 @@ import type {
   IGenericService,
 } from '../../../crud/interfaces';
 import { GenericRole } from './entity/role.generic';
+import { GenericRoleView } from './entity';
 
 export function GenericRoleController<
   T extends GenericRole,
   D extends DeepPartial<T>,
   U extends Partial<T>,
->(E: Type<T>, CreateDto: Type<D>, UpdateDto: Type<U>) {
-  abstract class GenericRoleController implements IGenericController<T, D> {
-    constructor(readonly service: IGenericService<T, D>) {}
+  V extends GenericRoleView,
+>(E: Type<T>, CreateDto: Type<D>, UpdateDto: Type<U>, View: Type<V>) {
+  abstract class GenericRoleController implements IGenericController<T, D, V> {
+    constructor(readonly service: IGenericService<T, D, V>) {}
 
     @Post()
     @ApiBody({ type: CreateDto })
     @ApiResponse({
       status: 201,
       description: `${E.name} was created successfully`,
-      type: E,
+      type: View,
     })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
@@ -44,7 +46,7 @@ export function GenericRoleController<
     @ApiResponse({
       status: 200,
       description: `List of ${E.name.toLocaleLowerCase()}s`,
-      type: E,
+      type: View,
       isArray: true,
     })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
@@ -54,7 +56,11 @@ export function GenericRoleController<
     }
 
     @Get(':id')
-    @ApiResponse({ status: 200, description: `${E.name} found by id`, type: E })
+    @ApiResponse({
+      status: 200,
+      description: `${E.name} found by id`,
+      type: View,
+    })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
     findOne(@Param('id') id: string) {
@@ -67,7 +73,7 @@ export function GenericRoleController<
     @ApiResponse({
       status: 200,
       description: `${E.name} was updated successfully`,
-      type: E,
+      type: View,
     })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
