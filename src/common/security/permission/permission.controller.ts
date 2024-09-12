@@ -9,6 +9,7 @@ import {
   HttpCode,
   Type,
 } from '@nestjs/common';
+import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { DeepPartial } from 'typeorm';
 import { Entity, EntityGuard, LoggerOptions, SearchDto } from '../../../crud';
 import type {
@@ -16,24 +17,25 @@ import type {
   IGenericService,
 } from '../../../crud/interfaces';
 import { GenericPermission } from './entity/permission.generic';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { GenericView } from './../../../crud/mapper';
 
 export function GenericPermissionController<
   T extends GenericPermission,
   D extends DeepPartial<T>,
   U extends Partial<T>,
->(E: Type<T>, CreateDto: Type<D>, UpdateDto: Type<U>) {
+  V extends GenericView,
+>(E: Type<T>, CreateDto: Type<D>, UpdateDto: Type<U>, View: Type<V>) {
   abstract class GenericPermissionController
-    implements IGenericController<T, D>
+    implements IGenericController<T, D, V>
   {
-    constructor(readonly service: IGenericService<T, D>) {}
+    constructor(readonly service: IGenericService<T, D, V>) {}
 
     @Post()
     @ApiBody({ type: CreateDto })
     @ApiResponse({
       status: 201,
       description: `${E.name} was created successfully`,
-      type: E,
+      type: View,
     })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
@@ -46,7 +48,7 @@ export function GenericPermissionController<
     @ApiResponse({
       status: 200,
       description: `List of ${E.name.toLocaleLowerCase()}s`,
-      type: E,
+      type: View,
       isArray: true,
     })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
@@ -56,7 +58,11 @@ export function GenericPermissionController<
     }
 
     @Get(':id')
-    @ApiResponse({ status: 200, description: `${E.name} found by id`, type: E })
+    @ApiResponse({
+      status: 200,
+      description: `${E.name} found by id`,
+      type: View,
+    })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
     findOne(@Param('id') id: string) {
@@ -69,7 +75,7 @@ export function GenericPermissionController<
     @ApiResponse({
       status: 200,
       description: `${E.name} was updated successfully`,
-      type: E,
+      type: View,
     })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })

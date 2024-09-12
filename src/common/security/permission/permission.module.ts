@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { DeepPartial } from 'typeorm';
-import { GenericPermission } from './entity';
+import { GenericPermission, GenericPermissionView } from './entity';
 import type {
   IGenericController,
   IGenericRepository,
@@ -13,14 +13,15 @@ import type { IPermissionSeeder } from './interfaces';
 
 export function GenericPermissionModule<
   T extends GenericPermission,
-  D extends DeepPartial<T>,
-  C extends IGenericController<T, D>,
-  S extends IGenericService<T, D>,
+  V extends GenericPermissionView,
+  DTO extends DeepPartial<T>,
+  C extends IGenericController<T, DTO, V>,
+  S extends IGenericService<T, DTO, V>,
 >(
   Permission: Type<T>,
   PermissionController: Type<C>,
   PermissionService: Type<S>,
-  PermissionRepository: Type<IGenericRepository<T, D>>,
+  PermissionRepository: Type<IGenericRepository<T, DTO>>,
   PermissionSeeder: Type<IPermissionSeeder>,
   AuthModule: Type<any>,
 ) {
