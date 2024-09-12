@@ -7,7 +7,7 @@ import {
   Repository,
 } from 'typeorm';
 import { LoggerOptions, RepositoryLogger } from '../logger';
-import { GenericPersistent } from '../entity/generic.persistent';
+import { GenericPersistent } from '../mapper';
 import { IGenericRepository } from '../interfaces/crud.repository';
 import { SearchDto } from '../dto/search.dto';
 

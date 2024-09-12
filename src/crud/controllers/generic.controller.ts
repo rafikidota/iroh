@@ -15,7 +15,7 @@ import {
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { DeepPartial } from 'typeorm';
 import { Entity, EntityGuard } from '../decorators';
-import { GenericPersistent } from '../entity';
+import { GenericPersistent } from '../mapper';
 import { LoggerOptions } from '../logger';
 import { SearchDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';

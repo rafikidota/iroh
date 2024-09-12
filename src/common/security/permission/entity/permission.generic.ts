@@ -1,5 +1,5 @@
 import { Column } from 'typeorm';
-import { GenericPersistent } from '../../../../crud/entity/generic.persistent';
+import { GenericPersistent } from '../../../../crud/mapper';
 import { MethodPermissionEnum, MethodPermissionType } from '../enum';
 
 export class GenericPermission extends GenericPersistent {

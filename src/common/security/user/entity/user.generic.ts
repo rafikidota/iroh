@@ -1,6 +1,6 @@
 import { Column } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { GenericPersistent } from '../../../../crud/entity/generic.persistent';
+import { GenericPersistent } from '../../../../crud/mapper';
 import { SoftUnique } from '../../../../crud/decorators/soft-unique.decorator';
 import { UserRoleEnum, UserRoleEnumType } from '../enum/user.role.enum';
 
