@@ -4,7 +4,7 @@ import { GenericPermission } from './permission.generic';
 import { GenericPermissionDomain } from './permission.domain';
 import { GenericPermissionView } from './permission.view';
 
-export abstract class PermissionMapper<
+export abstract class GenericPermissionMapper<
   P extends GenericPermission,
   D extends GenericPermissionDomain,
   V extends GenericPermissionView,

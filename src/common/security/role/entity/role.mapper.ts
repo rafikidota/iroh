@@ -4,7 +4,7 @@ import { GenericRole } from './role.generic';
 import { GenericRoleDomain } from './role.domain';
 import { GenericRoleView } from './role.view';
 
-export abstract class RoleMapper<
+export abstract class GenericRoleMapper<
   P extends GenericRole,
   D extends GenericRoleDomain,
   V extends GenericRoleView,

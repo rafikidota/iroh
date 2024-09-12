@@ -4,7 +4,7 @@ import { GenericUser } from './user.generic';
 import { GenericUserDomain } from './user.domain';
 import { GenericUserView } from './user.view';
 
-export abstract class UserMapper<
+export abstract class GenericUserMapper<
   P extends GenericUser,
   D extends GenericUserDomain,
   V extends GenericUserView,
