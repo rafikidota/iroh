@@ -17,7 +17,7 @@ export function GenericService<
   M extends IEntityMapper<T, D, V>,
   DTO extends DeepPartial<T>,
 >(E: Type<T>, Mapper: Type<M>) {
-  class GenericCRUDService implements IGenericService<T, DTO, V> {
+  class GenericCRUDService implements IGenericService<T, DTO, D, V> {
     public readonly logger: ServiceLogger;
     public readonly handler: ErrorHandler;
     public readonly mapper: M;
@@ -27,59 +27,56 @@ export function GenericService<
       this.mapper = new Mapper();
     }
 
-    public async create(createDto: DTO): Promise<V> {
+    public async create(createDto: DTO): Promise<D> {
       try {
         this.logger.restart();
         const entity = await this.repository.create(createDto);
         this.logger.created(entity.id);
         const domain = this.mapper.PersistToDomain(entity);
-        const view = this.mapper.DomainToView(domain);
-        return view as unknown as V;
+        return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async paginate(query: SearchDto): Promise<V[]> {
+    public async paginate(query: SearchDto): Promise<D[]> {
       try {
         this.logger.restart();
         const { limit, page, offset } = query;
         const entities: T[] = await this.repository.paginate(query);
         if (!entities || !entities.length) {
-          return [] as unknown as V[];
+          return [] as unknown as D[];
         }
         const length = entities.length;
-        const views: V[] = [];
+        const domains: D[] = [];
         entities.forEach((entity) => {
           const domain = this.mapper.PersistToDomain(entity);
-          const view = this.mapper.DomainToView(domain);
-          views.push(view as unknown as V);
+          domains.push(domain as unknown as D);
         });
         this.logger.foundMany({ limit, page, offset, length });
-        return views;
+        return domains;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async findAll() {
+    public async findAll(): Promise<D[]> {
       try {
         const entities: T[] = await this.repository.findAll();
         if (!entities || !entities.length) {
-          return [] as unknown as V[];
+          return [] as unknown as D[];
         }
-        const views: V[] = [];
+        const domains: D[] = [];
         entities.forEach((entity) => {
           const domain = this.mapper.PersistToDomain(entity);
-          const view = this.mapper.DomainToView(domain);
-          views.push(view as unknown as V);
+          domains.push(domain as unknown as D);
         });
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async findOne(id: string, options: LoggerOptions): Promise<V> {
+    public async findOne(id: string, options: LoggerOptions): Promise<D> {
       try {
         this.logger.restart();
         const entity = await this.repository.findOne(id, options);
@@ -91,22 +88,20 @@ export function GenericService<
           this.logger.foundOne(entity.id);
         }
         const domain = this.mapper.PersistToDomain(entity);
-        const view = this.mapper.DomainToView(domain);
-        return view as unknown as V;
+        return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async update(entity: T, updateDto: Partial<DTO>): Promise<V> {
+    public async update(entity: T, updateDto: Partial<DTO>): Promise<D> {
       try {
         this.logger.restart();
         Object.assign(entity, updateDto);
         const updatedEntity = await this.repository.update(entity, updateDto);
         this.logger.updated(updatedEntity.id);
         const domain = this.mapper.PersistToDomain(entity);
-        const view = this.mapper.DomainToView(domain);
-        return view as unknown as V;
+        return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
