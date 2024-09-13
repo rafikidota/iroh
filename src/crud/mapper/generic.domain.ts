@@ -1,4 +1,4 @@
-export interface IGenericDomain {
+export class GenericDomain {
   id: string;
   createdAt: Date;
   updatedAt: Date;
