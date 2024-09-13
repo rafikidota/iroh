@@ -16,19 +16,23 @@ import type {
   IGenericController,
   IGenericService,
 } from '../../../crud/interfaces';
-import { GenericPermission } from './entity/permission.generic';
-import { GenericView } from './../../../crud/mapper';
+import {
+  GenericPermission,
+  GenericPermissionDomain,
+  GenericPermissionView,
+} from './entity';
 
 export function GenericPermissionController<
   T extends GenericPermission,
-  D extends DeepPartial<T>,
+  DTO extends DeepPartial<T>,
   U extends Partial<T>,
-  V extends GenericView,
->(E: Type<T>, CreateDto: Type<D>, UpdateDto: Type<U>, View: Type<V>) {
+  D extends GenericPermissionDomain,
+  V extends GenericPermissionView,
+>(E: Type<T>, CreateDto: Type<DTO>, UpdateDto: Type<U>, View: Type<V>) {
   abstract class GenericPermissionController
-    implements IGenericController<T, D, V>
+    implements IGenericController<T, DTO, V>
   {
-    constructor(readonly service: IGenericService<T, D, V>) {}
+    constructor(readonly service: IGenericService<T, DTO, D, V>) {}
 
     @Post()
     @ApiBody({ type: CreateDto })
@@ -40,8 +44,10 @@ export function GenericPermissionController<
     @ApiResponse({ status: 400, description: 'Bad request' })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
-    create(@Body() body: D) {
-      return this.service.create(body);
+    async create(@Body() body: DTO): Promise<V> {
+      const domain = await this.service.create(body);
+      const view = this.service.mapper.DomainToView(domain);
+      return view;
     }
 
     @Get()
@@ -53,8 +59,14 @@ export function GenericPermissionController<
     })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
-    paginate(@Query() query: SearchDto) {
-      return this.service.paginate(query);
+    async paginate(@Query() query: SearchDto): Promise<V[]> {
+      const domains = await this.service.paginate(query);
+      const views: V[] = [];
+      domains.forEach((domain) => {
+        const view = this.service.mapper.DomainToView(domain);
+        views.push(view);
+      });
+      return views;
     }
 
     @Get(':id')
@@ -65,9 +77,11 @@ export function GenericPermissionController<
     })
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
-    findOne(@Param('id') id: string) {
+    async findOne(@Param('id') id: string): Promise<V> {
       const options: LoggerOptions = { logging: true };
-      return this.service.findOne(id, options);
+      const domain = await this.service.findOne(id, options);
+      const view = this.service.mapper.DomainToView(domain);
+      return view;
     }
 
     @Patch(':id')
@@ -80,8 +94,10 @@ export function GenericPermissionController<
     @ApiResponse({ status: 401, description: 'User needs a valid auth' })
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
     @EntityGuard(E)
-    update(@Entity() entity: T, @Body() body: Partial<D>) {
-      return this.service.update(entity, body);
+    async update(@Entity() entity: T, @Body() body: Partial<DTO>): Promise<V> {
+      const domain = await this.service.update(entity, body);
+      const view = this.service.mapper.DomainToView(domain);
+      return view;
     }
 
     @Delete(':id')
@@ -93,8 +109,8 @@ export function GenericPermissionController<
     @ApiResponse({ status: 403, description: 'User needs a valid permission' })
     @EntityGuard(E)
     @HttpCode(204)
-    remove(@Entity() entity: T) {
-      return this.service.remove(entity);
+    async remove(@Entity() entity: T): Promise<void> {
+      await this.service.remove(entity);
     }
   }
 
