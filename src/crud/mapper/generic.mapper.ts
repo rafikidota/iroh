@@ -1,13 +1,13 @@
 import { Type } from '@nestjs/common';
-import { GenericDomain } from './generic.domain';
+import { IGenericDomain } from './generic.domain';
 import { GenericPersistent } from './generic.persistent';
-import { GenericView } from './generic.view';
+import { IGenericView } from './generic.view';
 import type { IEntityMapper } from '../interfaces/generic.mapper';
 
 export function GenericEntityMapper<
   T extends GenericPersistent,
-  D extends GenericDomain,
-  V extends GenericView,
+  D extends IGenericDomain,
+  V extends IGenericView,
 >(Persistent: Type<T>, Domain: Type<D>, View: Type<V>) {
   abstract class EntityMapper implements IEntityMapper<T, D, V> {
     PersistToDomain(persistent: T): D {

@@ -1,4 +1,4 @@
-export class GenericView {
+export interface IGenericView {
   id: string;
   createdAt: Date;
   updatedAt: Date;

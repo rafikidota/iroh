@@ -2,7 +2,7 @@ import { NotFoundException, Type } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 import { AppError, ErrorHandler } from './../../common';
 import { ServiceLogger, LoggerOptions } from '../logger';
-import { GenericDomain, GenericPersistent, GenericView } from '../mapper';
+import { GenericPersistent, IGenericDomain, IGenericView } from '../mapper';
 import type {
   IGenericService,
   IGenericRepository,
@@ -12,8 +12,8 @@ import { SearchDto } from '../dto/search.dto';
 
 export function GenericService<
   T extends GenericPersistent,
-  D extends GenericDomain,
-  V extends GenericView,
+  D extends IGenericDomain,
+  V extends IGenericView,
   M extends IEntityMapper<T, D, V>,
   DTO extends DeepPartial<T>,
 >(E: Type<T>, Mapper: Type<M>) {
