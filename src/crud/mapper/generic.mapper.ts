@@ -1,36 +1,26 @@
-import { DeepPartial } from 'typeorm';
+import { Type } from '@nestjs/common';
 import { GenericDomain } from './generic.domain';
 import { GenericPersistent } from './generic.persistent';
 import { GenericView } from './generic.view';
+import type { IEntityMapper } from '../interfaces/generic.mapper';
 
-export interface IEntityMapper<
-  P extends GenericPersistent,
+export function GenericEntityMapper<
+  T extends GenericPersistent,
   D extends GenericDomain,
   V extends GenericView,
-> {
-  PersistToDomain(persistent: P): DeepPartial<D>;
-  DomainToPersist(domain: D): DeepPartial<P>;
-  DomainToView(domain: D): DeepPartial<V>;
-}
+>(Persistent: Type<T>, Domain: Type<D>, View: Type<V>) {
+  abstract class EntityMapper implements IEntityMapper<T, D, V> {
+    PersistToDomain(persistent: T): D {
+      return new Domain({ ...persistent }) as D;
+    }
 
-export abstract class EntityMapper<
-  P extends GenericPersistent,
-  D extends GenericDomain,
-  V extends GenericView,
-> implements IEntityMapper<P, D, V>
-{
-  PersistToDomain(persistent: P): DeepPartial<D> {
-    const domain = { ...persistent } as unknown as D;
-    return domain;
-  }
+    DomainToPersist(domain: D): T {
+      return new Persistent({ ...domain }) as T;
+    }
 
-  DomainToPersist(domain: DeepPartial<D>): DeepPartial<P> {
-    const persistent = { ...domain } as unknown as P;
-    return persistent;
+    DomainToView(domain: D): V {
+      return new View({ ...domain }) as V;
+    }
   }
-
-  DomainToView(domain: DeepPartial<D>): DeepPartial<V> {
-    const view = { ...domain } as unknown as V;
-    return view;
-  }
+  return EntityMapper;
 }
