@@ -1,23 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GenericView } from '../../../../crud/mapper';
-import { UserRoleEnumType } from '../enum';
+import { UserRoleEnum, UserRoleEnumType } from '../enum';
 
 export class GenericUserView extends GenericView {
-  @ApiProperty()
+  @ApiProperty({
+    example: 'John',
+  })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Doe',
+  })
   lastName: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    examples: ['john.doe@email.com', 'jdoe', 'john.doe'],
+  })
   username: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'john.doe@email.com',
+  })
   email: string;
 
-  @ApiProperty()
-  password: string;
-
-  @ApiProperty()
+  @ApiProperty({
+    enum: UserRoleEnum,
+  })
   type: UserRoleEnumType;
 }
