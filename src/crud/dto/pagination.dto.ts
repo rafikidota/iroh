@@ -6,6 +6,7 @@ export class PaginationDto {
   @ApiProperty({
     minimum: 1,
     description: `What's the page number to start listing from`,
+    required: false,
   })
   @IsOptional()
   @Type(() => Number)
@@ -18,6 +19,7 @@ export class PaginationDto {
   @ApiProperty({
     minimum: 1,
     description: 'How many rows do you need?',
+    required: false,
   })
   @IsOptional()
   @Type(() => Number)
@@ -30,6 +32,7 @@ export class PaginationDto {
   @ApiProperty({
     minimum: 1,
     description: 'How many rows do you want to skip?',
+    required: false,
   })
   @IsOptional()
   @Type(() => Number)
