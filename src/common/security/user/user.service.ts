@@ -15,7 +15,7 @@ export function GenericUserService<
   M extends IEntityMapper<T, D, V>,
   DTO extends DeepPartial<T>,
 >(E: Type<T>, Mapper: Type<M>) {
-  class GenericUserService implements IGenericService<T, DTO, V> {
+  class GenericUserService implements IGenericService<T, DTO, D, V> {
     public readonly logger: ServiceLogger;
     public readonly handler: ErrorHandler;
     public readonly mapper: M;
@@ -28,7 +28,7 @@ export function GenericUserService<
       this.mapper = new Mapper();
     }
 
-    public async create(createDto: DTO): Promise<V> {
+    public async create(createDto: DTO): Promise<D> {
       try {
         this.logger.restart();
         const user = this.repository.create(createDto);
@@ -36,53 +36,50 @@ export function GenericUserService<
         await this.repository.save(user);
         this.logger.created(user.id);
         const domain = this.mapper.PersistToDomain(user);
-        const view = this.mapper.DomainToView(domain);
-        return view as unknown as V;
+        return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async paginate(query: SearchDto): Promise<V[]> {
+    public async paginate(query: SearchDto): Promise<D[]> {
       try {
         this.logger.restart();
         const { limit, page, offset } = query;
         const users = await this.repository.find();
         if (!users || !users.length) {
-          return [] as unknown as V[];
+          return [] as unknown as D[];
         }
-        const views: V[] = [];
+        const domains: D[] = [];
         users.forEach((user) => {
           const domain = this.mapper.PersistToDomain(user);
-          const view = this.mapper.DomainToView(domain);
-          views.push(view as unknown as V);
+          domains.push(domain as unknown as D);
         });
         const length = users.length;
         this.logger.foundMany({ limit, page, offset, length });
-        return views;
+        return domains;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async findAll(): Promise<V[]> {
+    public async findAll(): Promise<D[]> {
       try {
         const users: T[] = await this.repository.find();
         if (!users || !users.length) {
-          return [] as unknown as V[];
+          return [] as unknown as D[];
         }
-        const views: V[] = [];
+        const domains: D[] = [];
         users.forEach((entity) => {
           const domain = this.mapper.PersistToDomain(entity);
-          const view = this.mapper.DomainToView(domain);
-          views.push(view as unknown as V);
+          domains.push(domain as unknown as D);
         });
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async findOne(id: string, options: LoggerOptions): Promise<V> {
+    public async findOne(id: string, options: LoggerOptions): Promise<D> {
       try {
         this.logger.restart();
         const { name } = this.repository.metadata;
@@ -96,14 +93,13 @@ export function GenericUserService<
           this.logger.foundOne(user.id);
         }
         const domain = this.mapper.PersistToDomain(user);
-        const view = this.mapper.DomainToView(domain);
-        return view as unknown as V;
+        return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async update(user: T, updateDto: Partial<DTO>): Promise<V> {
+    public async update(user: T, updateDto: Partial<DTO>): Promise<D> {
       try {
         this.logger.restart();
         Object.assign(user, updateDto);
@@ -113,8 +109,7 @@ export function GenericUserService<
         const updatedEntity = await this.repository.save(user);
         this.logger.updated(updatedEntity.id);
         const domain = this.mapper.PersistToDomain(updatedEntity);
-        const view = this.mapper.DomainToView(domain);
-        return view as unknown as V;
+        return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
