@@ -14,7 +14,7 @@ export class GenericUserView extends GenericView {
   lastName: string;
 
   @ApiProperty({
-    examples: ['john.doe@email.com', 'jdoe', 'john.doe'],
+    example: 'john.doe',
   })
   username: string;
 
