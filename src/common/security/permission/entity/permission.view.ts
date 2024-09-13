@@ -1,20 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GenericView } from '../../../../crud/mapper';
-import { MethodPermissionType } from '../enum';
+import { MethodPermissionEnum, MethodPermissionType } from '../enum';
 
 export class GenericPermissionView extends GenericView {
-  @ApiProperty()
+  @ApiProperty({ example: 'Create user' })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  })
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: MethodPermissionEnum,
+    example: MethodPermissionEnum.POST,
+  })
   method: MethodPermissionType;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'UserController_create' })
   code: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: '/v1/user' })
   path: string;
 }
