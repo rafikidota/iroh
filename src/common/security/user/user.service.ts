@@ -4,16 +4,15 @@ import { NotFoundException, Type } from '@nestjs/common';
 import { AppError, ErrorHandler } from './../../../common';
 import { GenericUser } from './entity/user.generic';
 import { ServiceLogger, LoggerOptions, SearchDto } from '../../../crud/';
-import type { IGenericService } from '../../../crud/interfaces';
+import type { IEntityMapper, IGenericService } from '../../../crud/interfaces';
 import { GenericUserDomain } from './entity/user.domain';
 import { GenericUserView } from './entity/user.view';
-import { EntityMapper } from '../../../crud/mapper';
 
 export function GenericUserService<
   T extends GenericUser,
   D extends GenericUserDomain,
   V extends GenericUserView,
-  M extends EntityMapper<T, D, V>,
+  M extends IEntityMapper<T, D, V>,
   DTO extends DeepPartial<T>,
 >(E: Type<T>, Mapper: Type<M>) {
   class GenericUserService implements IGenericService<T, DTO, V> {

@@ -3,20 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
 import { AppError, ErrorHandler, GenericRoleDomain } from './../../../common';
 import { GenericRole } from './entity/role.generic';
-import {
-  ServiceLogger,
-  LoggerOptions,
-  SearchDto,
-  EntityMapper,
-} from '../../../crud/';
-import type { IGenericService } from '../../../crud/interfaces';
+import { ServiceLogger, LoggerOptions, SearchDto } from '../../../crud/';
+import type { IEntityMapper, IGenericService } from '../../../crud/interfaces';
 import { GenericRoleView } from './entity/role.view';
 
 export function GenericRoleService<
   T extends GenericRole,
   D extends GenericRoleDomain,
   V extends GenericRoleView,
-  M extends EntityMapper<T, D, V>,
+  M extends IEntityMapper<T, D, V>,
   DTO extends DeepPartial<T>,
 >(E: Type<T>, Mapper: Type<M>) {
   class GenericRoleService implements IGenericService<T, DTO, V> {

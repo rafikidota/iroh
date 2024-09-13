@@ -1,27 +1,26 @@
-import { DeepPartial } from 'typeorm';
-import type { IEntityMapper } from '../../../../crud/mapper';
+import { Type } from '@nestjs/common';
+import type { IEntityMapper } from '../../../../crud/interfaces';
 import { GenericUser } from './user.generic';
 import { GenericUserDomain } from './user.domain';
 import { GenericUserView } from './user.view';
 
-export abstract class GenericUserMapper<
-  P extends GenericUser,
+export function GenericUserMapper<
+  T extends GenericUser,
   D extends GenericUserDomain,
   V extends GenericUserView,
-> implements IEntityMapper<P, D, V>
-{
-  PersistToDomain(persistent: P): DeepPartial<D> {
-    const domain = { ...persistent } as unknown as D;
-    return domain;
-  }
+>(Persistent: Type<T>, Domain: Type<D>, View: Type<V>) {
+  abstract class EntityMapper implements IEntityMapper<T, D, V> {
+    PersistToDomain(persistent: T): D {
+      return new Domain({ ...persistent }) as D;
+    }
 
-  DomainToPersist(domain: DeepPartial<D>): DeepPartial<P> {
-    const persistent = { ...domain } as unknown as P;
-    return persistent;
-  }
+    DomainToPersist(domain: D): T {
+      return new Persistent({ ...domain }) as T;
+    }
 
-  DomainToView(domain: DeepPartial<D>): DeepPartial<V> {
-    const view = { ...domain } as unknown as V;
-    return view;
+    DomainToView(domain: D): V {
+      return new View({ ...domain }) as V;
+    }
   }
+  return EntityMapper;
 }

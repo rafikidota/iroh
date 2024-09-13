@@ -5,19 +5,14 @@ import { AppError, ErrorHandler } from '../..';
 import { GenericPermission } from './entity/permission.generic';
 import { GenericPermissionDomain } from './entity/permission.domain';
 import { GenericPermissionView } from './entity/permission.view';
-import {
-  ServiceLogger,
-  LoggerOptions,
-  SearchDto,
-  EntityMapper,
-} from '../../../crud';
-import type { IGenericService } from '../../../crud/interfaces';
+import { ServiceLogger, LoggerOptions, SearchDto } from '../../../crud';
+import type { IEntityMapper, IGenericService } from '../../../crud/interfaces';
 
 export function GenericPermissionService<
   T extends GenericPermission,
   D extends GenericPermissionDomain,
   V extends GenericPermissionView,
-  M extends EntityMapper<T, D, V>,
+  M extends IEntityMapper<T, D, V>,
   DTO extends DeepPartial<T>,
 >(E: Type<T>, Mapper: Type<M>) {
   class GenericPermissionService implements IGenericService<T, DTO, V> {
