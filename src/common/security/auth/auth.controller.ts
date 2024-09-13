@@ -19,12 +19,14 @@ import { User } from '../user/decorators';
 import { NoPermission } from '../permission/decorators';
 import { JwtAuthGuard } from './guards';
 import { IGenericAuthController, IGenericAuthService } from './interfaces';
-import { GenericUser } from '../user/entity';
+
+import { GenericUser, GenericUserView } from '../user/entity';
 
 export function GenericAuthController<
   T extends GenericUser,
   D extends DeepPartial<T>,
->(E: Type<T>, CreateDto: Type<D>) {
+  V extends GenericUserView,
+>(E: Type<T>, CreateDto: Type<D>, View: Type<V>) {
   @UseInterceptors(LoggingInterceptor)
   @UseFilters(HttpExceptionFilter)
   abstract class GenericAuthController implements IGenericAuthController<T> {
@@ -37,7 +39,7 @@ export function GenericAuthController<
     @ApiResponse({
       status: 201,
       description: `${E.name} was created successfully`,
-      type: E,
+      type: View,
     })
     @ApiResponse({ status: 400, description: 'Bad request' })
     signup(@User() user: T) {
