@@ -1,5 +1,5 @@
 import { GenericDomain } from '@rafikidota/iroh';
-import { <%= classify(name) %>Persistent } from '../infra/<%= lowercase(name) %>.persistent';
+import { <%= classify(name) %>Persistent } from '../infra/<%= lowerCase(name) %>.persistent';
 
 export class <%= classify(name) %>Domain extends GenericDomain {
   name: string;
