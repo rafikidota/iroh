@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SecurityModule } from '../../common/security/security.module';
 import { <%= classify(name) %>Controller } from './<%= lowerCase(name) %>.controller';
 import { <%= classify(name) %>Service } from './<%= lowerCase(name) %>.service';
-import { <%= classify(name) %>Repository } from './<%= lowerCase(name) %>.repository';
-import { <%= classify(name) %>Persistent } from './entities/<%= lowerCase(name) %>.entity';
+import { <%= classify(name) %>Repository } from './infra/<%= lowerCase(name) %>.repository';
+import { <%= classify(name) %>Persistent } from './infra/<%= lowerCase(name) %>.persistent';
 
 @Module({
   controllers: [<%= classify(name) %>Controller],
