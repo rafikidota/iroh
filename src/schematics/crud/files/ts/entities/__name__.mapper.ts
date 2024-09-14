@@ -1,25 +1,27 @@
-import { GenericEntityMapper } from '@rafikidota/iroh';
-import { <%= classify(name) %> } from './<%= lowerCase(name) %>.entity';
+import { GenericEntityMapper, IEntityMapper } from '@rafikidota/iroh';
+import { <%= classify(name) %>Persistent } from './<%= lowerCase(name) %>.entity';
 import { <%= classify(name) %>Domain } from './<%= lowerCase(name) %>.domain';
 import { <%= classify(name) %>View } from './<%= lowerCase(name) %>.view';
 
-export class <%= classify(name) %>Mapper<
-  P extends <%= classify(name) %>,
-  D extends <%= classify(name) %>Domain,
-  V extends <%= classify(name) %>View,
-> extends GenericEntityMapper(<%= classify(name) %>, <%= classify(name) %>Domain, <%= classify(name) %>View) {
-  PersistToDomain(persistent: P): D {
-    const domain = { ...persistent } as unknown as D;
-    return domain;
+export class <%= classify(name) %>Mapper
+  extends GenericEntityMapper(<%= classify(name) %>Persistent, <%= classify(name) %>Domain, <%= classify(name) %>View)
+  implements IEntityMapper<<%= classify(name) %>Persistent, <%= classify(name) %>Domain, <%= classify(name) %>View>
+{
+  PersistToDomain(persistent: <%= classify(name) %>Persistent): <%= classify(name) %>Domain {
+    return new <%= classify(name) %>Domain(persistent);
   }
 
-  DomainToPersist(domain: D): P {
-    const persistent = { ...domain } as unknown as P;
+  DomainToPersist(domain: <%= classify(name) %>Domain): <%= classify(name) %>Persistent {
+    const persistent = {
+      id: domain.id,
+      createdAt: domain.createdAt,
+      updatedAt: domain.updatedAt,
+      deletedAt: domain.deletedAt,
+    } as unknown as <%= classify(name) %>Persistent;
     return persistent;
   }
 
-  DomainToView(domain: D): V {
-    const view = { ...domain } as unknown as V;
-    return view;
+  DomainToView(domain: <%= classify(name) %>Domain): <%= classify(name) %>View {
+    return new <%= classify(name) %>View(domain);
   }
 }
