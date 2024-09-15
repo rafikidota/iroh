@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { GenericAuthService } from '@rafikidota/iroh';
-import { User } from '../user/entities/user.entity';
+import { UserPersistent } from '../user/infra/user.persistent';
 
 @Injectable()
-export class AuthService extends GenericAuthService(User) {}
+export class AuthService extends GenericAuthService(UserPersistent) {}
