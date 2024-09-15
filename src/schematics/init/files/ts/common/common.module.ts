@@ -10,10 +10,10 @@ import { JoiValidationSchema } from './config/joi.validation';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [EnvConfiguration],
-      validationSchema: JoiValidationSchema
+      validationSchema: JoiValidationSchema,
     }),
     SecurityModule,
-    LoggerModule
+    LoggerModule,
   ],
 })
-export class CommonModule { }
+export class CommonModule {}
