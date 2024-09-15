@@ -1,10 +1,10 @@
 import { GenericUser } from '@rafikidota/iroh';
 import { Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { Role } from '../../role/entities/role.entity';
+import { RolePersistent } from '../../role/infra/role.persistent';
 
 @Entity('user')
 export class UserPersistent extends GenericUser {
-  @ManyToOne(() => Role, (role) => role.users, { eager: true })
+  @ManyToOne(() => RolePersistent, (role) => role.users, { eager: true })
   @JoinColumn({ name: 'role_id' })
-  role: Role;
+  role: RolePersistent;
 }
