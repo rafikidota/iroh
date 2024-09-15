@@ -2,18 +2,19 @@ import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GenericRoleController, SecurityGuard } from '@rafikidota/iroh';
 import { RoleService } from './role.service';
-import { Role } from './entities/role.entity';
-import { CreateRoleDto } from './dto/role.create.dto';
-import { UpdateRoleDto } from './dto/role.update.dto';
+import { RolePersistent } from './infra/role.persistent';
+import { CreateRoleDto, UpdateRoleDto } from './app/dto';
+import { RoleView } from './infra/role.view';
 
 @SecurityGuard()
 @ApiBearerAuth()
-@ApiTags(Role.name)
-@Controller(Role.name.toLowerCase())
+@ApiTags('Role')
+@Controller('role')
 export class RoleController extends GenericRoleController(
-  Role,
+  RolePersistent,
   CreateRoleDto,
   UpdateRoleDto,
+  RoleView,
 ) {
   constructor(readonly service: RoleService) {
     super(service);

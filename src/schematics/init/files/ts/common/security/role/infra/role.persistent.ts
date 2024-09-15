@@ -1,12 +1,12 @@
 import { Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { GenericRole } from '@rafikidota/iroh';
-import { User } from '../../user/entities/user.entity';
+import { UserPersistent } from '../../user/infra/user.persistent';
 import { Permission } from '../../permission/entities/permission.entity';
 
-@Entity()
-export class Role extends GenericRole {
-  @OneToMany(() => User, (user) => user.role)
-  users: User[];
+@Entity('role')
+export class RolePersistent extends GenericRole {
+  @OneToMany(() => UserPersistent, (user) => user.role)
+  users: UserPersistent[];
 
   @ManyToMany(() => Permission, (permission) => permission.roles, {
     eager: true,
