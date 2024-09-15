@@ -2,18 +2,19 @@ import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GenericPermissionController, SecurityGuard } from '@rafikidota/iroh';
 import { PermissionService } from './permission.service';
-import { Permission } from './entities/permission.entity';
-import { CreatePermissionDto } from './dto/permission.create.dto';
-import { UpdatePermissionDto } from './dto/permission.update.dto';
+import { PermissionPersistent } from './infra/permission.persistent';
+import { CreatePermissionDto, UpdatePermissionDto } from './app/dto';
+import { PermissionView } from './infra/permission.view';
 
-@SecurityGuard()
 @ApiBearerAuth()
-@ApiTags(Permission.name)
-@Controller(Permission.name.toLowerCase())
+@ApiTags('Permission')
+@Controller('permission')
+@SecurityGuard()
 export class PermissionController extends GenericPermissionController(
-  Permission,
+  PermissionPersistent,
   CreatePermissionDto,
   UpdatePermissionDto,
+  PermissionView,
 ) {
   constructor(readonly service: PermissionService) {
     super(service);

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { GenericTypeOrmRepository } from '@rafikidota/iroh';
-import { Permission } from './entities/permission.entity';
+import { PermissionPersistent } from './permission.persistent';
 
 @Injectable()
 export class PermissionRepository extends GenericTypeOrmRepository(
-  Permission,
+  PermissionPersistent,
 ) {}
