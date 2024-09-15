@@ -46,21 +46,29 @@ export class AppModule {}
 ## 3. Generate CRUD Module
 Run the following command to generate a new `CRUD` module:
 ```sh
-npx nest g -c @rafikidota/iroh crud <module-name> <destination-path>
+npx nest g -c @rafikidota/iroh crud <module-name>
 ```
 
 ## 4. Output files
-### Entity
-Define your entity by extending `GenericPersistent`:
-```ts
-import { Column, Entity } from 'typeorm';
-import { GenericPersistent } from '@rafikidota/iroh';
 
-@Entity()
-export class Hero extends GenericPersistent {
-  @Column()
-  name: string;
-}
+### Module
+Import necessary modules and set up your feature module:
+```ts
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { SecurityModule } from '../../common/security/security.module';
+import { HeroController } from './hero.controller';
+import { HeroService } from './hero.service';
+import { HeroRepository } from './infra/hero.repository';
+import { HeroPersistent } from './infra/hero.persistent';
+
+@Module({
+  controllers: [HeroController],
+  providers: [HeroService, HeroRepository],
+  imports: [TypeOrmModule.forFeature([HeroPersistent]), SecurityModule],
+  exports: [TypeOrmModule],
+})
+export class HeroModule {}
 ```
 
 ### Controller
@@ -69,20 +77,21 @@ Define your controller by extending `GenericController`:
 import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GenericController, SecurityGuard } from '@rafikidota/iroh';
+import { PermissionPersistent } from '../../common/security/permission';
 import { HeroService } from './hero.service';
-import { Hero } from './entities/hero.entity';
-import { CreateHeroDto } from './dto/hero.create.dto';
-import { UpdateHeroDto } from './dto/hero.update.dto';
-import { Permission } from '../../common/security';
+import { HeroPersistent } from './infra/hero.persistent';
+import { CreateHeroDto, UpdateHeroDto } from './app/dto';
+import { HeroView } from './infra/hero.view';
 
 @ApiBearerAuth()
-@ApiTags(Hero.name)
-@SecurityGuard(Permission)
-@Controller(Hero.name.toLowerCase())
+@ApiTags('Hero')
+@Controller('hero')
+@SecurityGuard(PermissionPersistent)
 export class HeroController extends GenericController(
-  Hero,
+  HeroPersistent,
   CreateHeroDto,
   UpdateHeroDto,
+  HeroView,
 ) {
   constructor(readonly service: HeroService) {
     super(service);
@@ -95,13 +104,14 @@ Define your service by extending `GenericService`:
 ```ts
 import { Injectable } from '@nestjs/common';
 import { GenericService } from '@rafikidota/iroh';
-import { Hero } from './entities/hero.entity';
-import { HeroRepository } from './hero.repository';
+import { HeroRepository } from './infra/hero.repository';
+import { HeroPersistent } from './infra/hero.persistent';
+import { HeroMapper } from './infra/hero.mapper';
 
 @Injectable()
-export class HeroService extends GenericService(Hero) {
-  constructor(readonly repo: HeroRepository) {
-    super(repo);
+export class HeroService extends GenericService(HeroPersistent, HeroMapper) {
+  constructor(readonly repository: HeroRepository) {
+    super(repository);
   }
 }
 ```
@@ -111,31 +121,112 @@ Define your repository by extending `GenericTypeOrmRepository`:
 ```ts
 import { Injectable } from '@nestjs/common';
 import { GenericTypeOrmRepository } from '@rafikidota/iroh';
-import { Hero } from './entities/hero.entity';
+import { HeroPersistent } from './hero.persistent';
 
 @Injectable()
-export class HeroRepository extends GenericTypeOrmRepository(Hero) {}
-
+export class HeroRepository extends GenericTypeOrmRepository(HeroPersistent) {}
 ```
 
-### Module
-Import necessary modules and set up your feature module:
+### Persistent
+Define your persistent by extending `GenericPersistent`:
 ```ts
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { SecurityModule } from '../../common/security';
-import { Hero } from './entities/hero.entity';
-import { HeroController } from './hero.controller';
-import { HeroService } from './hero.service';
-import { HeroRepository } from './hero.repository';
+import { Column, Entity } from 'typeorm';
+import { GenericPersistent } from '@rafikidota/iroh';
 
-@Module({
-  controllers: [HeroController],
-  providers: [HeroService, HeroRepository],
-  imports: [TypeOrmModule.forFeature([Hero]), SecurityModule],
-  exports: [TypeOrmModule],
-})
-export class HeroModule {}
+@Entity()
+export class Hero extends GenericPersistent {
+  @Column()
+  name: string;
+}
+```
+
+### Domain
+Define your domain by extending `GenericDomain`:
+```ts
+import { GenericDomain } from '@rafikidota/iroh';
+import { HeroPersistent } from '../infra/hero.persistent';
+
+export class HeroDomain extends GenericDomain {
+  name: string;
+
+  constructor(persistent: HeroPersistent) {
+    super();
+    this.id = persistent.id;
+    this.name = persistent.name;
+    this.createdAt = persistent.createdAt;
+    this.updatedAt = persistent.updatedAt;
+    this.deletedAt = persistent.deletedAt;
+  }
+}
+```
+
+### View
+Define your view by extending `OmitType` from the `IntersectionType` of `PartialType(CreateHeroDto)` and `GenericView`:
+```ts
+import {
+  ApiProperty,
+  IntersectionType,
+  OmitType,
+  PartialType,
+} from '@nestjs/swagger';
+import { GenericView } from '@rafikidota/iroh';
+import { CreateHeroDto } from '../app/dto/hero.create.dto';
+import { HeroDomain } from '../domain/hero.domain';
+
+export class HeroView extends OmitType(
+  IntersectionType(PartialType(CreateHeroDto), GenericView),
+  [],
+) {
+  @ApiProperty()
+  id: string;
+  @ApiProperty()
+  name: string;
+  @ApiProperty()
+  createdAt: Date;
+  @ApiProperty()
+  updatedAt: Date;
+
+  constructor(domain: HeroDomain) {
+    super(domain);
+    this.id = domain.id;
+    this.name = domain.name;
+    this.createdAt = domain.createdAt;
+    this.updatedAt = domain.updatedAt;
+  }
+}
+```
+
+### Mapper
+Define your mapper by extending `GenericEntityMapper`:
+```ts
+import { GenericEntityMapper, IEntityMapper } from '@rafikidota/iroh';
+import { HeroPersistent } from './hero.persistent';
+import { HeroDomain } from '../domain/hero.domain';
+import { HeroView } from './hero.view';
+
+export class HeroMapper
+  extends GenericEntityMapper(HeroPersistent, HeroDomain, HeroView)
+  implements IEntityMapper<HeroPersistent, HeroDomain, HeroView>
+{
+  PersistToDomain(persistent: HeroPersistent): HeroDomain {
+    return new HeroDomain(persistent);
+  }
+
+  DomainToPersist(domain: HeroDomain): HeroPersistent {
+    const persistent = {
+      id: domain.id,
+      name: domain.name,
+      createdAt: domain.createdAt,
+      updatedAt: domain.updatedAt,
+      deletedAt: domain.deletedAt,
+    } as unknown as HeroPersistent;
+    return persistent;
+  }
+
+  DomainToView(domain: HeroDomain): HeroView {
+    return new HeroView(domain);
+  }
+}
 ```
 
 ## Additional Resources
