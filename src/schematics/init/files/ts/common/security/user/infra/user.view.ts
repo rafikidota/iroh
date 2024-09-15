@@ -10,7 +10,7 @@ import { UserDomain } from '../domain/user.domain';
 
 export class UserView extends OmitType(
   IntersectionType(PartialType(CreateUserDto), GenericUserView),
-  [],
+  ['password'],
 ) {
   @ApiProperty()
   id: string;
