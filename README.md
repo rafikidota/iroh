@@ -133,8 +133,8 @@ Define your persistent by extending `GenericPersistent`:
 import { Column, Entity } from 'typeorm';
 import { GenericPersistent } from '@rafikidota/iroh';
 
-@Entity()
-export class Hero extends GenericPersistent {
+@Entity('hero')
+export class HeroPersistent extends GenericPersistent {
   @Column()
   name: string;
 }
