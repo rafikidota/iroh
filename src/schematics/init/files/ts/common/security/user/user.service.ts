@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { GenericUserService } from '@rafikidota/iroh';
-import { User } from './entities/user.entity';
+import { UserPersistent } from './infra/user.persistent';
+import { UserMapper } from './infra';
 
 @Injectable()
-export class UserService extends GenericUserService(User) {}
+export class UserService extends GenericUserService(
+  UserPersistent,
+  UserMapper,
+) {}
