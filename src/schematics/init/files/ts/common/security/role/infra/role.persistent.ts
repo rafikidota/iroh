@@ -1,14 +1,14 @@
 import { Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { GenericRole } from '@rafikidota/iroh';
 import { UserPersistent } from '../../user/infra/user.persistent';
-import { Permission } from '../../permission/entities/permission.entity';
+import { PermissionPersistent } from '../../permission/infra/permission.persistent';
 
 @Entity('role')
 export class RolePersistent extends GenericRole {
   @OneToMany(() => UserPersistent, (user) => user.role)
   users: UserPersistent[];
 
-  @ManyToMany(() => Permission, (permission) => permission.roles, {
+  @ManyToMany(() => PermissionPersistent, (permission) => permission.roles, {
     eager: true,
   })
   @JoinTable({
@@ -22,5 +22,5 @@ export class RolePersistent extends GenericRole {
       referencedColumnName: 'id',
     },
   })
-  permissions: Permission[];
+  permissions: PermissionPersistent[];
 }
