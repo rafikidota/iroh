@@ -20,7 +20,7 @@ export function GenericPermissionSeeder<T extends GenericPermission>(
       @InjectRepository(E)
       readonly repository: Repository<T>,
     ) {
-      this.logger = new SeederLogger(E.name);
+      this.logger = new SeederLogger(this.constructor.name);
     }
     onModuleInit() {
       this.synchronize();

@@ -18,7 +18,7 @@ export function GenericTypeOrmRepository<
   class TypeOrmRepository implements IGenericRepository<T, D> {
     public readonly logger: RepositoryLogger;
     constructor(@InjectRepository(E) readonly repository: Repository<T>) {
-      this.logger = new RepositoryLogger(E.name);
+      this.logger = new RepositoryLogger(this.constructor.name);
     }
 
     public async create(createDto: D): Promise<T> {

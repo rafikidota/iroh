@@ -6,8 +6,7 @@ import { PaginateLoggerOptions, TitleCaseOperationLevel } from '../util';
 @Injectable()
 export class ServiceLogger extends GenericLogger {
   startTime: number = Date.now();
-  constructor(name: string) {
-    const context = `${name}Service`;
+  constructor(context: string) {
     super(context);
   }
 

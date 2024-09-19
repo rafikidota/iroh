@@ -5,8 +5,7 @@ import { TitleCaseOperationLevel } from '../util/levels';
 
 @Injectable()
 export class RepositoryLogger extends GenericLogger {
-  constructor(name: string) {
-    const context = `${name}Repository`;
+  constructor(context: string) {
     super(context);
   }
 

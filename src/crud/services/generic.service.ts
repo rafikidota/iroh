@@ -22,7 +22,7 @@ export function GenericService<
     public readonly handler: ErrorHandler;
     public readonly mapper: M;
     constructor(readonly repository: IGenericRepository<T, DTO>) {
-      this.logger = new ServiceLogger(E.name);
+      this.logger = new ServiceLogger(this.constructor.name);
       this.handler = ErrorHandler.getInstance();
       this.mapper = new Mapper();
     }
