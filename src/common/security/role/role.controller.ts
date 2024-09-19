@@ -39,8 +39,8 @@ export function GenericRoleController<
       type: View,
     })
     @ApiResponse({ status: 400, description: 'Bad request' })
-    @ApiResponse({ status: 401, description: 'User needs a valid auth' })
-    @ApiResponse({ status: 403, description: 'User needs a valid permission' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 403, description: 'Forbidden' })
     async create(@Body() body: DTO): Promise<V> {
       const domain = await this.service.create(body);
       const view = this.service.mapper.DomainToView(domain);
@@ -50,12 +50,12 @@ export function GenericRoleController<
     @Get()
     @ApiResponse({
       status: 200,
-      description: `List of ${E.name.toLocaleLowerCase()}s`,
+      description: `List of ${E.name}`,
       type: View,
       isArray: true,
     })
-    @ApiResponse({ status: 401, description: 'User needs a valid auth' })
-    @ApiResponse({ status: 403, description: 'User needs a valid permission' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 403, description: 'Forbidden' })
     async paginate(@Query() query: SearchDto): Promise<V[]> {
       const domains = await this.service.paginate(query);
       const views: V[] = [];
@@ -72,8 +72,8 @@ export function GenericRoleController<
       description: `${E.name} found by id`,
       type: View,
     })
-    @ApiResponse({ status: 401, description: 'User needs a valid auth' })
-    @ApiResponse({ status: 403, description: 'User needs a valid permission' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 403, description: 'Forbidden' })
     async findOne(@Param('id') id: string): Promise<V> {
       const options: LoggerOptions = { logging: true };
       const domain = await this.service.findOne(id, options);
@@ -88,8 +88,8 @@ export function GenericRoleController<
       description: `${E.name} was updated successfully`,
       type: View,
     })
-    @ApiResponse({ status: 401, description: 'User needs a valid auth' })
-    @ApiResponse({ status: 403, description: 'User needs a valid permission' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 403, description: 'Forbidden' })
     @EntityGuard(E)
     async update(@Entity() entity: T, @Body() body: Partial<DTO>): Promise<V> {
       const domain = await this.service.update(entity, body);
@@ -102,8 +102,8 @@ export function GenericRoleController<
       status: 204,
       description: `${E.name} was deleted  successfully`,
     })
-    @ApiResponse({ status: 401, description: 'User needs a valid auth' })
-    @ApiResponse({ status: 403, description: 'User needs a valid permission' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 403, description: 'Forbidden' })
     @EntityGuard(E)
     @HttpCode(204)
     async remove(@Entity() entity: T): Promise<void> {
