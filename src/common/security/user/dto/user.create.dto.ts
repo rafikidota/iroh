@@ -30,7 +30,7 @@ export class CreateGenericUserDto {
 
   @IsString()
   @IsNotEmpty()
-  @Length(8, 20)
+  @Length(8)
   @Matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*$/, {
     message: 'Password too weak',
   })
