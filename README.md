@@ -2,11 +2,6 @@
 
 Sometimes, the best way to solve your own problems is to help someone else.
 
-<img 
-alt="Iroh"
-src = "https://github.com/rafikidota/assets/raw/main/iroh/iroh.jpg?raw=true" 
-style="width:250px"/>
-
 ## Using Iroh with Nestjs
 
 The following TypeScript code snippet illustrates an example of using the Iroh library within the Nestjs framework. This code establishes a basic Nestjs CRUD and highlights how to implement Iroh in your Nestjs project.
