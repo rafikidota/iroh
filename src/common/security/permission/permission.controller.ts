@@ -8,6 +8,8 @@ import {
   Delete,
   HttpCode,
   Type,
+  UseInterceptors,
+  UseFilters,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { DeepPartial } from 'typeorm';
@@ -21,6 +23,8 @@ import {
   GenericPermissionDomain,
   GenericPermissionView,
 } from './entity';
+import { LoggingInterceptor } from './../../interceptors';
+import { HttpExceptionFilter } from './../../filters';
 
 export function GenericPermissionController<
   T extends GenericPermission,
@@ -29,6 +33,8 @@ export function GenericPermissionController<
   D extends GenericPermissionDomain,
   V extends GenericPermissionView,
 >(E: Type<T>, CreateDto: Type<DTO>, UpdateDto: Type<U>, View: Type<V>) {
+  @UseInterceptors(LoggingInterceptor)
+  @UseFilters(HttpExceptionFilter)
   abstract class GenericPermissionController
     implements IGenericController<T, DTO, V>
   {

@@ -8,6 +8,8 @@ import {
   Delete,
   HttpCode,
   Type,
+  UseInterceptors,
+  UseFilters,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { DeepPartial } from 'typeorm';
@@ -18,6 +20,8 @@ import type {
 } from '../../../crud/interfaces';
 import { GenericRole } from './entity/role.generic';
 import { GenericRoleDomain, GenericRoleView } from './entity';
+import { LoggingInterceptor } from './../../interceptors';
+import { HttpExceptionFilter } from './../../filters';
 
 export function GenericRoleController<
   T extends GenericRole,
@@ -26,6 +30,8 @@ export function GenericRoleController<
   D extends GenericRoleDomain,
   V extends GenericRoleView,
 >(E: Type<T>, CreateDto: Type<DTO>, UpdateDto: Type<U>, View: Type<V>) {
+  @UseInterceptors(LoggingInterceptor)
+  @UseFilters(HttpExceptionFilter)
   abstract class GenericRoleController
     implements IGenericController<T, DTO, V>
   {
