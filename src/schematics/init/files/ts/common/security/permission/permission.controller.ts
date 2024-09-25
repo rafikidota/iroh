@@ -9,7 +9,7 @@ import { PermissionView } from './infra/permission.view';
 @ApiBearerAuth()
 @ApiTags('Permission')
 @Controller('permission')
-@SecurityGuard()
+@SecurityGuard(PermissionPersistent)
 export class PermissionController extends GenericPermissionController(
   PermissionPersistent,
   CreatePermissionDto,
