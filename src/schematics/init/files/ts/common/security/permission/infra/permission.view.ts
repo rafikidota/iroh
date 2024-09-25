@@ -4,7 +4,7 @@ import {
   OmitType,
   PartialType,
 } from '@nestjs/swagger';
-import { GenericPermissionView, MethodPermissionType } from '@rafikidota/iroh';
+import { GenericPermissionView, PermissionMethodEnumType } from '@rafikidota/iroh';
 import { CreatePermissionDto } from '../app/dto';
 import { PermissionDomain } from '../domain/permission.domain';
 
@@ -19,7 +19,7 @@ export class PermissionView extends OmitType(
   @ApiProperty()
   description: string;
   @ApiProperty()
-  method: MethodPermissionType;
+  method: PermissionMethodEnumType;
   @ApiProperty()
   code: string;
   @ApiProperty()
