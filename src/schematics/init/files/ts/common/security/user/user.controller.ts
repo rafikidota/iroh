@@ -5,11 +5,12 @@ import { UserService } from './user.service';
 import { UserPersistent } from './infra/user.persistent';
 import { CreateUserDto, UpdateUserDto } from './app/dto';
 import { UserView } from './infra/user.view';
+import { PermissionPersistent } from '../permission/infra/permission.persistent';
 
 @ApiBearerAuth()
 @ApiTags('User')
 @Controller('user')
-@SecurityGuard()
+@SecurityGuard(PermissionPersistent)
 export class UserController extends GenericUserController(
   UserPersistent,
   CreateUserDto,
