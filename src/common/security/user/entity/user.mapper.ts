@@ -1,6 +1,6 @@
 import { Type } from '@nestjs/common';
 import type { IEntityMapper } from '../../../../crud/interfaces';
-import { GenericUser } from './user.generic';
+import { GenericUser } from './user.persistent';
 import { GenericUserDomain } from './user.domain';
 import { GenericUserView } from './user.view';
 

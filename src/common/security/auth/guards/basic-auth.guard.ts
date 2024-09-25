@@ -10,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { Buffer } from 'buffer';
 import { Request } from 'express';
-import { GenericUser } from '../../user/entity/user.generic';
+import { GenericUser } from '../../user/entity/user.persistent';
 
 export function BuildBasicAuthGuard<T extends GenericUser>(E: Type<T>) {
   @Injectable()

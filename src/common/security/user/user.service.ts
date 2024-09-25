@@ -1,7 +1,7 @@
 import { DeepPartial } from 'typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
 import { AppError, ErrorHandler } from './../../../common';
-import { GenericUser } from './entity/user.generic';
+import { GenericUser } from './entity/user.persistent';
 import { ServiceLogger, LoggerOptions, SearchDto } from '../../../crud/';
 import type {
   IEntityMapper,
