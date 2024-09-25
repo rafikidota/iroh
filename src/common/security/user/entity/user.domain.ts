@@ -1,5 +1,5 @@
 import { GenericDomain } from '../../../../crud/mapper';
-import { UserRoleEnumType } from '../enum';
+import { UserRoleEnumType, UserStatusEnumType } from '../enum';
 
 export class GenericUserDomain extends GenericDomain {
   name: string;
@@ -8,4 +8,5 @@ export class GenericUserDomain extends GenericDomain {
   email: string;
   password: string;
   type: UserRoleEnumType;
+  status: UserStatusEnumType;
 }
