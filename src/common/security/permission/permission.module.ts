@@ -39,7 +39,12 @@ export function GenericPermissionModule<
       ConfigModule,
       HttpModule,
     ],
-    exports: [TypeOrmModule, PermissionService],
+    exports: [
+      TypeOrmModule,
+      PermissionService,
+      PermissionRepository,
+      PermissionSeeder,
+    ],
   })
   class PermissionModule {}
   return PermissionModule;
