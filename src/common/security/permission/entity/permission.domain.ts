@@ -1,10 +1,10 @@
 import { GenericDomain } from '../../../../crud/mapper';
-import { MethodPermissionType } from '../enum';
+import { PermissionMethodEnumType } from '../enum';
 
 export class GenericPermissionDomain extends GenericDomain {
   name: string;
   description: string;
-  method: MethodPermissionType;
+  method: PermissionMethodEnumType;
   code: string;
   path: string;
 }
