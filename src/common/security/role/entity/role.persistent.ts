@@ -12,6 +12,7 @@ export class GenericRole extends GenericPersistent {
   @Column({
     type: 'enum',
     enum: RoleStatusEnum,
+    default: RoleStatusEnum.PENDING,
   })
   status: RoleStatusEnumType;
 }

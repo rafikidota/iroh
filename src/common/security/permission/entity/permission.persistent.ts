@@ -31,6 +31,7 @@ export class GenericPermission extends GenericPersistent {
   @Column({
     type: 'enum',
     enum: PermissionStatusEnum,
+    default: PermissionStatusEnum.PENDING,
   })
   status: PermissionStatusEnumType;
 }
