@@ -1,7 +1,7 @@
 import { DeepPartial } from 'typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
 import { AppError, ErrorHandler } from '../..';
-import { GenericPermission } from './entity/permission.generic';
+import { GenericPermission } from './entity/permission.persistent';
 import { GenericPermissionDomain } from './entity/permission.domain';
 import { GenericPermissionView } from './entity/permission.view';
 import { ServiceLogger, LoggerOptions, SearchDto } from '../../../crud';

@@ -1,6 +1,6 @@
 import { Type } from '@nestjs/common';
 import type { IEntityMapper } from '../../../../crud/interfaces';
-import { GenericPermission } from './permission.generic';
+import { GenericPermission } from './permission.persistent';
 import { GenericPermissionDomain } from './permission.domain';
 import { GenericPermissionView } from './permission.view';
 
