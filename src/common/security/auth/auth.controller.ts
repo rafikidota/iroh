@@ -3,7 +3,6 @@ import {
   HttpCode,
   Type,
   UseFilters,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -14,10 +13,9 @@ import {
 } from '@nestjs/swagger';
 import { DeepPartial } from 'typeorm';
 import { HttpExceptionFilter, LoggingInterceptor } from '../../../common';
-import { BasicAuthGuard, Public } from './decorators';
+import { BasicAuthGuard, Public, SecurityGuard } from './decorators';
 import { User } from '../user/decorators';
 import { NoPermission } from '../permission/decorators';
-import { JwtAuthGuard } from './guards';
 import { IGenericAuthController, IGenericAuthService } from './interfaces';
 
 import { GenericUser, GenericUserView } from '../user/entity';
@@ -62,7 +60,7 @@ export function GenericAuthController<
     @Get('signout')
     @ApiBearerAuth()
     @NoPermission()
-    @UseGuards(JwtAuthGuard)
+    @SecurityGuard()
     @HttpCode(204)
     @ApiResponse({
       status: 204,
