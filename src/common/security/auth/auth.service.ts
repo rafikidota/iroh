@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { FindOneOptions, Repository } from 'typeorm';
 import { IGenericAuthService, ISignInResponse } from './interfaces';
+import { GenericUser } from '../user/entity';
 import { GenericLogger } from './../../../crud';
 import { Payload } from './interfaces/payload';
-import { GenericUser } from '../user/entity';
 
 export function GenericAuthService<T extends GenericUser>(E: Type<T>) {
   class GenericAuthService implements IGenericAuthService<T> {
@@ -15,7 +15,7 @@ export function GenericAuthService<T extends GenericUser>(E: Type<T>) {
       readonly repository: Repository<T>,
       readonly jwtService: JwtService,
     ) {
-      this.logger = new GenericLogger('AuthLogger');
+      this.logger = new GenericLogger(this.constructor.name);
     }
     public async signup(user: T): Promise<Partial<T>> {
       this.logger.log('signin');
