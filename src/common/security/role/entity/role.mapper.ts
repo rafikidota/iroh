@@ -1,5 +1,5 @@
 import { Type } from '@nestjs/common';
-import { GenericRole } from './role.generic';
+import { GenericRole } from './role.persistent';
 import { GenericRoleDomain } from './role.domain';
 import { GenericRoleView } from './role.view';
 import type { IEntityMapper } from '../../../../crud/interfaces';

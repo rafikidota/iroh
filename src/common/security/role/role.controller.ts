@@ -18,7 +18,7 @@ import type {
   IGenericController,
   IGenericService,
 } from '../../../crud/interfaces';
-import { GenericRole } from './entity/role.generic';
+import { GenericRole } from './entity/role.persistent';
 import { GenericRoleDomain, GenericRoleView } from './entity';
 import { LoggingInterceptor } from './../../interceptors';
 import { HttpExceptionFilter } from './../../filters';

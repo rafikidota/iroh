@@ -1,5 +1,6 @@
 import { Column } from 'typeorm';
 import { GenericPersistent } from '../../../../crud/mapper';
+import { RoleStatusEnum, RoleStatusEnumType } from '../enum/role.status.enum';
 
 export class GenericRole extends GenericPersistent {
   @Column()
@@ -7,4 +8,10 @@ export class GenericRole extends GenericPersistent {
 
   @Column()
   description: string;
+
+  @Column({
+    type: 'enum',
+    enum: RoleStatusEnum,
+  })
+  status: RoleStatusEnumType;
 }
