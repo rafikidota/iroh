@@ -5,11 +5,12 @@ import { RoleService } from './role.service';
 import { RolePersistent } from './infra/role.persistent';
 import { CreateRoleDto, UpdateRoleDto } from './app/dto';
 import { RoleView } from './infra/role.view';
+import { PermissionPersistent } from '../permission/infra/permission.persistent';
 
 @ApiBearerAuth()
 @ApiTags('Role')
 @Controller('role')
-@SecurityGuard()
+@SecurityGuard(PermissionPersistent)
 export class RoleController extends GenericRoleController(
   RolePersistent,
   CreateRoleDto,
