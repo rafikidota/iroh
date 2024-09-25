@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GenericView } from '../../../../crud/mapper';
-import { UserRoleEnum, UserRoleEnumType } from '../enum/user.role.enum';
+import { UserTypeEnum, UserRoleEnumType } from '../enum/user.role.enum';
 import { UserStatusEnum, UserStatusEnumType } from '../enum/user.status.enum';
 
 export class GenericUserView extends GenericView {
@@ -25,14 +25,14 @@ export class GenericUserView extends GenericView {
   email: string;
 
   @ApiProperty({
-    enum: UserRoleEnum,
-    default: UserRoleEnum.CLIENT,
+    enum: UserTypeEnum,
+    default: UserTypeEnum.ADMIN,
   })
   type: UserRoleEnumType;
 
   @ApiProperty({
     enum: UserStatusEnum,
-    default: UserStatusEnum.PENDING,
+    default: UserStatusEnum.ENABLED,
   })
   status: UserStatusEnumType;
 }

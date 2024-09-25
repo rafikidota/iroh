@@ -1,9 +1,9 @@
-export enum UserRoleEnum {
+export enum UserTypeEnum {
   ADMIN = 'admin',
   CLIENT = 'client',
   OTHERS = 'others',
 }
 export type UserRoleEnumType =
-  | UserRoleEnum.ADMIN
-  | UserRoleEnum.CLIENT
-  | UserRoleEnum.OTHERS;
+  | UserTypeEnum.ADMIN
+  | UserTypeEnum.CLIENT
+  | UserTypeEnum.OTHERS;

@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GenericPermission } from '../entity';
 import { NoPermissionNeededKey } from '../decorators';
-import { UserRoleEnum } from '../../user/enum';
+import { UserTypeEnum } from '../../user/enum';
 
 const replaceBracesWithColon = (route: string) => {
   return route.replace(/{(\w+)}/g, ':$1').toLowerCase();
@@ -38,7 +38,7 @@ export function BuildPermissionGuard<T extends GenericPermission>(E: Type<T>) {
         return false;
       }
 
-      if (user.type === UserRoleEnum.ADMIN || ok) {
+      if (user.type === UserTypeEnum.ADMIN || ok) {
         return true;
       }
 

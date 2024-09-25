@@ -2,7 +2,7 @@ import { Column } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { GenericPersistent } from '../../../../crud/mapper';
 import { SoftUnique } from '../../../../crud/decorators/soft-unique.decorator';
-import { UserRoleEnum, UserRoleEnumType } from '../enum/user.role.enum';
+import { UserTypeEnum, UserRoleEnumType } from '../enum/user.role.enum';
 import { UserStatusEnum, UserStatusEnumType } from '../enum/user.status.enum';
 
 export class GenericUser extends GenericPersistent {
@@ -25,8 +25,8 @@ export class GenericUser extends GenericPersistent {
 
   @Column({
     type: 'enum',
-    enum: UserRoleEnum,
-    default: UserRoleEnum.CLIENT,
+    enum: UserTypeEnum,
+    default: UserTypeEnum.CLIENT,
   })
   type: UserRoleEnumType;
 
