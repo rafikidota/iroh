@@ -14,12 +14,6 @@ export class ServiceLogger extends GenericLogger {
     this.startTime = Date.now();
   }
 
-  getTimestamp() {
-    const now = Date.now() - this.startTime;
-    const timestamp = chalk.yellow(`+${now}ms`);
-    return timestamp;
-  }
-
   created(id: string) {
     const log = chalk.green(`${TitleCaseOperationLevel.CREATE} ${id}`);
     this.print(log);
@@ -31,9 +25,9 @@ export class ServiceLogger extends GenericLogger {
   }
 
   foundMany(query: PaginateLoggerOptions) {
-    const { limit, offset, page, length } = query;
+    const { length } = query;
     const log = chalk.magenta(
-      `${TitleCaseOperationLevel.PAGINATE} - Limit: ${limit}, Offset: ${offset}, Page: ${page}, Found: ${length}`,
+      `${TitleCaseOperationLevel.PAGINATE} - Found: ${length}`,
     );
     this.print(log);
   }

@@ -20,9 +20,9 @@ export class RepositoryLogger extends GenericLogger {
   }
 
   foundMany(query: PaginateLoggerOptions) {
-    const { limit, offset, page, length } = query;
+    const { length } = query;
     const timestamp = this.getTimestamp();
-    const log = `[${TitleCaseOperationLevel.PAGINATE} - Limit: ${limit}, Offset: ${offset}, Page: ${page}, Found: ${length}] ${timestamp}`;
+    const log = `${TitleCaseOperationLevel.PAGINATE} - Found: ${length} ${timestamp}`;
     super.verbose(log);
   }
 
