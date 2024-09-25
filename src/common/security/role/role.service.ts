@@ -1,10 +1,13 @@
-import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { DeepPartial } from 'typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
 import { AppError, ErrorHandler, GenericRoleDomain } from './../../../common';
 import { GenericRole } from './entity/role.generic';
 import { ServiceLogger, LoggerOptions, SearchDto } from '../../../crud/';
-import type { IEntityMapper, IGenericService } from '../../../crud/interfaces';
+import type {
+  IEntityMapper,
+  IGenericRepository,
+  IGenericService,
+} from '../../../crud/interfaces';
 import { GenericRoleView } from './entity/role.view';
 
 export function GenericRoleService<
@@ -19,10 +22,8 @@ export function GenericRoleService<
     public readonly handler: ErrorHandler;
     public readonly mapper: M;
 
-    constructor(@InjectRepository(E) readonly repository: Repository<T>) {
-      const { name } = this.repository.metadata;
-      const context = `${name}Logger`;
-      this.logger = new ServiceLogger(context);
+    constructor(readonly repository: IGenericRepository<T, DTO>) {
+      this.logger = new ServiceLogger(this.constructor.name);
       this.handler = ErrorHandler.getInstance();
       this.mapper = new Mapper();
     }
@@ -30,10 +31,9 @@ export function GenericRoleService<
     public async create(createDto: DTO): Promise<D> {
       try {
         this.logger.restart();
-        const role = this.repository.create(createDto);
-        await this.repository.save(role);
-        this.logger.created(role.id);
-        const domain = this.mapper.PersistToDomain(role);
+        const entity = await this.repository.create(createDto);
+        this.logger.created(entity.id);
+        const domain = this.mapper.PersistToDomain(entity);
         return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
@@ -44,16 +44,16 @@ export function GenericRoleService<
       try {
         this.logger.restart();
         const { limit, page, offset } = query;
-        const roles = await this.repository.find();
-        if (!roles || !roles.length) {
+        const entities: T[] = await this.repository.paginate(query);
+        if (!entities || !entities.length) {
           return [] as unknown as D[];
         }
+        const length = entities.length;
         const domains: D[] = [];
-        roles.forEach((role) => {
-          const domain = this.mapper.PersistToDomain(role);
+        entities.forEach((entity) => {
+          const domain = this.mapper.PersistToDomain(entity);
           domains.push(domain as unknown as D);
         });
-        const length = roles.length;
         this.logger.foundMany({ limit, page, offset, length });
         return domains;
       } catch (error) {
@@ -63,14 +63,14 @@ export function GenericRoleService<
 
     public async findAll(): Promise<D[]> {
       try {
-        const roles: T[] = await this.repository.find();
-        if (!roles || !roles.length) {
+        const entities: T[] = await this.repository.findAll();
+        if (!entities || !entities.length) {
           return [] as unknown as D[];
         }
-        const views: D[] = [];
-        roles.forEach((entity) => {
+        const domains: D[] = [];
+        entities.forEach((entity) => {
           const domain = this.mapper.PersistToDomain(entity);
-          views.push(domain as unknown as D);
+          domains.push(domain as unknown as D);
         });
       } catch (error) {
         this.handler.catch(error as AppError);
@@ -80,41 +80,39 @@ export function GenericRoleService<
     public async findOne(id: string, options: LoggerOptions): Promise<D> {
       try {
         this.logger.restart();
-        const { name } = this.repository.metadata;
-        const where = { where: { id } } as unknown as FindOneOptions<T>;
-        const role = await this.repository.findOne(where);
-        if (!role) {
+        const entity = await this.repository.findOne(id, options);
+        if (!entity) {
           this.logger.warn(`[${id}] NOT FOUND`);
-          throw new NotFoundException(`${name} with id ${id} not found`);
+          throw new NotFoundException(`${E.name} with id ${id} not found`);
         }
         if (options.logging) {
-          this.logger.foundOne(role.id);
+          this.logger.foundOne(entity.id);
         }
-        const domain = this.mapper.PersistToDomain(role);
+        const domain = this.mapper.PersistToDomain(entity);
         return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async update(role: T, updateDto: Partial<DTO>): Promise<D> {
+    public async update(entity: T, updateDto: Partial<DTO>): Promise<D> {
       try {
         this.logger.restart();
-        Object.assign(role, updateDto);
-        const updatedEntity = await this.repository.save(role);
+        Object.assign(entity, updateDto);
+        const updatedEntity = await this.repository.update(entity, updateDto);
         this.logger.updated(updatedEntity.id);
-        const domain = this.mapper.PersistToDomain(updatedEntity);
+        const domain = this.mapper.PersistToDomain(entity);
         return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async remove(role: T): Promise<void> {
+    public async remove(entity: T): Promise<void> {
       try {
         this.logger.restart();
-        await this.repository.softDelete(role.id);
-        this.logger.removed(role.id);
+        await this.repository.remove(entity);
+        this.logger.removed(entity.id);
       } catch (error) {
         this.handler.catch(error as AppError);
       }

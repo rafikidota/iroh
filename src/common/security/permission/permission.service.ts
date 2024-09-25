@@ -1,12 +1,15 @@
-import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { DeepPartial } from 'typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
 import { AppError, ErrorHandler } from '../..';
 import { GenericPermission } from './entity/permission.generic';
 import { GenericPermissionDomain } from './entity/permission.domain';
 import { GenericPermissionView } from './entity/permission.view';
 import { ServiceLogger, LoggerOptions, SearchDto } from '../../../crud';
-import type { IEntityMapper, IGenericService } from '../../../crud/interfaces';
+import type {
+  IEntityMapper,
+  IGenericRepository,
+  IGenericService,
+} from '../../../crud/interfaces';
 
 export function GenericPermissionService<
   T extends GenericPermission,
@@ -19,10 +22,8 @@ export function GenericPermissionService<
     public readonly logger: ServiceLogger;
     public readonly handler: ErrorHandler;
     public readonly mapper: M;
-    constructor(@InjectRepository(E) readonly repository: Repository<T>) {
-      const { name } = this.repository.metadata;
-      const context = `${name}Logger`;
-      this.logger = new ServiceLogger(context);
+    constructor(readonly repository: IGenericRepository<T, DTO>) {
+      this.logger = new ServiceLogger(this.constructor.name);
       this.handler = ErrorHandler.getInstance();
       this.mapper = new Mapper();
     }
@@ -30,10 +31,9 @@ export function GenericPermissionService<
     public async create(createDto: DTO): Promise<D> {
       try {
         this.logger.restart();
-        const permission = this.repository.create(createDto);
-        await this.repository.save(permission);
-        this.logger.created(permission.id);
-        const domain = this.mapper.PersistToDomain(permission);
+        const entity = await this.repository.create(createDto);
+        this.logger.created(entity.id);
+        const domain = this.mapper.PersistToDomain(entity);
         return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
@@ -44,16 +44,16 @@ export function GenericPermissionService<
       try {
         this.logger.restart();
         const { limit, page, offset } = query;
-        const permissions = await this.repository.find();
-        if (!permissions || !permissions.length) {
+        const entities: T[] = await this.repository.paginate(query);
+        if (!entities || !entities.length) {
           return [] as unknown as D[];
         }
+        const length = entities.length;
         const domains: D[] = [];
-        permissions.forEach((permission) => {
-          const domain = this.mapper.PersistToDomain(permission);
+        entities.forEach((entity) => {
+          const domain = this.mapper.PersistToDomain(entity);
           domains.push(domain as unknown as D);
         });
-        const length = permissions.length;
         this.logger.foundMany({ limit, page, offset, length });
         return domains;
       } catch (error) {
@@ -63,15 +63,14 @@ export function GenericPermissionService<
 
     public async findAll(): Promise<D[]> {
       try {
-        const entities: T[] = await this.repository.find();
+        const entities: T[] = await this.repository.findAll();
         if (!entities || !entities.length) {
           return [] as unknown as D[];
         }
         const domains: D[] = [];
         entities.forEach((entity) => {
           const domain = this.mapper.PersistToDomain(entity);
-          const view = this.mapper.DomainToView(domain);
-          domains.push(view as unknown as D);
+          domains.push(domain as unknown as D);
         });
       } catch (error) {
         this.handler.catch(error as AppError);
@@ -81,41 +80,39 @@ export function GenericPermissionService<
     public async findOne(id: string, options: LoggerOptions): Promise<D> {
       try {
         this.logger.restart();
-        const { name } = this.repository.metadata;
-        const where = { where: { id } } as unknown as FindOneOptions<T>;
-        const permission = await this.repository.findOne(where);
-        if (!permission) {
+        const entity = await this.repository.findOne(id, options);
+        if (!entity) {
           this.logger.warn(`[${id}] NOT FOUND`);
-          throw new NotFoundException(`${name} with id ${id} not found`);
+          throw new NotFoundException(`${E.name} with id ${id} not found`);
         }
         if (options.logging) {
-          this.logger.foundOne(permission.id);
+          this.logger.foundOne(entity.id);
         }
-        const domain = this.mapper.PersistToDomain(permission);
+        const domain = this.mapper.PersistToDomain(entity);
         return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async update(permission: T, updateDto: Partial<DTO>): Promise<D> {
+    public async update(entity: T, updateDto: Partial<DTO>): Promise<D> {
       try {
         this.logger.restart();
-        Object.assign(permission, updateDto);
-        const updatedEntity = await this.repository.save(permission);
+        Object.assign(entity, updateDto);
+        const updatedEntity = await this.repository.update(entity, updateDto);
         this.logger.updated(updatedEntity.id);
-        const domain = this.mapper.PersistToDomain(updatedEntity);
+        const domain = this.mapper.PersistToDomain(entity);
         return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async remove(permission: T): Promise<void> {
+    public async remove(entity: T): Promise<void> {
       try {
         this.logger.restart();
-        await this.repository.softDelete(permission.id);
-        this.logger.removed(permission.id);
+        await this.repository.remove(entity);
+        this.logger.removed(entity.id);
       } catch (error) {
         this.handler.catch(error as AppError);
       }

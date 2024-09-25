@@ -1,10 +1,13 @@
-import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { DeepPartial } from 'typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
 import { AppError, ErrorHandler } from './../../../common';
 import { GenericUser } from './entity/user.generic';
 import { ServiceLogger, LoggerOptions, SearchDto } from '../../../crud/';
-import type { IEntityMapper, IGenericService } from '../../../crud/interfaces';
+import type {
+  IEntityMapper,
+  IGenericRepository,
+  IGenericService,
+} from '../../../crud/interfaces';
 import { GenericUserDomain } from './entity/user.domain';
 import { GenericUserView } from './entity/user.view';
 
@@ -20,10 +23,8 @@ export function GenericUserService<
     public readonly handler: ErrorHandler;
     public readonly mapper: M;
 
-    constructor(@InjectRepository(E) readonly repository: Repository<T>) {
-      const { name } = this.repository.metadata;
-      const context = `${name}Logger`;
-      this.logger = new ServiceLogger(context);
+    constructor(readonly repository: IGenericRepository<T, DTO>) {
+      this.logger = new ServiceLogger(this.constructor.name);
       this.handler = ErrorHandler.getInstance();
       this.mapper = new Mapper();
     }
@@ -31,11 +32,13 @@ export function GenericUserService<
     public async create(createDto: DTO): Promise<D> {
       try {
         this.logger.restart();
-        const user = this.repository.create(createDto);
-        user.hashPassword();
-        await this.repository.save(user);
-        this.logger.created(user.id);
-        const domain = this.mapper.PersistToDomain(user);
+        const entity = await this.repository.create(createDto);
+        entity.hashPassword();
+        const { password } = entity;
+        const updateDTO = { password } as unknown as Partial<DTO>;
+        await this.repository.update(entity, updateDTO);
+        this.logger.created(entity.id);
+        const domain = this.mapper.PersistToDomain(entity);
         return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
@@ -46,16 +49,16 @@ export function GenericUserService<
       try {
         this.logger.restart();
         const { limit, page, offset } = query;
-        const users = await this.repository.find();
-        if (!users || !users.length) {
+        const entities: T[] = await this.repository.paginate(query);
+        if (!entities || !entities.length) {
           return [] as unknown as D[];
         }
+        const length = entities.length;
         const domains: D[] = [];
-        users.forEach((user) => {
-          const domain = this.mapper.PersistToDomain(user);
+        entities.forEach((entity) => {
+          const domain = this.mapper.PersistToDomain(entity);
           domains.push(domain as unknown as D);
         });
-        const length = users.length;
         this.logger.foundMany({ limit, page, offset, length });
         return domains;
       } catch (error) {
@@ -65,12 +68,12 @@ export function GenericUserService<
 
     public async findAll(): Promise<D[]> {
       try {
-        const users: T[] = await this.repository.find();
-        if (!users || !users.length) {
+        const entities: T[] = await this.repository.findAll();
+        if (!entities || !entities.length) {
           return [] as unknown as D[];
         }
         const domains: D[] = [];
-        users.forEach((entity) => {
+        entities.forEach((entity) => {
           const domain = this.mapper.PersistToDomain(entity);
           domains.push(domain as unknown as D);
         });
@@ -82,44 +85,42 @@ export function GenericUserService<
     public async findOne(id: string, options: LoggerOptions): Promise<D> {
       try {
         this.logger.restart();
-        const { name } = this.repository.metadata;
-        const where = { where: { id } } as unknown as FindOneOptions<T>;
-        const user = await this.repository.findOne(where);
-        if (!user) {
+        const entity = await this.repository.findOne(id, options);
+        if (!entity) {
           this.logger.warn(`[${id}] NOT FOUND`);
-          throw new NotFoundException(`${name} with id ${id} not found`);
+          throw new NotFoundException(`${E.name} with id ${id} not found`);
         }
         if (options.logging) {
-          this.logger.foundOne(user.id);
+          this.logger.foundOne(entity.id);
         }
-        const domain = this.mapper.PersistToDomain(user);
+        const domain = this.mapper.PersistToDomain(entity);
         return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async update(user: T, updateDto: Partial<DTO>): Promise<D> {
+    public async update(entity: T, updateDto: Partial<DTO>): Promise<D> {
       try {
         this.logger.restart();
-        Object.assign(user, updateDto);
+        Object.assign(entity, updateDto);
         if (updateDto.password) {
-          user.hashPassword();
+          entity.hashPassword();
         }
-        const updatedEntity = await this.repository.save(user);
+        const updatedEntity = await this.repository.update(entity, updateDto);
         this.logger.updated(updatedEntity.id);
-        const domain = this.mapper.PersistToDomain(updatedEntity);
+        const domain = this.mapper.PersistToDomain(entity);
         return domain as unknown as D;
       } catch (error) {
         this.handler.catch(error as AppError);
       }
     }
 
-    public async remove(user: T): Promise<void> {
+    public async remove(entity: T): Promise<void> {
       try {
         this.logger.restart();
-        await this.repository.softDelete(user.id);
-        this.logger.removed(user.id);
+        await this.repository.remove(entity);
+        this.logger.removed(entity.id);
       } catch (error) {
         this.handler.catch(error as AppError);
       }
