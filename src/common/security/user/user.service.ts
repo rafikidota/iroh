@@ -1,5 +1,6 @@
 import { DeepPartial } from 'typeorm';
 import { NotFoundException, Type } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { AppError, ErrorHandler } from './../../../common';
 import { GenericUser } from './entity/user.persistent';
 import { ServiceLogger, LoggerOptions, SearchDto } from '../../../crud/';
@@ -32,11 +33,9 @@ export function GenericUserService<
     public async create(createDto: DTO): Promise<D> {
       try {
         this.logger.restart();
+        const { password } = createDto;
+        createDto.password = this.hashPassword(password);
         const entity = await this.repository.create(createDto);
-        entity.hashPassword();
-        const { password } = entity;
-        const updateDTO = { password } as unknown as Partial<DTO>;
-        await this.repository.update(entity, updateDTO);
         this.logger.created(entity.id);
         const domain = this.mapper.PersistToDomain(entity);
         return domain as unknown as D;
@@ -104,8 +103,9 @@ export function GenericUserService<
       try {
         this.logger.restart();
         Object.assign(entity, updateDto);
-        if (updateDto.password) {
-          entity.hashPassword();
+        const { password } = updateDto;
+        if (password) {
+          updateDto.password = this.hashPassword(password);
         }
         const updatedEntity = await this.repository.update(entity, updateDto);
         this.logger.updated(updatedEntity.id);
@@ -124,6 +124,10 @@ export function GenericUserService<
       } catch (error) {
         this.handler.catch(error as AppError);
       }
+    }
+
+    public hashPassword(password: string) {
+      return bcrypt.hashSync(password, 10);
     }
   }
   return GenericUserService;
