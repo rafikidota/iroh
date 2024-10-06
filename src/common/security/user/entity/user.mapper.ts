@@ -9,7 +9,7 @@ export function GenericUserMapper<
   D extends GenericUserDomain,
   V extends GenericUserView,
 >(Persistent: Type<T>, Domain: Type<D>, View: Type<V>) {
-  abstract class EntityMapper implements IEntityMapper<T, D, V> {
+  class EntityMapper implements IEntityMapper<T, D, V> {
     PersistToDomain(persistent: T): D {
       return new Domain({ ...persistent }) as D;
     }

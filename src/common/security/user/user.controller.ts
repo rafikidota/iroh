@@ -30,9 +30,7 @@ export function GenericUserController<
 >(E: Type<T>, CreateDto: Type<DTO>, UpdateDto: Type<U>, View: Type<V>) {
   @UseInterceptors(LoggingInterceptor)
   @UseFilters(HttpExceptionFilter)
-  abstract class GenericUserController
-    implements IGenericController<T, DTO, V>
-  {
+  class GenericUserController implements IGenericController<T, DTO, V> {
     constructor(readonly service: IGenericService<T, DTO, D, V>) {}
 
     @Post()

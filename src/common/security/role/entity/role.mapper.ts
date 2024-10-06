@@ -9,7 +9,7 @@ export function GenericRoleMapper<
   D extends GenericRoleDomain,
   V extends GenericRoleView,
 >(Persistent: Type<T>, Domain: Type<D>, View: Type<V>) {
-  abstract class EntityMapper implements IEntityMapper<T, D, V> {
+  class EntityMapper implements IEntityMapper<T, D, V> {
     PersistToDomain(persistent: T): D {
       return new Domain({ ...persistent }) as D;
     }

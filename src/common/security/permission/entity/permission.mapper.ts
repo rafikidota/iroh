@@ -9,7 +9,7 @@ export function GenericPermissionMapper<
   D extends GenericPermissionDomain,
   V extends GenericPermissionView,
 >(Persistent: Type<T>, Domain: Type<D>, View: Type<V>) {
-  abstract class EntityMapper implements IEntityMapper<T, D, V> {
+  class EntityMapper implements IEntityMapper<T, D, V> {
     PersistToDomain(persistent: T): D {
       return new Domain({ ...persistent }) as D;
     }

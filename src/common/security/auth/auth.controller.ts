@@ -29,7 +29,7 @@ export function GenericAuthController<
 >(E: Type<T>, CreateDto: Type<DTO>, View: Type<V>) {
   @UseInterceptors(LoggingInterceptor)
   @UseFilters(HttpExceptionFilter)
-  abstract class GenericAuthController implements IGenericAuthController<T> {
+  class GenericAuthController implements IGenericAuthController<T> {
     constructor(readonly service: IGenericAuthService<T>) {}
 
     @Post('signup')

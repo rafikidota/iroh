@@ -35,9 +35,7 @@ export function GenericPermissionController<
 >(E: Type<T>, CreateDto: Type<DTO>, UpdateDto: Type<U>, View: Type<V>) {
   @UseInterceptors(LoggingInterceptor)
   @UseFilters(HttpExceptionFilter)
-  abstract class GenericPermissionController
-    implements IGenericController<T, DTO, V>
-  {
+  class GenericPermissionController implements IGenericController<T, DTO, V> {
     constructor(readonly service: IGenericService<T, DTO, D, V>) {}
 
     @Post()
