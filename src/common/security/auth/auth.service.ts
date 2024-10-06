@@ -1,13 +1,20 @@
-import { Type, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Type,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { FindOneOptions, Repository } from 'typeorm';
+import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { IGenericAuthService, ISignInResponse } from './interfaces';
 import { GenericUser } from '../user/entity';
 import { GenericLogger } from './../../../crud';
 import { Payload } from './interfaces/payload';
 
-export function GenericAuthService<T extends GenericUser>(E: Type<T>) {
+export function GenericAuthService<
+  T extends GenericUser,
+  DTO extends DeepPartial<T>,
+>(E: Type<T>) {
   class GenericAuthService implements IGenericAuthService<T> {
     public readonly logger: GenericLogger;
     constructor(
@@ -17,9 +24,19 @@ export function GenericAuthService<T extends GenericUser>(E: Type<T>) {
     ) {
       this.logger = new GenericLogger(this.constructor.name);
     }
-    public async signup(user: T): Promise<Partial<T>> {
-      this.logger.log('signin');
-      return user;
+    public async signup(createDTO: DTO): Promise<Partial<T>> {
+      const { email, username } = createDTO;
+      const options = {
+        where: [{ email }, { username }],
+      } as unknown as FindOneOptions<T>;
+      const found = await this.repository.findOne(options);
+      if (found) {
+        throw new BadRequestException('User already exists');
+      }
+      const user = this.repository.create(createDTO);
+      user.hashPassword();
+      const updatedUser = await this.repository.save(user);
+      return updatedUser;
     }
 
     public async signin(user: T): Promise<ISignInResponse> {

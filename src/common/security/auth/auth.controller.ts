@@ -1,6 +1,8 @@
 import {
+  Body,
   Get,
   HttpCode,
+  Post,
   Type,
   UseFilters,
   UseInterceptors,
@@ -22,15 +24,15 @@ import { GenericUser, GenericUserView } from '../user/entity';
 
 export function GenericAuthController<
   T extends GenericUser,
-  D extends DeepPartial<T>,
+  DTO extends DeepPartial<T>,
   V extends GenericUserView,
->(E: Type<T>, CreateDto: Type<D>, View: Type<V>) {
+>(E: Type<T>, CreateDto: Type<DTO>, View: Type<V>) {
   @UseInterceptors(LoggingInterceptor)
   @UseFilters(HttpExceptionFilter)
   abstract class GenericAuthController implements IGenericAuthController<T> {
     constructor(readonly service: IGenericAuthService<T>) {}
 
-    @Get('signup')
+    @Post('signup')
     @Public()
     @NoPermission()
     @ApiBody({ type: CreateDto })
@@ -40,8 +42,8 @@ export function GenericAuthController<
       type: View,
     })
     @ApiResponse({ status: 400, description: 'Bad request' })
-    signup(@User() user: T) {
-      return this.service.signup(user);
+    signup(@Body() body: DTO) {
+      return this.service.signup(body);
     }
 
     @Get('signin')
