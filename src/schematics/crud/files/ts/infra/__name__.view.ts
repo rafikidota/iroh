@@ -6,12 +6,15 @@ import {
 } from '@nestjs/swagger';
 import { GenericView } from '@rafikidota/iroh';
 import { Create<%= classify(name) %>Dto } from '../app/dto/<%= lowerCase(name) %>.create.dto';
-import { <%= classify(name) %>Domain } from '../domain/<%= lowerCase(name) %>.domain';
+import { <%= classify(name) %>Domain, I<%= classify(name) %> } from '../domain';
 
-export class <%= classify(name) %>View extends OmitType(
-  IntersectionType(PartialType(Create<%= classify(name) %>Dto), GenericView),
-  [],
-) {
+export class <%= classify(name) %>View
+  extends OmitType(
+    IntersectionType(PartialType(Create<%= classify(name) %>Dto), GenericView),
+    [],
+  )
+  implements I<%= classify(name) %>
+{
   @ApiProperty()
   id: string;
   @ApiProperty()
