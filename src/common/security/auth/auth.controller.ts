@@ -6,6 +6,8 @@ import {
   Type,
   UseFilters,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiBasicAuth,
@@ -35,8 +37,9 @@ export function GenericAuthController<
   V extends GenericUserView,
   R extends IAuthResponse<V>,
 >(E: Type<T>, CreateDto: Type<DTO>, View: Type<R>) {
-  @UseInterceptors(LoggingInterceptor)
   @UseFilters(HttpExceptionFilter)
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @UseInterceptors(LoggingInterceptor)
   class GenericAuthController implements IGenericAuthController<T, DTO, V, R> {
     constructor(readonly service: IGenericAuthService<T, DTO, V, R>) {}
 

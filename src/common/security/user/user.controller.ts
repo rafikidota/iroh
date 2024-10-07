@@ -10,6 +10,8 @@ import {
   Type,
   UseFilters,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
@@ -28,8 +30,9 @@ export function GenericUserController<
   D extends GenericUserDomain,
   V extends GenericUserView,
 >(E: Type<T>, CreateDto: Type<DTO>, UpdateDto: Type<U>, View: Type<V>) {
-  @UseInterceptors(LoggingInterceptor)
   @UseFilters(HttpExceptionFilter)
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @UseInterceptors(LoggingInterceptor)
   class GenericUserController implements IGenericController<T, DTO, V> {
     constructor(readonly service: IGenericService<T, DTO, D, V>) {}
 

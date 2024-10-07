@@ -10,6 +10,8 @@ import {
   Type,
   UseInterceptors,
   UseFilters,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { DeepPartial } from 'typeorm';
@@ -33,8 +35,9 @@ export function GenericPermissionController<
   D extends GenericPermissionDomain,
   V extends GenericPermissionView,
 >(E: Type<T>, CreateDto: Type<DTO>, UpdateDto: Type<U>, View: Type<V>) {
-  @UseInterceptors(LoggingInterceptor)
   @UseFilters(HttpExceptionFilter)
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @UseInterceptors(LoggingInterceptor)
   class GenericPermissionController implements IGenericController<T, DTO, V> {
     constructor(readonly service: IGenericService<T, DTO, D, V>) {}
 
