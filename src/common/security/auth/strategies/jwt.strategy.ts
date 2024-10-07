@@ -18,9 +18,6 @@ export function JwtStrategy<T extends GenericUser>(E: Type<T>) {
       const jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
       const ignoreExpiration = false;
       const secretOrKey = config.get<string>('JWT_SECRET');
-      if (!secretOrKey) {
-        throw new Error('JWT_SECRET is not defined');
-      }
       const strategy = { jwtFromRequest, ignoreExpiration, secretOrKey };
       super(strategy);
     }
