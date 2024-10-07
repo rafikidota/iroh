@@ -5,7 +5,7 @@ import { PermissionPersistent } from '../../common/security/permission';
 import { <%= classify(name) %>Service } from './<%= lowerCase(name) %>.service';
 import { <%= classify(name) %>Persistent } from './infra/<%= lowerCase(name) %>.persistent';
 import { Create<%= classify(name) %>Dto, Update<%= classify(name) %>Dto } from './app/dto';
-import { <%= classify(name) %>View } from './infra/<%= lowerCase(name) %>.view';
+import { <%= classify(name) %>View } from './app/dto/<%= lowerCase(name) %>.view';
 
 @ApiBearerAuth()
 @ApiTags('<%= classify(name) %>')

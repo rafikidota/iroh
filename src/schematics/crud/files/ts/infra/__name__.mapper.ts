@@ -1,7 +1,7 @@
 import { GenericEntityMapper, IEntityMapper } from '@rafikidota/iroh';
 import { <%= classify(name) %>Persistent } from './<%= lowerCase(name) %>.persistent';
 import { <%= classify(name) %>Domain } from '../domain/<%= lowerCase(name) %>.domain';
-import { <%= classify(name) %>View } from './<%= lowerCase(name) %>.view';
+import { <%= classify(name) %>View } from '../app/dto/<%= lowerCase(name) %>.view';
 
 export class <%= classify(name) %>Mapper
   extends GenericEntityMapper(<%= classify(name) %>Persistent, <%= classify(name) %>Domain, <%= classify(name) %>View)
