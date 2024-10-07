@@ -68,7 +68,7 @@ export class HeroModule {}
 
 ### Controller
 Define your controller by extending `GenericController`:
-```js
+```ts
 import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GenericController, SecurityGuard } from '@rafikidota/iroh';
@@ -76,7 +76,7 @@ import { PermissionPersistent } from '../../common/security/permission';
 import { HeroService } from './hero.service';
 import { HeroPersistent } from './infra/hero.persistent';
 import { CreateHeroDto, UpdateHeroDto } from './app/dto';
-import { HeroView } from './infra/hero.view';
+import { HeroView } from './app/dto/hero.view';
 
 @ApiBearerAuth()
 @ApiTags('Hero')
@@ -127,9 +127,10 @@ Define your persistent by extending `GenericPersistent`:
 ```ts
 import { Column, Entity } from 'typeorm';
 import { GenericPersistent } from '@rafikidota/iroh';
+import { IHero } from '../domain';
 
 @Entity('hero')
-export class HeroPersistent extends GenericPersistent {
+export class HeroPersistent extends GenericPersistent implements IHero {
   @Column()
   name: string;
 }
@@ -140,8 +141,9 @@ Define your domain by extending `GenericDomain`:
 ```ts
 import { GenericDomain } from '@rafikidota/iroh';
 import { HeroPersistent } from '../infra/hero.persistent';
+import { IHero } from './hero.interface';
 
-export class HeroDomain extends GenericDomain {
+export class HeroDomain extends GenericDomain implements IHero {
   name: string;
 
   constructor(persistent: HeroPersistent) {
@@ -165,16 +167,21 @@ import {
   PartialType,
 } from '@nestjs/swagger';
 import { GenericView } from '@rafikidota/iroh';
-import { CreateHeroDto } from '../app/dto/hero.create.dto';
-import { HeroDomain } from '../domain/hero.domain';
+import { CreateHeroDto } from './hero.create.dto';
+import { HeroDomain, IHero } from '../../domain';
 
-export class HeroView extends OmitType(
-  IntersectionType(PartialType(CreateHeroDto), GenericView),
-  [],
-) {
+export class HeroView
+  extends OmitType(
+    IntersectionType(PartialType(CreateHeroDto), GenericView),
+    [],
+  )
+  implements IHero
+{
   @ApiProperty()
   id: string;
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Pudge',
+  })
   name: string;
   @ApiProperty()
   createdAt: Date;
@@ -197,7 +204,7 @@ Define your mapper by extending `GenericEntityMapper`:
 import { GenericEntityMapper, IEntityMapper } from '@rafikidota/iroh';
 import { HeroPersistent } from './hero.persistent';
 import { HeroDomain } from '../domain/hero.domain';
-import { HeroView } from './hero.view';
+import { HeroView } from '../app/dto/hero.view';
 
 export class HeroMapper
   extends GenericEntityMapper(HeroPersistent, HeroDomain, HeroView)
