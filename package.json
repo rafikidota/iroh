@@ -23,7 +23,8 @@
     "move:init": "mkdir -p dist/schematics/init/files/ts && cp -ar ./src/schematics/init/files/ts/* dist/schematics/init/files/ts",
     "lint": "eslint . --fix",
     "format": "prettier --write \"**/*.ts\"",
-    "prepublishOnly": "npm run lint && npm run build"
+    "prepublishOnly": "npm run lint && npm run build",
+    "postinstall": "node dist/scripts/postinstall.js"
   },
   "dependencies": {
     "@angular-devkit/core": "18.1.3",
