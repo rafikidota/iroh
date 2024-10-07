@@ -26,7 +26,7 @@ export class GenericUserView extends GenericView {
 
   @ApiProperty({
     enum: UserTypeEnum,
-    default: UserTypeEnum.ADMIN,
+    default: UserTypeEnum.CLIENT,
   })
   type: UserRoleEnumType;
 

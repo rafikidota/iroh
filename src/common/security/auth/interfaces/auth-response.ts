@@ -1,6 +1,6 @@
-import { GenericUser } from '../../user/entity';
+import { GenericUserView } from '../../user';
 
-export interface IAuthResponse {
+export interface IAuthResponse<V extends GenericUserView> {
   token: string;
-  user: GenericUser;
+  user: V;
 }

@@ -13,24 +13,32 @@ import {
   ApiBody,
   ApiResponse,
 } from '@nestjs/swagger';
-import { DeepPartial } from 'typeorm';
-import { HttpExceptionFilter, LoggingInterceptor } from '../../../common';
+import {
+  CreateGenericUserDto,
+  HttpExceptionFilter,
+  LoggingInterceptor,
+} from '../../../common';
 import { BasicAuthGuard, Public, SecurityGuard } from './decorators';
 import { User } from '../user/decorators';
 import { NoPermission } from '../permission/decorators';
-import { IGenericAuthController, IGenericAuthService } from './interfaces';
+import {
+  IAuthResponse,
+  IGenericAuthController,
+  IGenericAuthService,
+} from './interfaces';
 
 import { GenericUser, GenericUserView } from '../user/entity';
 
 export function GenericAuthController<
   T extends GenericUser,
-  DTO extends DeepPartial<T>,
+  DTO extends CreateGenericUserDto,
   V extends GenericUserView,
->(E: Type<T>, CreateDto: Type<DTO>, View: Type<V>) {
+  R extends IAuthResponse<V>,
+>(E: Type<T>, CreateDto: Type<DTO>, View: Type<R>) {
   @UseInterceptors(LoggingInterceptor)
   @UseFilters(HttpExceptionFilter)
-  class GenericAuthController implements IGenericAuthController<T> {
-    constructor(readonly service: IGenericAuthService<T, DTO>) {}
+  class GenericAuthController implements IGenericAuthController<T, DTO, V, R> {
+    constructor(readonly service: IGenericAuthService<T, DTO, V, R>) {}
 
     @Post('signup')
     @Public()
@@ -42,20 +50,21 @@ export function GenericAuthController<
       type: View,
     })
     @ApiResponse({ status: 400, description: 'Bad request' })
-    signup(@Body() body: DTO) {
-      return this.service.signup(body);
+    signup(@Body() body: DTO): Promise<R> {
+      return this.service.signup(body) as Promise<R>;
     }
 
     @Get('signin')
     @ApiBasicAuth()
     @BasicAuthGuard(E)
     @ApiResponse({
-      status: 204,
-      description: `Signin was done successfully`,
+      status: 201,
+      description: `${E.name} was created successfully`,
+      type: View,
     })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @ApiResponse({ status: 404, description: `${E.name} not found` })
-    signin(@User() user: T) {
+    signin(@User() user: T): Promise<R> {
       return this.service.signin(user);
     }
 

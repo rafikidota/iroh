@@ -6,6 +6,7 @@ import {
   Length,
   Matches,
 } from 'class-validator';
+import { UserRoleEnumType, UserTypeEnum } from '../enum';
 
 export class CreateGenericUserDto {
   @IsString()
@@ -46,4 +47,10 @@ export class CreateGenericUserDto {
     example: '*JohnDoe123!',
   })
   password: string;
+
+  @ApiProperty({
+    enum: UserTypeEnum,
+    default: UserTypeEnum.CLIENT,
+  })
+  type: UserRoleEnumType;
 }
