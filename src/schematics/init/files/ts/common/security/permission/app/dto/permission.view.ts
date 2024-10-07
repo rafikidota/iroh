@@ -4,9 +4,12 @@ import {
   OmitType,
   PartialType,
 } from '@nestjs/swagger';
-import { GenericPermissionView, PermissionMethodEnumType } from '@rafikidota/iroh';
-import { CreatePermissionDto } from '../app/dto';
-import { PermissionDomain } from '../domain/permission.domain';
+import {
+  GenericPermissionView,
+  PermissionMethodEnumType,
+} from '@rafikidota/iroh';
+import { CreatePermissionDto } from '.';
+import { PermissionDomain } from '../../domain/permission.domain';
 
 export class PermissionView extends OmitType(
   IntersectionType(PartialType(CreatePermissionDto), GenericPermissionView),

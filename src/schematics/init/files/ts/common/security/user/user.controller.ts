@@ -4,7 +4,7 @@ import { GenericUserController, SecurityGuard } from '@rafikidota/iroh';
 import { UserService } from './user.service';
 import { UserPersistent } from './infra/user.persistent';
 import { CreateUserDto, UpdateUserDto } from './app/dto';
-import { UserView } from './infra/user.view';
+import { UserView } from './app/dto/user.view';
 import { PermissionPersistent } from '../permission/infra/permission.persistent';
 
 @ApiBearerAuth()

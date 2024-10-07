@@ -4,14 +4,14 @@ import { GenericAuthController } from '@rafikidota/iroh';
 import { AuthService } from './auth.service';
 import { UserPersistent } from '../user/infra/user.persistent';
 import { CreateUserDto } from '../user/app/dto';
-import { UserView } from '../user/infra/user.view';
+import { AuthResponse } from './app';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController extends GenericAuthController(
   UserPersistent,
   CreateUserDto,
-  UserView,
+  AuthResponse,
 ) {
   constructor(readonly service: AuthService) {
     super(service);

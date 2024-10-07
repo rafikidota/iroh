@@ -5,8 +5,8 @@ import {
   PartialType,
 } from '@nestjs/swagger';
 import { GenericRoleView } from '@rafikidota/iroh';
-import { CreateRoleDto } from '../app/dto/role.create.dto';
-import { RoleDomain } from '../domain/role.domain';
+import { CreateRoleDto } from './role.create.dto';
+import { RoleDomain } from '../../domain/role.domain';
 
 export class RoleView extends OmitType(
   IntersectionType(PartialType(CreateRoleDto), GenericRoleView),

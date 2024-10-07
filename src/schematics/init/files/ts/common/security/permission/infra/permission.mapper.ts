@@ -1,7 +1,7 @@
 import { GenericPermissionMapper, IEntityMapper } from '@rafikidota/iroh';
 import { PermissionPersistent } from './permission.persistent';
 import { PermissionDomain } from '../domain/permission.domain';
-import { PermissionView } from './permission.view';
+import { PermissionView } from '../app/dto/permission.view';
 
 export class PermissionMapper
   extends GenericPermissionMapper(

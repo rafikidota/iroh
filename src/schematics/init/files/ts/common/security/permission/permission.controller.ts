@@ -4,7 +4,7 @@ import { GenericPermissionController, SecurityGuard } from '@rafikidota/iroh';
 import { PermissionService } from './permission.service';
 import { PermissionPersistent } from './infra/permission.persistent';
 import { CreatePermissionDto, UpdatePermissionDto } from './app/dto';
-import { PermissionView } from './infra/permission.view';
+import { PermissionView } from './app/dto/permission.view';
 
 @ApiBearerAuth()
 @ApiTags('Permission')

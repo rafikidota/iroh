@@ -1,7 +1,7 @@
 import { GenericUserMapper, IEntityMapper } from '@rafikidota/iroh';
 import { UserPersistent } from '../infra/user.persistent';
 import { UserDomain } from '../domain/user.domain';
-import { UserView } from '../infra/user.view';
+import { UserView } from '../app/dto/user.view';
 
 export class UserMapper
   extends GenericUserMapper(UserPersistent, UserDomain, UserView)

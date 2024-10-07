@@ -1,7 +1,7 @@
 import { GenericRoleMapper, IEntityMapper } from '@rafikidota/iroh';
 import { RolePersistent } from './role.persistent';
 import { RoleDomain } from '../domain/role.domain';
-import { RoleView } from './role.view';
+import { RoleView } from '../app/dto/role.view';
 
 export class RoleMapper
   extends GenericRoleMapper(RolePersistent, RoleDomain, RoleView)

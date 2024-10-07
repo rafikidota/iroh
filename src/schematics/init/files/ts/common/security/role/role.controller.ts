@@ -4,7 +4,7 @@ import { GenericRoleController, SecurityGuard } from '@rafikidota/iroh';
 import { RoleService } from './role.service';
 import { RolePersistent } from './infra/role.persistent';
 import { CreateRoleDto, UpdateRoleDto } from './app/dto';
-import { RoleView } from './infra/role.view';
+import { RoleView } from './app/dto/role.view';
 import { PermissionPersistent } from '../permission/infra/permission.persistent';
 
 @ApiBearerAuth()

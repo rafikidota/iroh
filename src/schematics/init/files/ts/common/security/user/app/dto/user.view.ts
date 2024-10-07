@@ -5,8 +5,8 @@ import {
   PartialType,
 } from '@nestjs/swagger';
 import { GenericUserView, UserRoleEnumType } from '@rafikidota/iroh';
-import { CreateUserDto } from '../app/dto/user.create.dto';
-import { UserDomain } from '../domain/user.domain';
+import { CreateUserDto } from './user.create.dto';
+import { UserDomain } from '../../domain/user.domain';
 
 export class UserView extends OmitType(
   IntersectionType(PartialType(CreateUserDto), GenericUserView),
