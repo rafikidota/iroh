@@ -24,7 +24,7 @@
     "lint": "eslint . --fix",
     "format": "prettier --write \"**/*.ts\"",
     "prepublishOnly": "npm run lint && npm run build",
-    "postinstall": "node dist/scripts/postinstall.js"
+    "postinstall": "node dist/scripts/post-install.js"
   },
   "dependencies": {
     "@angular-devkit/core": "18.1.3",
