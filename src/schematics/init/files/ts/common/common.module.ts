@@ -2,16 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from '@rafikidota/iroh';
 import { SecurityModule } from './security/security.module';
-import { EnvConfiguration } from './config/env.config';
-import { JoiValidationSchema } from './config/joi.validation';
+import { ConfigurationModule } from './config/configuration.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: [EnvConfiguration],
-      validationSchema: JoiValidationSchema,
-    }),
+    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigurationModule,
     SecurityModule,
     LoggerModule,
   ],
