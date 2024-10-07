@@ -1,8 +1,8 @@
 import { DeepPartial } from 'typeorm';
-import { ISignInResponse } from './sign-in-response';
+import { IAuthResponse } from './auth-response';
 
 export type IGenericAuthController<T> = {
   signup(createDto: DeepPartial<T>): Promise<Partial<T>>;
-  signin(user: T): Promise<ISignInResponse>;
+  signin(user: T): Promise<IAuthResponse>;
   signout(user: T): Promise<void>;
 };

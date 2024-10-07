@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
-import { IGenericAuthService, ISignInResponse } from './interfaces';
+import { IGenericAuthService, IAuthResponse } from './interfaces';
 import { GenericUser, UserTypeEnum } from '../user';
 import { GenericLogger } from './../../../crud';
 import { Payload } from './interfaces/payload';
@@ -50,13 +50,13 @@ export function GenericAuthService<
       return saved;
     }
 
-    public async signin(user: T): Promise<ISignInResponse> {
+    public async signin(user: T): Promise<IAuthResponse> {
       const { id } = user;
       const payload: Payload = { id };
       const token = this.jwtService.sign(payload);
       const where = { where: { id } } as unknown as FindOneOptions<T>;
       const found = await this.findUser(where);
-      const response: ISignInResponse = { token, user: found };
+      const response: IAuthResponse = { token, user: found };
       return response;
     }
     public async signout(user: T): Promise<void> {
