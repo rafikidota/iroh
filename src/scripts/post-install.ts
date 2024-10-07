@@ -9,44 +9,51 @@ try {
     'bun.lockb': 'bun',
   };
 
-  let packageManager: string | null = null;
+  const pm: { name: string } = { name: 'npm' };
 
   for (const [file, manager] of Object.entries(packageManagers)) {
     if (existsSync(file)) {
-      packageManager = manager;
+      pm.name = manager;
       break;
     }
   }
 
-  switch (packageManager) {
-    case 'yarn':
-      execSync(
-        'yarn add @nestjs/swagger @nestjs/typeorm typeorm @nestjs/config jsonwebtoken uuid joi',
-        { stdio: 'inherit' },
-      );
+  const deps =
+    '@nestjs/swagger @nestjs/typeorm typeorm @nestjs/config jsonwebtoken uuid joi pg';
+
+  const success = 'Dependencies installed successfully';
+
+  switch (pm.name) {
+    case 'yarn': {
+      const message = `yarn add ${deps} --save`;
+      execSync(message, { stdio: 'inherit' });
+      console.log(success);
       break;
-    case 'npm':
-      execSync(
-        'npm install @nestjs/swagger @nestjs/typeorm typeorm @nestjs/config jsonwebtoken uuid joi',
-        { stdio: 'inherit' },
-      );
+    }
+
+    case 'npm': {
+      const message = `npm install ${deps} --save`;
+      execSync(message, { stdio: 'inherit' });
+      console.log(success);
       break;
-    case 'pnpm':
-      execSync(
-        'pnpm add @nestjs/swagger @nestjs/typeorm typeorm @nestjs/config jsonwebtoken uuid joi',
-        { stdio: 'inherit' },
-      );
+    }
+    case 'pnpm': {
+      const message = `pnpm add ${deps} --save`;
+      execSync(message, { stdio: 'inherit' });
+      console.log(success);
       break;
-    case 'bun':
-      execSync(
-        'bun add @nestjs/swagger @nestjs/typeorm typeorm @nestjs/config jsonwebtoken uuid joi',
-        { stdio: 'inherit' },
-      );
+    }
+
+    case 'bun': {
+      const message = `bun add ${deps}`;
+      execSync(message, { stdio: 'inherit' });
+      console.log(success);
       break;
+    }
+
     default:
-      console.error(
-        'No se detectó un gestor de paquetes válido (yarn, npm, pnpm o bun).',
-      );
+      const message = `npm install ${deps} --save`;
+      console.error(message);
   }
 } catch (error) {
   console.error(error);
