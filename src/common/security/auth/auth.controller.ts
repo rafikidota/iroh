@@ -30,7 +30,7 @@ export function GenericAuthController<
   @UseInterceptors(LoggingInterceptor)
   @UseFilters(HttpExceptionFilter)
   class GenericAuthController implements IGenericAuthController<T> {
-    constructor(readonly service: IGenericAuthService<T>) {}
+    constructor(readonly service: IGenericAuthService<T, DTO>) {}
 
     @Post('signup')
     @Public()
