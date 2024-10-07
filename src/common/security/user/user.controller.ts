@@ -11,7 +11,6 @@ import {
   UseFilters,
   UseInterceptors,
   UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
@@ -21,7 +20,9 @@ import type {
   IGenericService,
 } from '../../../crud/interfaces';
 import { GenericUser, GenericUserDomain, GenericUserView } from './entity';
-import { HttpExceptionFilter, LoggingInterceptor } from '../../../common';
+import { HttpExceptionFilter } from '../../filters';
+import { LoggingInterceptor } from '../../interceptors';
+import { GenericValidationPipe } from '../../pipes';
 
 export function GenericUserController<
   T extends GenericUser,
@@ -31,7 +32,6 @@ export function GenericUserController<
   V extends GenericUserView,
 >(E: Type<T>, CreateDto: Type<DTO>, UpdateDto: Type<U>, View: Type<V>) {
   @UseFilters(HttpExceptionFilter)
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   @UseInterceptors(LoggingInterceptor)
   class GenericUserController implements IGenericController<T, DTO, V> {
     constructor(readonly service: IGenericService<T, DTO, D, V>) {}
@@ -46,6 +46,7 @@ export function GenericUserController<
     @ApiResponse({ status: 400, description: 'Bad request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden' })
+    @UsePipes(GenericValidationPipe(CreateDto))
     async create(@Body() body: DTO): Promise<V> {
       const domain = await this.service.create(body);
       const view = this.service.mapper.DomainToView(domain);
@@ -61,6 +62,7 @@ export function GenericUserController<
     })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden' })
+    @UsePipes(GenericValidationPipe(SearchDto))
     async paginate(@Query() query: SearchDto): Promise<V[]> {
       const domains = await this.service.paginate(query);
       const views: V[] = [];
@@ -95,6 +97,7 @@ export function GenericUserController<
     })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden' })
+    @UsePipes(GenericValidationPipe(UpdateDto))
     @EntityGuard(E)
     async update(@Entity() entity: T, @Body() body: Partial<DTO>): Promise<V> {
       const domain = await this.service.update(entity, body);

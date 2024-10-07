@@ -7,7 +7,6 @@ import {
   UseFilters,
   UseInterceptors,
   UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiBasicAuth,
@@ -15,13 +14,11 @@ import {
   ApiBody,
   ApiResponse,
 } from '@nestjs/swagger';
-import {
-  CreateGenericUserDto,
-  HttpExceptionFilter,
-  LoggingInterceptor,
-} from '../../../common';
+import { LoggingInterceptor } from './../../interceptors';
+import { HttpExceptionFilter } from './../../filters';
+import { GenericValidationPipe } from '../../pipes';
 import { BasicAuthGuard, Public, SecurityGuard } from './decorators';
-import { User } from '../user/decorators';
+import { User, CreateGenericUserDto } from '../user';
 import { NoPermission } from '../permission/decorators';
 import {
   IAuthResponse,
@@ -38,7 +35,6 @@ export function GenericAuthController<
   R extends IAuthResponse<V>,
 >(E: Type<T>, CreateDto: Type<DTO>, View: Type<R>) {
   @UseFilters(HttpExceptionFilter)
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   @UseInterceptors(LoggingInterceptor)
   class GenericAuthController implements IGenericAuthController<T, DTO, V, R> {
     constructor(readonly service: IGenericAuthService<T, DTO, V, R>) {}
@@ -53,6 +49,7 @@ export function GenericAuthController<
       type: View,
     })
     @ApiResponse({ status: 400, description: 'Bad request' })
+    @UsePipes(GenericValidationPipe(CreateDto))
     signup(@Body() body: DTO): Promise<R> {
       return this.service.signup(body) as Promise<R>;
     }

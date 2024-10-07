@@ -12,7 +12,6 @@ import {
   UseInterceptors,
   UseFilters,
   UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { DeepPartial } from 'typeorm';
@@ -23,6 +22,7 @@ import { SearchDto } from '../dto';
 import type { IGenericController, IGenericService } from '../interfaces';
 import { LoggingInterceptor } from '../../common/interceptors';
 import { HttpExceptionFilter } from '../../common/filters';
+import { GenericValidationPipe } from '../../common/pipes';
 
 export function GenericController<
   T extends GenericPersistent,
@@ -32,7 +32,6 @@ export function GenericController<
   V extends GenericView,
 >(E: Type<T>, CreateDto: Type<DTO>, UpdateDto: Type<U>, View: Type<V>) {
   @UseFilters(HttpExceptionFilter)
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   @UseInterceptors(LoggingInterceptor)
   class GenericCRUDController implements IGenericController<T, DTO, V> {
     constructor(readonly service: IGenericService<T, DTO, D, V>) {}
@@ -47,6 +46,7 @@ export function GenericController<
     @ApiResponse({ status: 400, description: 'Bad request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden' })
+    @UsePipes(GenericValidationPipe(CreateDto))
     async create(@Body() body: DTO): Promise<V> {
       const domain = await this.service.create(body);
       const view = this.service.mapper.DomainToView(domain);
@@ -62,6 +62,7 @@ export function GenericController<
     })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden' })
+    @UsePipes(GenericValidationPipe(SearchDto))
     async paginate(@Query() query: SearchDto): Promise<V[]> {
       const domains = await this.service.paginate(query);
       const views: V[] = [];
@@ -97,6 +98,7 @@ export function GenericController<
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden' })
     @EntityGuard(E)
+    @UsePipes(GenericValidationPipe(UpdateDto))
     async update(@Entity() entity: T, @Body() body: Partial<DTO>): Promise<V> {
       const domain = await this.service.update(entity, body);
       const view = this.service.mapper.DomainToView(domain);
